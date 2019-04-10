@@ -8,27 +8,35 @@ struct PlayerWishCommand {
 }
 
 public class PlayerMovement : MonoBehaviour {
-    public Transform playerCamera;
-    private float rotX = 0.0f;
-    private float rotY = 0.0f;
 
-    public float playerViewYOffset = 1.8f; // The height at which the camera is bound to
-    public float mouseSensitivity = 1;
 
-    // Frame occuring factors
-    public float gravity = 10;
-    public float friction = 5; //Ground friction
-
-    public float moveSpeed = 6;                // Ground move speed
-    public float runAcceleration = 12;         // Ground accel
-    public float runDeacceleration = 12;       // Deacceleration that occurs when running on the ground
-    public float airAcceleration = 1.8f;          // Air accel
-    public float airDecceleration = 7;         // Deacceleration experienced when ooposite strafing
-    public float sideStrafeAcceleration = 40;  // How fast acceleration occurs to get up to sideStrafeSpeed when
-    public float sideStrafeSpeed = 1;          // What the max speed to generate when side strafing
-    //gives a vertical jump height of ~1m accounting for gravity
-    public float jumpSpeed = 4.5f;                // The speed at which the character's up axis gains when hitting jump
-    public bool holdJumpToBhop = false;           // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
+    [SerializeField]
+    private float playerViewYOffset = 1.8f; // The height at which the camera is bound to
+    [SerializeField]
+    private float mouseSensitivity = 1;
+    [SerializeField]
+    private float gravity = 10;
+    [SerializeField]
+    private float friction = 5;                 //Ground friction
+    [SerializeField]
+    private float moveSpeed = 6;                // Ground move speed
+    [SerializeField]
+    private float runAcceleration = 12;         // Ground accel
+    [SerializeField]
+    private float runDeacceleration = 12;       // Deacceleration that occurs when running on the ground
+    [SerializeField]
+    private float airAcceleration = 1.8f;       // Air accel
+    [SerializeField]
+    private float airDecceleration = 7;         // Deacceleration experienced when ooposite strafing
+    [SerializeField]
+    private float sideStrafeAcceleration = 40;  // How fast acceleration occurs to get up to sideStrafeSpeed when
+    [SerializeField]
+    private float sideStrafeSpeed = 1;          // What the max speed to generate when side strafing
+    //gives a vertical jump height of ~1m, accounting for gravity
+    [SerializeField]
+    private float jumpSpeed = 4.5f;             // The speed at which the character's up axis gains when hitting jump
+    [SerializeField]
+    private bool holdJumpToBhop = false;        // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
     public GUIStyle style;
 
@@ -38,19 +46,23 @@ public class PlayerMovement : MonoBehaviour {
     private float deltaTime = 0.0f;
     private float fps = 0.0f;
 
+    //Camera Variables
+    private Transform playerCamera;
+    private float rotX = 0.0f;
+    private float rotY = 0.0f;
+
     private CharacterController characterController;
 
-    private Vector3 playerVelocity = Vector3.zero;
-    private float playerTopVelocity = 0.0f;
-
-    // Q3: players can queue the next jump just before he hits the ground
+    // Players can queue the next jump just before he hits the ground
     private bool wishJump = false;
 
-    // Used to display real time fricton values
+    // Display values
     private float playerFriction = 0.0f;
+    private float playerTopVelocity = 0.0f;
+    private Vector3 playerVelocity = Vector3.zero;
 
-    // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
-    private PlayerWishCommand _cmd;
+
+    private PlayerWishCommand playerWishCommand;
 
     private void Start() {
         // Hide the cursor
@@ -86,6 +98,11 @@ public class PlayerMovement : MonoBehaviour {
         if (Cursor.lockState != CursorLockMode.Locked) {
             if (Input.GetButtonDown("Fire1"))
                 Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            //Cursor.lockState = CursorLockMode.Confined;
+            Application.Quit();
         }
 
         // Camera rotation stuff, mouse controls this shit 
@@ -126,8 +143,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void CheckWishMovement() {
-        _cmd.forwardMove = Input.GetAxisRaw("Vertical");
-        _cmd.rightMove = Input.GetAxisRaw("Horizontal");
+        playerWishCommand.forwardMove = Input.GetAxisRaw("Vertical");
+        playerWishCommand.rightMove = Input.GetAxisRaw("Horizontal");
     }
 
     private void QueueJump() {
@@ -150,7 +167,7 @@ public class PlayerMovement : MonoBehaviour {
         float wishvel = airAcceleration;
         float accel;
 
-        Vector3 wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
+        Vector3 wishdir = new Vector3(playerWishCommand.rightMove, 0, playerWishCommand.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
 
         float wishspeed = wishdir.magnitude;
@@ -165,7 +182,7 @@ public class PlayerMovement : MonoBehaviour {
             accel = airAcceleration;
 
         // If the player is ONLY holding left OR right
-        if (_cmd.forwardMove == 0 && _cmd.rightMove != 0) {
+        if (playerWishCommand.forwardMove == 0 && playerWishCommand.rightMove != 0) {
             if (wishspeed > sideStrafeSpeed)
                 wishspeed = sideStrafeSpeed;
             accel = sideStrafeAcceleration;
@@ -187,7 +204,7 @@ public class PlayerMovement : MonoBehaviour {
 
         CheckWishMovement();
 
-        Vector3 wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
+        Vector3 wishdir = new Vector3(playerWishCommand.rightMove, 0, playerWishCommand.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
         wishdir.Normalize();
 
@@ -224,7 +241,6 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         newSpeed = speed - dampFactor;
-        playerFriction = newSpeed;
         if (newSpeed < 0)
             newSpeed = 0;
         if (speed > 0)
