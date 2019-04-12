@@ -22,7 +22,7 @@ struct Cmd {
     public float upMove;
 }
 
-public class QuakeMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour {
     public Transform playerView;     // Camera
     public float playerViewYOffset = 1.8f; // The height at which the camera is bound to
     public float xMouseSensitivity = 30.0f;
