@@ -8,7 +8,7 @@ public class PlayerProgress : MonoBehaviour
 
     void Update()
     {
-        if(gameObject.transform.position.y < -50)
+        if(gameObject.transform.position.y < -50) 
         {
             Respawn();
         }
