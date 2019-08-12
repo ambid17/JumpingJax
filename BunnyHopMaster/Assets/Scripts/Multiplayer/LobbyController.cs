@@ -128,8 +128,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
         Debug.Log("Tried to create a new room but failed, there must already be a room with the same name");
     }
 
-    
-
     public void MatchmakingCancelOnClick() //Paired to the cancel button. Used to go back to the main menu
     {
         mainPanel.SetActive(true);
