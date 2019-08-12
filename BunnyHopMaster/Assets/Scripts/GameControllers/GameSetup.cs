@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameSetup : MonoBehaviour
 {
     public static GameSetup GS;
 
     public Transform[] spawnPoints;
+
+    public Text healthText;
 
     private const string prefabFolder = "PhotonPrefabs";
     private const string prefabName = "PhotonPlayer";

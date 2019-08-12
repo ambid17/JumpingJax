@@ -9,12 +9,23 @@ public class AvatarSetup : MonoBehaviour
     public int characterValue;
     public GameObject myCharacter;
 
+    public int playerHealth;
+    public int playerDamage;
+
+    public Camera myCamera;
+    public AudioListener myAudio;
+
     void Start()
     {
         PV = GetComponent<PhotonView>();
         if (PV.IsMine)
         {
             PV.RPC("RPC_AddCharacter", RpcTarget.AllBuffered, PlayerInfo.PI.mySelectedCharacter);
+        }
+        else
+        {
+            Destroy(myCamera);
+            Destroy(myAudio);
         }
     }
 
