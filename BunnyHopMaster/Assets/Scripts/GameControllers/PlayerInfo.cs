@@ -6,9 +6,11 @@ public class PlayerInfo : MonoBehaviour
 {
     public static PlayerInfo PI;
 
-    public int mySelectedCharacter;
+    public int selectedHumanCharacter;
+    public int selectedInfectedCharacter;
 
-    public GameObject[] allCharacters;
+    public GameObject[] humanCharacters;
+    public GameObject[] infectedCharacters;
 
     void Awake()
     {
@@ -29,14 +31,24 @@ public class PlayerInfo : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("MyCharacter"))
+        if (PlayerPrefs.HasKey("InfectedCharacter"))
         {
-            mySelectedCharacter = PlayerPrefs.GetInt("MyCharacter");
+            selectedInfectedCharacter = PlayerPrefs.GetInt("InfectedCharacter");
         }
         else
         {
-            mySelectedCharacter = 0;
-            PlayerPrefs.SetInt("MyCharacter", mySelectedCharacter);
+            selectedInfectedCharacter = 0;
+            PlayerPrefs.SetInt("InfectedCharacter", selectedInfectedCharacter);
+        }
+
+        if (PlayerPrefs.HasKey("HumanCharacter"))
+        {
+            selectedHumanCharacter = PlayerPrefs.GetInt("HumanCharacter");
+        }
+        else
+        {
+            selectedHumanCharacter = 0;
+            PlayerPrefs.SetInt("HumanCharacter", selectedHumanCharacter);
         }
     }
 }

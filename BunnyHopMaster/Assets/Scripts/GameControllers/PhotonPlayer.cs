@@ -7,7 +7,8 @@ using UnityEngine;
 public class PhotonPlayer : MonoBehaviour
 {
     private const string prefabFolder = "PhotonPrefabs";
-    private const string prefabName = "PlayerAvatar";
+    private const string infectedPrefabName = "InfectedPlayerAvatar";
+    private const string humanPrefabName = "HumanPlayerAvatar";
 
     public PhotonView PV;
     public GameObject myAvatar;
@@ -34,7 +35,7 @@ public class PhotonPlayer : MonoBehaviour
                 Transform spawnPoint = GameSetup.GS.spawnPointsHuman[spawnPicker];
                 if (PV.IsMine)
                 {
-                    myAvatar = PhotonNetwork.Instantiate(Path.Combine(prefabFolder, prefabName), spawnPoint.position, spawnPoint.rotation, 0);
+                    myAvatar = PhotonNetwork.Instantiate(Path.Combine(prefabFolder, infectedPrefabName), spawnPoint.position, spawnPoint.rotation, 0);
                 }
             }
 
@@ -44,7 +45,7 @@ public class PhotonPlayer : MonoBehaviour
                 Transform spawnPoint = GameSetup.GS.spawnPointsInfected[spawnPicker];
                 if (PV.IsMine)
                 {
-                    myAvatar = PhotonNetwork.Instantiate(Path.Combine(prefabFolder, prefabName), spawnPoint.position, spawnPoint.rotation, 0);
+                    myAvatar = PhotonNetwork.Instantiate(Path.Combine(prefabFolder, humanPrefabName), spawnPoint.position, spawnPoint.rotation, 0);
                 }
             }
         }

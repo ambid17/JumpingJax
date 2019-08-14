@@ -7,19 +7,49 @@ using UnityEngine.UI;
 public class AvatarCombat : MonoBehaviour
 {
     private PhotonView PV;
-    private AvatarSetup avatarSetup;
+
+    public int currentDamage;
     public Transform rayOrigin;
     public float shotRange;
 
     public Text healthDisplay;
+    public int playerHealth;
+
     public Text teamDisplay;
+    public int team;
+
+    public int humanCharacterValue;
+    public int infectedCharacterValue;
+    public GameObject myCharacter;
+
+    public Camera myCamera;
+    public AudioListener myAudio;
+
 
     void Start()
     {
         PV = GetComponent<PhotonView>();
-        avatarSetup = GetComponent<AvatarSetup>();
         healthDisplay = GameSetup.GS.healthText;
         teamDisplay = GameSetup.GS.teamText;
+        myCamera = GetComponentInChildren<Camera>();
+        myAudio = GetComponentInChildren<AudioListener>();
+
+        if (PV.IsMine)
+        {
+            if(team == 1)
+            {
+                PV.RPC("RPC_AddCharacter", RpcTarget.AllBuffered, PlayerInfo.PI.selectedInfectedCharacter);
+            }else if (team == 2)
+            {
+                PV.RPC("RPC_AddCharacter", RpcTarget.AllBuffered, PlayerInfo.PI.selectedHumanCharacter);
+            }
+
+        }
+        else
+        {
+            Destroy(myCamera);
+            Destroy(myAudio);
+        }
     }
 
     void Update()
@@ -34,17 +64,25 @@ public class AvatarCombat : MonoBehaviour
             PV.RPC("RPC_Shoot", RpcTarget.All);
         }
 
-        healthDisplay.text = avatarSetup.playerHealth.ToString();
-        if(avatarSetup.playerTeam == 1)
+        healthDisplay.text = playerHealth.ToString();
+        if(team == 1)
         {
             teamDisplay.text = "infected";
-        }else if (avatarSetup.playerTeam == 2)
+        }else if (team == 2)
         {
             teamDisplay.text = "human";
         }
         else
         {
             Debug.Log("NO TEAM");
+        }
+
+        if(playerHealth <= 0)
+        {
+            Debug.Log(gameObject.name + " has died");
+            int spawnPicker = Random.Range(0, GameSetup.GS.spawnPointsInfected.Length);
+            transform.position = GameSetup.GS.spawnPointsInfected[spawnPicker].position;
+            transform.rotation = GameSetup.GS.spawnPointsInfected[spawnPicker].rotation;
         }
     }
 
@@ -59,15 +97,42 @@ public class AvatarCombat : MonoBehaviour
 
             if (hit.transform.tag == "Avatar")
             {
-                AvatarSetup avatarSetup = hit.transform.gameObject.GetComponent<AvatarSetup>();
-                Debug.Log("hit avatar: their team: " + avatarSetup.playerTeam + " our team: " + this.avatarSetup.playerTeam);
-                avatarSetup.playerHealth -= avatarSetup.playerDamage;
+                AvatarCombat avatarCombat = hit.transform.gameObject.GetComponent<AvatarCombat>();
+                if(avatarCombat.team != team)
+                {
+                    Debug.Log("hit avatar: their team: " + avatarCombat.team + " our team: " + team);
+                    if(team == 1)
+                    {
+                        //if an infected is attacking a human
+                        avatarCombat.playerHealth = 100;
+                        avatarCombat.team = 1;
+                    }else if (team == 1)
+                    {
+                        //if a human is attacking an infected
+                        avatarCombat.playerHealth -= currentDamage;
+                    }
+                }
+                
             }
         }
         else
         {
             Debug.DrawRay(rayOrigin.position, rayOrigin.TransformDirection(Vector3.forward) * shotRange, Color.white);
-            Debug.Log("did not hit: ");
+        }
+    }
+
+    [PunRPC]
+    void RPC_AddCharacter(int character)
+    {
+        if (team == 1)
+        {
+            infectedCharacterValue = character;
+            myCharacter = Instantiate(PlayerInfo.PI.infectedCharacters[character], transform.position, transform.rotation, transform);
+        }
+        else if (team == 2)
+        {
+            humanCharacterValue = character;
+            myCharacter = Instantiate(PlayerInfo.PI.humanCharacters[character], transform.position, transform.rotation, transform);
         }
     }
 }

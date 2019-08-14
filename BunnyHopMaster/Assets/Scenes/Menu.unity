@@ -548,7 +548,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 260, y: 50}
+  m_AnchoredPosition: {x: 204.10004, y: 49.99997}
   m_SizeDelta: {x: 109.1, y: 121.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &202841473
@@ -595,7 +595,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2011885957}
-        m_MethodName: OnClickCharacter
+        m_MethodName: OnClickHumanCharacter
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1120,7 +1120,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 236, y: -47.75}
+  m_AnchoredPosition: {x: 204.1, y: -86}
   m_SizeDelta: {x: 356.1, y: 95.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &372203461
@@ -2271,7 +2271,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -354, y: 122}
+  m_AnchoredPosition: {x: -150, y: 49.99997}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &944497839
@@ -2596,7 +2596,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 440, y: 50}
+  m_AnchoredPosition: {x: 313.2, y: 50}
   m_SizeDelta: {x: 109.1, y: 121.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994309992
@@ -3003,11 +3003,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb8542e6453d5c940ba873810a1e3ff8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mySelectedCharacter: 0
-  allCharacters:
+  selectedHumanCharacter: 0
+  selectedInfectedCharacter: 0
+  humanCharacters:
   - {fileID: 6293869487423299919, guid: 61e5a636893b1d3459be085de9c960ca, type: 3}
   - {fileID: 7576806189003335256, guid: 34933ca2fdb42c64394cc90be579e24e, type: 3}
   - {fileID: 6382317020110694707, guid: 1ddc0671505c4c443b1398c5759b9deb, type: 3}
+  infectedCharacters:
+  - {fileID: 5690728906670713939, guid: 7da78bfaa56ffaf4ea3465e741ff60fe, type: 3}
 --- !u!4 &1117766838
 Transform:
   m_ObjectHideFlags: 0
@@ -3548,7 +3551,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -365.9, y: -47.7}
+  m_AnchoredPosition: {x: -143, y: -104}
   m_SizeDelta: {x: 356.1, y: 95.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1464410679
@@ -4243,7 +4246,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2011885957}
-        m_MethodName: OnClickCharacter
+        m_MethodName: OnClickHumanCharacter
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

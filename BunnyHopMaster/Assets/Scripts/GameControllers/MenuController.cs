@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class MenuController : MonoBehaviour
 {
-    public void OnClickCharacter(int character)
+    public void OnClickHumanCharacter(int character)
     {
         if(PlayerInfo.PI != null)
         {
-            PlayerInfo.PI.mySelectedCharacter = character;
-            PlayerPrefs.SetInt("MyCharacter", character);
+            PlayerInfo.PI.selectedHumanCharacter = character;
+            PlayerPrefs.SetInt("HumanCharacter", character);
+        }
+    }
+
+    public void OnClickInfectedCharacter(int character)
+    {
+        if (PlayerInfo.PI != null)
+        {
+            PlayerInfo.PI.selectedInfectedCharacter = character;
+            PlayerPrefs.SetInt("InfectedCharacter", character);
         }
     }
 }

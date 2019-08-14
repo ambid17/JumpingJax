@@ -31,7 +31,7 @@ public class GameSetup : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("Creating Player");
+        Debug.Log("Creating PhotonPlayer");
         PhotonNetwork.Instantiate(Path.Combine(prefabFolder, prefabName), Vector3.zero, Quaternion.identity);
     }
 
@@ -56,15 +56,14 @@ public class GameSetup : MonoBehaviour
     }
 
     //TODO: figure out how to randomly pick an infected player
+    //currently the first player is always infected
     public void UpdateTeam()
     {
+        //Look at PhotonNetwork.Players
+        // and then select a random player
         if(nextPlayersTeam == 1)
         {
             nextPlayersTeam = 2;
-        }
-        else
-        {
-            //nextPlayersTeam = 1;
         }
     }
 }
