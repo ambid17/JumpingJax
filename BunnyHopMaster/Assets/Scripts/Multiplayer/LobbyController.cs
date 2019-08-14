@@ -126,6 +126,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message) //create room will fail if room already exists
     {
         Debug.Log("Tried to create a new room but failed, there must already be a room with the same name");
+        //TODO: add UI to tell them the room name is taken
     }
 
     public void MatchmakingCancelOnClick() //Paired to the cancel button. Used to go back to the main menu

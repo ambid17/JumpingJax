@@ -12,6 +12,8 @@ public class PlayerInfo : MonoBehaviour
 
     void Awake()
     {
+
+        //TODO: understand else-if
         if(PlayerInfo.PI == null)
         {
             PlayerInfo.PI = this;

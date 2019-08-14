@@ -10,7 +10,9 @@ public class GameSetup : MonoBehaviour
 {
     public static GameSetup GS;
 
-    public Transform[] spawnPoints;
+    public int nextPlayersTeam;
+    public Transform[] spawnPointsHuman;
+    public Transform[] spawnPointsInfected;
 
     public Text healthText;
 
@@ -49,5 +51,18 @@ public class GameSetup : MonoBehaviour
 
         //TODO use MultiplayerSettings.menuScene
         SceneManager.LoadScene(0);
+    }
+
+    //TODO: figure out how to randomly pick an infected player
+    public void UpdateTeam()
+    {
+        if(nextPlayersTeam == 1)
+        {
+            nextPlayersTeam = 2;
+        }
+        else
+        {
+            nextPlayersTeam = 1;
+        }
     }
 }

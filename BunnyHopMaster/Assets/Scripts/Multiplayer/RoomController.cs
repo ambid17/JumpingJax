@@ -48,17 +48,10 @@ public class RoomController : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()//called when the local player joins the room
     {
         Debug.Log("joined room: " + PhotonNetwork.CurrentRoom.Name);
-        roomPanel.SetActive(true); //activate the display for being in a room
+        roomPanel.SetActive(true);  //activate the display for being in a room
         lobbyPanel.SetActive(false); //hide the display for being in a lobby
         roomNameDisplay.text = PhotonNetwork.CurrentRoom.Name; //update room name display
-        if (PhotonNetwork.IsMasterClient) //if master client then activate the start button
-        {
-            startButton.SetActive(true);
-        }
-        else
-        {
-            startButton.SetActive(false);
-        }
+        startButton.SetActive(PhotonNetwork.IsMasterClient); //only let the masterClient start the game
         //photonPlayers = PhotonNetwork.PlayerList;
         ClearPlayerListings(); //remove all old player listings
         ListPlayers(); //relist all current player listings

@@ -51,7 +51,7 @@ public class AvatarCombat : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(rayOrigin.position, rayOrigin.TransformDirection(Vector3.forward) * shotRange, Color.yellow);
+            Debug.DrawRay(rayOrigin.position, rayOrigin.TransformDirection(Vector3.forward) * shotRange, Color.white);
             Debug.Log("did not hit: ");
         }
     }
