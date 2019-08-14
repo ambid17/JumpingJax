@@ -9,6 +9,7 @@ public class AvatarSetup : MonoBehaviour
     public int characterValue;
     public GameObject myCharacter;
 
+    public int playerTeam;
     public int playerHealth;
     public int playerDamage;
 

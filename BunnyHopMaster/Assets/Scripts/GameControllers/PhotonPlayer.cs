@@ -56,6 +56,7 @@ public class PhotonPlayer : MonoBehaviour
         //set this players team on the master client
         team = GameSetup.GS.nextPlayersTeam;
         GameSetup.GS.UpdateTeam();
+        //send the team update to everyone else
         PV.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, team);
     }
 

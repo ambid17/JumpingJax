@@ -12,12 +12,14 @@ public class AvatarCombat : MonoBehaviour
     public float shotRange;
 
     public Text healthDisplay;
+    public Text teamDisplay;
 
     void Start()
     {
         PV = GetComponent<PhotonView>();
         avatarSetup = GetComponent<AvatarSetup>();
         healthDisplay = GameSetup.GS.healthText;
+        teamDisplay = GameSetup.GS.teamText;
     }
 
     void Update()
@@ -33,6 +35,17 @@ public class AvatarCombat : MonoBehaviour
         }
 
         healthDisplay.text = avatarSetup.playerHealth.ToString();
+        if(avatarSetup.playerTeam == 1)
+        {
+            teamDisplay.text = "infected";
+        }else if (avatarSetup.playerTeam == 2)
+        {
+            teamDisplay.text = "human";
+        }
+        else
+        {
+            Debug.Log("NO TEAM");
+        }
     }
 
     [PunRPC]
@@ -46,7 +59,9 @@ public class AvatarCombat : MonoBehaviour
 
             if (hit.transform.tag == "Avatar")
             {
-                hit.transform.gameObject.GetComponent<AvatarSetup>().playerHealth -= avatarSetup.playerDamage;
+                AvatarSetup avatarSetup = hit.transform.gameObject.GetComponent<AvatarSetup>();
+                Debug.Log("hit avatar: their team: " + avatarSetup.playerTeam + " our team: " + this.avatarSetup.playerTeam);
+                avatarSetup.playerHealth -= avatarSetup.playerDamage;
             }
         }
         else

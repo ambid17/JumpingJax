@@ -84,9 +84,7 @@ public class PlayerMovement : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
 
         if (playerView == null) {
-            Camera mainCamera = Camera.main;
-            if (mainCamera != null)
-                playerView = mainCamera.gameObject.transform;
+            playerView = GetComponentInChildren<Camera>().transform;
         }
 
         // Put the camera inside the capsule collider

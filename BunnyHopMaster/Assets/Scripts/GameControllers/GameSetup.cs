@@ -10,10 +10,12 @@ public class GameSetup : MonoBehaviour
 {
     public static GameSetup GS;
 
+    //team 1 is infected, team 2 is humans
     public int nextPlayersTeam;
     public Transform[] spawnPointsHuman;
     public Transform[] spawnPointsInfected;
 
+    public Text teamText;
     public Text healthText;
 
     private const string prefabFolder = "PhotonPrefabs";
@@ -30,7 +32,7 @@ public class GameSetup : MonoBehaviour
     private void Start()
     {
         Debug.Log("Creating Player");
-        PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PhotonPlayer"), Vector3.zero, Quaternion.identity);
+        PhotonNetwork.Instantiate(Path.Combine(prefabFolder, prefabName), Vector3.zero, Quaternion.identity);
     }
 
     public void DisconnectPlayer()
@@ -62,7 +64,7 @@ public class GameSetup : MonoBehaviour
         }
         else
         {
-            nextPlayersTeam = 1;
+            //nextPlayersTeam = 1;
         }
     }
 }
