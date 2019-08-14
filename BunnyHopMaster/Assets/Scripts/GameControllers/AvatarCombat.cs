@@ -33,6 +33,7 @@ public class AvatarCombat : MonoBehaviour
         teamDisplay = GameSetup.GS.teamText;
         myCamera = GetComponentInChildren<Camera>();
         myAudio = GetComponentInChildren<AudioListener>();
+        playerHealth = 100;
 
         if (PV.IsMine)
         {
@@ -83,6 +84,7 @@ public class AvatarCombat : MonoBehaviour
             int spawnPicker = Random.Range(0, GameSetup.GS.spawnPointsInfected.Length);
             transform.position = GameSetup.GS.spawnPointsInfected[spawnPicker].position;
             transform.rotation = GameSetup.GS.spawnPointsInfected[spawnPicker].rotation;
+            playerHealth = 100;
         }
     }
 
@@ -104,7 +106,7 @@ public class AvatarCombat : MonoBehaviour
                     if(team == 1)
                     {
                         //if an infected is attacking a human
-                        avatarCombat.playerHealth = 100;
+                        avatarCombat.playerHealth = 0;
                         avatarCombat.team = 1;
                     }else if (team == 1)
                     {
