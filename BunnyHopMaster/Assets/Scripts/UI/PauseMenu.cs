@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
     [SerializeField]
@@ -10,6 +11,11 @@ public class PauseMenu : MonoBehaviour {
     public void ToggleOptionsMenu() {
         pauseMenuHome.SetActive(!pauseMenuHome.activeSelf);
         optionsMenu.SetActive(!optionsMenu.activeSelf);
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void QuitGame() {

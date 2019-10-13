@@ -1,20 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private Checkpoint currentCheckpoint;
+    public static GameManager GM;
 
-    void Start()
+    public int currentLevel;
+    public float completionTime;
+
+    void Awake()
     {
-        
+        if (GameManager.GM == null)
+        {
+            GameManager.GM = this;
+        }
+        else if (GameManager.GM == this)
+        {
+            Destroy(GameManager.GM.gameObject);
+            GameManager.GM = this;
+        }
+        DontDestroyOnLoad(this.gameObject);
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        completionTime = 0;
     }
 
     void Update()
     {
-        
+        completionTime += Time.deltaTime;
     }
-
-    
 }

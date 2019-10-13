@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class PlayerUI : MonoBehaviour {
     public bool isPaused;
@@ -12,10 +13,15 @@ public class PlayerUI : MonoBehaviour {
     [SerializeField]
     GameObject pauseMenu;
 
+    [SerializeField]
+    WinMenu winMenu;
+
     public Image crossHair;
 
     void Start () {
+        inGameUI.SetActive(true);
         pauseMenu.SetActive(false);
+        winMenu.gameObject.SetActive(false);
     }
 	
 	void Update () {
@@ -38,6 +44,7 @@ public class PlayerUI : MonoBehaviour {
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
         inGameUI.SetActive(false);
+        winMenu.gameObject.SetActive(false);
     }
 
     public void UnPause()
@@ -47,5 +54,20 @@ public class PlayerUI : MonoBehaviour {
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
         inGameUI.SetActive(true);
+        winMenu.gameObject.SetActive(false);
+    }
+
+    public void ShowWinScreen()
+    {
+        Cursor.visible = true;
+        winMenu.gameObject.SetActive(true);
+        winMenu.levelText.text = "You beat level " + GameManager.GM.currentLevel.ToString();
+        winMenu.completionTimeText.text = GetTimeString(GameManager.GM.completionTime);
+    }
+
+    string GetTimeString(float completionTime)
+    {
+        TimeSpan time = TimeSpan.FromSeconds(completionTime);
+        return time.ToString("hh':'mm':'ss");
     }
 }
