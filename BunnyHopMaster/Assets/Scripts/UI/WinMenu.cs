@@ -8,6 +8,7 @@ public class WinMenu : MonoBehaviour
 {
     public Text levelText;
     public Text completionTimeText;
+    public Text bestTimeText;
 
     public void Retry()
     {

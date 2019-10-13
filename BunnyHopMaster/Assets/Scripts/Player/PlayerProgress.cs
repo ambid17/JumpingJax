@@ -30,9 +30,15 @@ public class PlayerProgress : MonoBehaviour
             if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
             {
                 didWin = true;
+                UpdatePlayerStats();
                 playerUI.ShowWinScreen();
             }
         }
+    }
+
+    private void UpdatePlayerStats()
+    {
+        PlayerStatsManager.SetLevelCompletion(GameManager._GameManager.currentLevel, GameManager._GameManager.completionTime);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

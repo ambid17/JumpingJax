@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using System;
 
 public class LevelButton : MonoBehaviour
 {
     public Text buttonText;
+    public Text completionText;
 
     public void SetupButton(int level, bool isLevelCompleted)
     {
-        Button button = gameObject.GetComponent<Button>();
+        Button button = gameObject.GetComponentInChildren<Button>();
         button.name = level.ToString();
-        buttonText.text = level.ToString();
+
+        TimeSpan time = TimeSpan.FromSeconds(PlayerStatsManager.GetLevelCompletion(level));
+
+        buttonText.text = level.ToString() + "\n" + time.ToString("hh':'mm':'ss");
         button.onClick.AddListener(() => OnClickLevel(level));
     }
 

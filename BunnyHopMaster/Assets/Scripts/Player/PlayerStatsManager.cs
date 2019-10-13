@@ -50,4 +50,20 @@ public class PlayerStatsManager : MonoBehaviour
         }
         
     }
+
+    public static void SetLevelCompletion(int level, float completionTime)
+    {
+        string completionKey = "Complete" + level;
+        float currentBestTime = PlayerPrefs.GetFloat(completionKey, float.PositiveInfinity);
+        if(completionTime < currentBestTime)
+        {
+            PlayerPrefs.SetFloat(completionKey, completionTime);
+        }
+    }
+
+    public static float GetLevelCompletion(int level)
+    {
+        string completionKey = "Complete" + level;
+        return PlayerPrefs.GetFloat(completionKey, 0);
+    }
 }
