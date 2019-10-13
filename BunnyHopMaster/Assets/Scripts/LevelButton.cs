@@ -6,7 +6,6 @@ using System;
 public class LevelButton : MonoBehaviour
 {
     public Text buttonText;
-    public Text completionText;
 
     public void SetupButton(int level, bool isLevelCompleted)
     {

@@ -28,14 +28,11 @@ public class PlayerStatsManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
-    }
 
-    private void Start()
-    {
         numberOfLevels = SceneManager.sceneCountInBuildSettings - 1;
         levels = new Level[numberOfLevels];
 
-        for(int i = 1; i <= numberOfLevels; i++)
+        for (int i = 1; i <= numberOfLevels; i++)
         {
             string levelKey = "Level" + i;
             if (PlayerPrefs.HasKey(levelKey))
@@ -48,7 +45,6 @@ public class PlayerStatsManager : MonoBehaviour
                 PlayerPrefs.SetInt(levelKey, 0);
             }
         }
-        
     }
 
     public static void SetLevelCompletion(int level, float completionTime)
