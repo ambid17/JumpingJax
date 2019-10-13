@@ -62,8 +62,8 @@ public class PlayerUI : MonoBehaviour {
     {
         Cursor.visible = true;
         winMenu.gameObject.SetActive(true);
-        winMenu.levelText.text = "You beat level " + GameManager.GM.currentLevel.ToString();
-        winMenu.completionTimeText.text = GetTimeString(GameManager.GM.completionTime);
+        winMenu.levelText.text = "You beat level " + GameManager._GameManager.currentLevel.ToString();
+        winMenu.completionTimeText.text = GetTimeString(GameManager._GameManager.completionTime);
     }
 
     string GetTimeString(float completionTime)

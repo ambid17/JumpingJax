@@ -10,7 +10,7 @@ public class InGameUI : MonoBehaviour
 
     void Update()
     {
-        TimeSpan time = TimeSpan.FromSeconds(GameManager.GM.completionTime);
+        TimeSpan time = TimeSpan.FromSeconds(GameManager._GameManager.completionTime);
         completionTimeText.text = "Time: " + time.ToString("hh':'mm':'ss");
     }
 }

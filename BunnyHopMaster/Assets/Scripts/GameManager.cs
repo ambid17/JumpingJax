@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager GM;
+    public static GameManager _GameManager;
 
     public int currentLevel;
     public float completionTime;
@@ -17,14 +17,14 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (GameManager.GM == null)
+        if (GameManager._GameManager == null)
         {
-            GameManager.GM = this;
+            GameManager._GameManager = this;
         }
-        else if (GameManager.GM == this)
+        else if (GameManager._GameManager == this)
         {
-            Destroy(GameManager.GM.gameObject);
-            GameManager.GM = this;
+            Destroy(GameManager._GameManager.gameObject);
+            GameManager._GameManager = this;
         }
         DontDestroyOnLoad(this.gameObject);
     }

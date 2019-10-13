@@ -13,14 +13,14 @@ public class WinMenu : MonoBehaviour
     {
         Cursor.visible = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene(GameManager.GM.currentLevel);
+        SceneManager.LoadScene(GameManager._GameManager.currentLevel);
     }
 
     public void NextLevel()
     {
         Cursor.visible = false;
         gameObject.SetActive(false);
-        SceneManager.LoadScene(GameManager.GM.currentLevel + 1);
+        SceneManager.LoadScene(GameManager._GameManager.currentLevel + 1);
     }
 
     public void GoToMainMenu()

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
@@ -10,11 +9,11 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
-        for(int i = 1; i <= PlayerInfo.PI.numberOfLevels; i++)
+        for(int i = 1; i <= PlayerStatsManager._PlayerStats.numberOfLevels; i++)
         {
             GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
             LevelButton levelButton = newLevelButton.GetComponent<LevelButton>();
-            levelButton.SetupButton(i, PlayerInfo.PI.levels[i-1].isCompleted);
+            levelButton.SetupButton(i, PlayerStatsManager._PlayerStats.levels[i-1].isCompleted);
         }
     }
 }
