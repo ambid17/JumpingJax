@@ -78,11 +78,6 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("jum");
-        }
-
         // Do FPS calculation
         frameCount++;
         deltaTime += Time.deltaTime;

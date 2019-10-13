@@ -68,7 +68,6 @@ public class PlayerProgress : MonoBehaviour
         GetComponent<CharacterController>().enabled = false;
         transform.position = newPos;
         GetComponent<CharacterController>().enabled = true;
-        Debug.Log("newPos: " + newPos);
     }
 
     public Vector3 GetCurrentCheckpointPosition()
