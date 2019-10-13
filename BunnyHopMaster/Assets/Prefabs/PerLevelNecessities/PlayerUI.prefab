@@ -575,7 +575,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4487334648944532141}
-        m_MethodName: TogglePauseMenu
+        m_MethodName: UnPause
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -816,10 +816,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e0932ec37379dc4b8cbefb0966b5f40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioMixer: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: af3796b8a4d7fdf4d8d3e68696dccf4a, type: 2}
   resolutionDropdown: {fileID: 5292348221789166058}
   graphicsQualityDropdown: {fileID: 1005760969372728806}
-  fullScreenToggle: {fileID: 0}
+  fullScreenToggle: {fileID: 8879471124317399305}
 --- !u!1 &1977859132358843581
 GameObject:
   m_ObjectHideFlags: 0
@@ -2007,7 +2007,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
 --- !u!114 &4487334648944532141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2020,6 +2020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cebd342f7edd523408ebb4aab8046fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPaused: 0
   inGameUI: {fileID: 2323102876864708879}
   pauseMenu: {fileID: 3152120408256621844}
   crossHair: {fileID: 1658867721667226305}
@@ -3526,7 +3527,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9e6fdb7bfc45d4d48ad99eedc050a082, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b2d43aa996fb7ce4e84d2978ee7e8d99, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
