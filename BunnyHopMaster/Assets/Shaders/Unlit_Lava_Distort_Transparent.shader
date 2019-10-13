@@ -3,7 +3,7 @@
 Shader "Lava Flowing Shader/Unlit/Distort Transparent" 
 {
 Properties {
-	//_Color ("Main Color", Color) = (1,1,1)
+	_Color ("Main Color", Color) = (1,1,1)
 	_DistortX ("Distortion in X", Range (0,2)) = 1
 	_DistortY ("Distortion in Y", Range (0,2)) = 0
 	_MainTex ("_MainTex RGBA", 2D) = "white" {}
@@ -29,6 +29,7 @@ Category {
 			sampler2D _MainTex;
 			sampler2D _Distort;
 			sampler2D _LavaTex;
+			float4 _Color;
 			
 			struct appdata_t {
 				fixed4 vertex : POSITION;
@@ -63,7 +64,7 @@ Category {
 				fixed4 tex2 = tex2D(_LavaTex, fixed2(i.texcoord1.x-distort*_DistortX,i.texcoord1.y-distort*_DistortY));
 				tex = lerp(tex2,tex,tex.a);
 
-				return tex;
+				return tex * _Color;
 			}
 			ENDCG 
 		}
