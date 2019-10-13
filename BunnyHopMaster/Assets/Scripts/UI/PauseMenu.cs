@@ -8,6 +8,12 @@ public class PauseMenu : MonoBehaviour {
     [SerializeField]
     GameObject pauseMenuHome;
 
+    public void InitializePauseMenu()
+    {
+        pauseMenuHome.SetActive(true);
+        optionsMenu.SetActive(false);
+    }
+
     public void ToggleOptionsMenu() {
         pauseMenuHome.SetActive(!pauseMenuHome.activeSelf);
         optionsMenu.SetActive(!optionsMenu.activeSelf);

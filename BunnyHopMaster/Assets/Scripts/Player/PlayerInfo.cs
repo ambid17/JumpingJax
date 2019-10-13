@@ -12,7 +12,12 @@ public class PlayerInfo : MonoBehaviour
 
     void Awake()
     {
-        if(PlayerInfo.PI == null)
+        if (FindObjectsOfType(GetType()).Length > 1)
+        {
+            Destroy(gameObject);
+        }
+
+        if (PlayerInfo.PI == null)
         {
             PlayerInfo.PI = this;
         }

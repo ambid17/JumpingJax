@@ -12,6 +12,11 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        if (FindObjectsOfType(GetType()).Length > 1)
+        {
+            Destroy(gameObject);
+        }
+
         if (GameManager.GM == null)
         {
             GameManager.GM = this;

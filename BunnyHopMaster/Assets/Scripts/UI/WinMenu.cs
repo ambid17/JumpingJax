@@ -23,5 +23,10 @@ public class WinMenu : MonoBehaviour
         SceneManager.LoadScene(GameManager.GM.currentLevel + 1);
     }
 
-    
+    public void GoToMainMenu()
+    {
+        Cursor.visible = true;
+        gameObject.SetActive(false);
+        SceneManager.LoadScene(0);
+    }
 }

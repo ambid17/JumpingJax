@@ -11,7 +11,7 @@ public class PlayerUI : MonoBehaviour {
     GameObject inGameUI;
 
     [SerializeField]
-    GameObject pauseMenu;
+    PauseMenu pauseMenu;
 
     [SerializeField]
     WinMenu winMenu;
@@ -20,7 +20,7 @@ public class PlayerUI : MonoBehaviour {
 
     void Start () {
         inGameUI.SetActive(true);
-        pauseMenu.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
         winMenu.gameObject.SetActive(false);
     }
 	
@@ -42,7 +42,8 @@ public class PlayerUI : MonoBehaviour {
         Cursor.visible = true;
         isPaused = true;
         Time.timeScale = 0;
-        pauseMenu.SetActive(true);
+        pauseMenu.gameObject.SetActive(true);
+        pauseMenu.InitializePauseMenu();
         inGameUI.SetActive(false);
         winMenu.gameObject.SetActive(false);
     }
@@ -52,7 +53,7 @@ public class PlayerUI : MonoBehaviour {
         Cursor.visible = false;
         isPaused = false;
         Time.timeScale = 1;
-        pauseMenu.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
         inGameUI.SetActive(true);
         winMenu.gameObject.SetActive(false);
     }

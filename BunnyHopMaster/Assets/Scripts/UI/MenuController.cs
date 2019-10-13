@@ -10,7 +10,6 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(PlayerInfo.PI.numberOfLevels);
         for(int i = 1; i <= PlayerInfo.PI.numberOfLevels; i++)
         {
             GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
