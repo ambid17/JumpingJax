@@ -31,8 +31,8 @@ public class PlayerProgress : MonoBehaviour
         {
             if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
             {
-                playerUI.ShowWinScreen();
                 didWin = true;
+                playerUI.ShowWinScreen();
             }
         }
     }

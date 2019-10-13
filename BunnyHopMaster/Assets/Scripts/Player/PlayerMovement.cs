@@ -74,9 +74,15 @@ public class PlayerMovement : MonoBehaviour {
             transform.position.z);
 
         _controller = GetComponent<CharacterController>();
+        _controller.enabled = true;
     }
 
     private void Update() {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("jum");
+        }
+
         // Do FPS calculation
         frameCount++;
         deltaTime += Time.deltaTime;

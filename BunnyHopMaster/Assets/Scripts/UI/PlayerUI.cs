@@ -68,6 +68,7 @@ public class PlayerUI : MonoBehaviour {
 
     string GetTimeString(float completionTime)
     {
+        Debug.Log("showWin" + completionTime);
         TimeSpan time = TimeSpan.FromSeconds(completionTime);
         return time.ToString("hh':'mm':'ss");
     }
