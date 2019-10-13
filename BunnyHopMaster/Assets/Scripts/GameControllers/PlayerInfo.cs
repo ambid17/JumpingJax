@@ -1,21 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerInfo : MonoBehaviour
 {
     public static PlayerInfo PI;
 
-    public int selectedHumanCharacter;
-    public int selectedInfectedCharacter;
-
-    public GameObject[] humanCharacters;
-    public GameObject[] infectedCharacters;
+    public int numberOfLevels;
+    public Level[] levels;
 
     void Awake()
     {
-
-        //TODO: understand else-if
         if(PlayerInfo.PI == null)
         {
             PlayerInfo.PI = this;
@@ -31,24 +27,22 @@ public class PlayerInfo : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("InfectedCharacter"))
-        {
-            selectedInfectedCharacter = PlayerPrefs.GetInt("InfectedCharacter");
-        }
-        else
-        {
-            selectedInfectedCharacter = 0;
-            PlayerPrefs.SetInt("InfectedCharacter", selectedInfectedCharacter);
-        }
+        numberOfLevels = SceneManager.sceneCountInBuildSettings - 1;
+        levels = new Level[numberOfLevels];
 
-        if (PlayerPrefs.HasKey("HumanCharacter"))
+        for(int i = 1; i <= numberOfLevels; i++)
         {
-            selectedHumanCharacter = PlayerPrefs.GetInt("HumanCharacter");
+            string levelKey = "Level" + i;
+            if (PlayerPrefs.HasKey(levelKey))
+            {
+                int isCompleted = PlayerPrefs.GetInt(levelKey);
+                levels[i - 1] = new Level(i, isCompleted);
+            }
+            else
+            {
+                PlayerPrefs.SetInt(levelKey, 0);
+            }
         }
-        else
-        {
-            selectedHumanCharacter = 0;
-            PlayerPrefs.SetInt("HumanCharacter", selectedHumanCharacter);
-        }
+        
     }
 }

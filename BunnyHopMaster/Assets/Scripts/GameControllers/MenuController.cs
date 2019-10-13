@@ -1,24 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour
 {
-    public void OnClickHumanCharacter(int character)
-    {
-        if(PlayerInfo.PI != null)
-        {
-            PlayerInfo.PI.selectedHumanCharacter = character;
-            PlayerPrefs.SetInt("HumanCharacter", character);
-        }
-    }
+    public Transform levelButtonContainer;
+    public GameObject levelObjectPrefab;
 
-    public void OnClickInfectedCharacter(int character)
+    private void Start()
     {
-        if (PlayerInfo.PI != null)
+        Debug.Log(PlayerInfo.PI.numberOfLevels);
+        for(int i = 1; i <= PlayerInfo.PI.numberOfLevels; i++)
         {
-            PlayerInfo.PI.selectedInfectedCharacter = character;
-            PlayerPrefs.SetInt("InfectedCharacter", character);
+            GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
+            LevelButton levelButton = newLevelButton.GetComponent<LevelButton>();
+            levelButton.SetupButton(i, PlayerInfo.PI.levels[i-1].isCompleted);
         }
     }
 }

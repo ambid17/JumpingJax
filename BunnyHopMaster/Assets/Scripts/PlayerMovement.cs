@@ -1,20 +1,4 @@
-﻿/*
- *
- * - Should keep in mind that idTech's cartisian plane is different to Unity's:
- *    Z axis in idTech is "up/down" but in Unity Z is the local equivalent to
- *    "forward/backward" and Y in Unity is considered "up/down".
- *
- * - Code's mostly ported on a 1 to 1 basis, so some naming convensions are a
- *   bit fucked up right now.
- *
- * - UPS is measured in Unity units, the idTech units DO NOT scale right now.
- *
- * - Default values are accurate and emulates Quake 3's feel with CPM(A) physics.
- *
- */
-
-using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
 // Contains the command the user wishes upon the character
 struct Cmd {
@@ -24,8 +8,6 @@ struct Cmd {
 }
 
 public class PlayerMovement : MonoBehaviour {
-    private PhotonView PV;
-
     public Transform playerView;     // Camera
     public float playerViewYOffset = 1.8f; // The height at which the camera is bound to
     public float xMouseSensitivity = 30.0f;
@@ -78,10 +60,8 @@ public class PlayerMovement : MonoBehaviour {
     private Cmd _cmd;
 
     private void Start() {
-        PV = GetComponent<PhotonView>();
         // Hide the cursor
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
 
         if (playerView == null) {
             playerView = GetComponentInChildren<Camera>().transform;
@@ -97,62 +77,53 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Update() {
-        if (PV.IsMine)
+        // Do FPS calculation
+        frameCount++;
+        deltaTime += Time.deltaTime;
+        if (deltaTime > 1.0 / fpsDisplayRate)
         {
-            // Do FPS calculation
-            frameCount++;
-            deltaTime += Time.deltaTime;
-            if (deltaTime > 1.0 / fpsDisplayRate)
-            {
-                fps = Mathf.Round(frameCount / deltaTime);
-                frameCount = 0;
-                deltaTime -= 1.0f / fpsDisplayRate;
-            }
-            /* Ensure that the cursor is locked into the screen */
-            if (Cursor.lockState != CursorLockMode.Locked)
-            {
-                if (Input.GetButtonDown("Fire1"))
-                    Cursor.lockState = CursorLockMode.Locked;
-            }
-
-            /* Camera rotation stuff, mouse controls this shit */
-            rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
-            rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
-
-            // Clamp the X rotation
-            if (rotX < -90)
-                rotX = -90;
-            else if (rotX > 90)
-                rotX = 90;
-
-            transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
-            playerView.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
-
-
-
-            /* Movement, here's the important part */
-            QueueJump();
-            if (_controller.isGrounded)
-                GroundMove();
-            else if (!_controller.isGrounded)
-                AirMove();
-
-            // Move the controller
-            _controller.Move(playerVelocity * Time.deltaTime);
-
-            /* Calculate top velocity */
-            Vector3 udp = playerVelocity;
-            udp.y = 0.0f;
-            if (udp.magnitude > playerTopVelocity)
-                playerTopVelocity = udp.magnitude;
-
-            //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
-            // Set the camera's position to the transform
-            playerView.position = new Vector3(
-                transform.position.x,
-                transform.position.y + playerViewYOffset,
-                transform.position.z);
+            fps = Mathf.Round(frameCount / deltaTime);
+            frameCount = 0;
+            deltaTime -= 1.0f / fpsDisplayRate;
         }
+
+        /* Camera rotation stuff, mouse controls this shit */
+        rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
+        rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
+
+        // Clamp the X rotation
+        if (rotX < -90)
+            rotX = -90;
+        else if (rotX > 90)
+            rotX = 90;
+
+        transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
+        playerView.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
+
+
+
+        /* Movement, here's the important part */
+        QueueJump();
+        if (_controller.isGrounded)
+            GroundMove();
+        else if (!_controller.isGrounded)
+            AirMove();
+
+        // Move the controller
+        _controller.Move(playerVelocity * Time.deltaTime);
+
+        /* Calculate top velocity */
+        Vector3 udp = playerVelocity;
+        udp.y = 0.0f;
+        if (udp.magnitude > playerTopVelocity)
+            playerTopVelocity = udp.magnitude;
+
+        //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
+        // Set the camera's position to the transform
+        playerView.position = new Vector3(
+            transform.position.x,
+            transform.position.y + playerViewYOffset,
+            transform.position.z);
     }
 
     /*******************************************************************************************************\
@@ -341,13 +312,5 @@ public class PlayerMovement : MonoBehaviour {
 
         playerVelocity.x += accelspeed * wishdir.x;
         playerVelocity.z += accelspeed * wishdir.z;
-    }
-
-    private void OnGUI() {
-        GUI.Label(new Rect(0, 0, 400, 100), "FPS: " + fps, style);
-        var ups = _controller.velocity;
-        ups.y = 0;
-        GUI.Label(new Rect(0, 15, 400, 100), "Speed: " + Mathf.Round(ups.magnitude * 100) / 100 + "m/s", style);
-        GUI.Label(new Rect(0, 30, 400, 100), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "m/s", style);
     }
 }
