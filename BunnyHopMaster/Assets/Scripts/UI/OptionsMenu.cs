@@ -18,6 +18,7 @@ public class OptionsMenu : MonoBehaviour {
     Resolution[] resolutions;
 
     private void Start() {
+
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
@@ -39,28 +40,39 @@ public class OptionsMenu : MonoBehaviour {
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
 
+        float volume = OptionsPreferencesManager.GetVolume();
+        SetVolume(volume);
+
         graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
         graphicsQualityDropdown.RefreshShownValue();
 
         fullScreenToggle.isOn = Screen.fullScreen;
+
+        float sensitivity = OptionsPreferencesManager.GetSensitivity();
+        SetSensitivity(sensitivity);
     }
 
     public void SetResolution(int resolutionIndex) {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        OptionsPreferencesManager.SetResolution(resolution.width, resolution.height);
     }
 
     public void SetVolume(float volume) {
         audioMixer.SetFloat("Volume", volume);
         volumeValue.text = volume + "%";
+        OptionsPreferencesManager.SetVolume(volume);
     }
 
     public void SetQuality(int qualityIndex) {
         QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("Quality", qualityIndex);
+        OptionsPreferencesManager.SetQuality(qualityIndex);
     }
 
     public void SetFullScreen(bool isFullScreen) {
         Screen.fullScreen = isFullScreen;
+        OptionsPreferencesManager.SetFullScreen(isFullScreen);
     }
 
     public void SetSensitivity(float sensitivity)
@@ -70,5 +82,7 @@ public class OptionsMenu : MonoBehaviour {
         playerMovement.yMouseSensitivity = sensitivity;
 
         sensitivityValue.text = sensitivity.ToString();
+
+        OptionsPreferencesManager.SetSensitivity(sensitivity);
     }
 }
