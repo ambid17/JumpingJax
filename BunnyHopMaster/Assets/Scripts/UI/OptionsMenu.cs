@@ -5,12 +5,14 @@ using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour {
+    public Text sensitivityValue;
+
     public AudioMixer audioMixer;
+    public Text volumeValue;
 
     public Dropdown resolutionDropdown;
 
     public Dropdown graphicsQualityDropdown;
-
     public Toggle fullScreenToggle;
 
     Resolution[] resolutions;
@@ -50,7 +52,7 @@ public class OptionsMenu : MonoBehaviour {
 
     public void SetVolume(float volume) {
         audioMixer.SetFloat("Volume", volume);
-        Debug.Log(volume);
+        volumeValue.text = volume + "%";
     }
 
     public void SetQuality(int qualityIndex) {
@@ -63,6 +65,10 @@ public class OptionsMenu : MonoBehaviour {
 
     public void SetSensitivity(float sensitivity)
     {
+        PlayerMovement playerMovement = GetComponentInParent<PlayerMovement>();
+        playerMovement.xMouseSensitivity = sensitivity;
+        playerMovement.yMouseSensitivity = sensitivity;
 
+        sensitivityValue.text = sensitivity.ToString();
     }
 }

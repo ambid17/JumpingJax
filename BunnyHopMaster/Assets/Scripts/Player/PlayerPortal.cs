@@ -44,7 +44,10 @@ public class PlayerPortal : MonoBehaviour
         {
             if(bluePortalInstance != null)
             {
-                redPortalInstance.otherPortal = null;
+                if(redPortalInstance.otherPortal != null)
+                {
+                    redPortalInstance.otherPortal = null;
+                }
                 Destroy(bluePortalInstance.gameObject);
             }
             bluePortalInstance = Instantiate(bluePortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal)).GetComponent<Portal>();
@@ -70,7 +73,10 @@ public class PlayerPortal : MonoBehaviour
         {
             if (redPortalInstance != null)
             {
-                bluePortalInstance.otherPortal = null;
+                if (bluePortalInstance.otherPortal != null)
+                {
+                    bluePortalInstance.otherPortal = null;
+                }
                 Destroy(redPortalInstance.gameObject);
             }
             redPortalInstance = Instantiate(redPortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal)).GetComponent<Portal>();
