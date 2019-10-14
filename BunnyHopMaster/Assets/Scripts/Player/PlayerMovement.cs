@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour {
     private void Start() {
         // Hide the cursor
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
 
         if (playerView == null) {
             playerView = GetComponentInChildren<Camera>().transform;
@@ -98,10 +99,7 @@ public class PlayerMovement : MonoBehaviour {
         else if (rotX > 90)
             rotX = 90;
 
-        transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
-        playerView.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
-
-
+        transform.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the collider
 
         /* Movement, here's the important part */
         QueueJump();
