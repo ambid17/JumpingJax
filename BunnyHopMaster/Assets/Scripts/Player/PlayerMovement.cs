@@ -30,9 +30,6 @@ public class PlayerMovement : MonoBehaviour {
     public float jumpSpeed = 8.0f;                // The speed at which the character's up axis gains when hitting jump
     public bool holdJumpToBhop = false;           // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
-    /*print() style */
-    public GUIStyle style;
-
     /*FPS Stuff */
     public float fpsDisplayRate = 4.0f; // 4 updates per sec
 
@@ -48,7 +45,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private Vector3 moveDirectionNorm = Vector3.zero;
     private Vector3 playerVelocity = Vector3.zero;
-    private float playerTopVelocity = 0.0f;
+    public float playerTopVelocity = 0.0f;
 
     // Q3: players can queue the next jump just before he hits the ground
     private bool wishJump = false;

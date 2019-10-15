@@ -60,6 +60,7 @@ public class PlayerProgress : MonoBehaviour
         {
             if (currentCheckpoint.level <= checkpoint.level)
             {
+                checkpoint.SetCompleted();
                 currentCheckpoint = checkpoint;
             }
         }
