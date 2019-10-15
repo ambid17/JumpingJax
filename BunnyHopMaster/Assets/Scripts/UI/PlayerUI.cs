@@ -43,7 +43,6 @@ public class PlayerUI : MonoBehaviour {
         isPaused = true;
         Time.timeScale = 0;
         pauseMenu.gameObject.SetActive(true);
-        pauseMenu.InitializePauseMenu();
         inGameUI.SetActive(false);
         winMenu.gameObject.SetActive(false);
     }
@@ -71,7 +70,6 @@ public class PlayerUI : MonoBehaviour {
 
     string GetTimeString(float completionTime)
     {
-        Debug.Log("showWin" + completionTime);
         TimeSpan time = TimeSpan.FromSeconds(completionTime);
         return time.ToString("hh':'mm':'ss");
     }

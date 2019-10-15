@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager _GameManager;
+    public AudioSource musicSource;
 
     public int currentLevel;
     public float completionTime;
@@ -37,5 +38,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         completionTime += Time.deltaTime;
+    }
+
+    private void OnEnable()
+    {
+        musicSource.Play();
+    }
+
+    private void OnDisable()
+    {
+        musicSource.Stop();
     }
 }

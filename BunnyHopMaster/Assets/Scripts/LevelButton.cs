@@ -7,14 +7,14 @@ public class LevelButton : MonoBehaviour
 {
     public Text buttonText;
 
-    public void SetupButton(int level, bool isLevelCompleted)
+    public void SetupButton(int level, bool isLevelCompleted, string levelName)
     {
         Button button = gameObject.GetComponentInChildren<Button>();
-        button.name = level.ToString();
+        button.name = levelName;
 
         TimeSpan time = TimeSpan.FromSeconds(PlayerStatsManager.GetLevelCompletion(level));
 
-        buttonText.text = level.ToString() + "\n" + time.ToString("hh':'mm':'ss");
+        buttonText.text = levelName + "\n" + time.ToString("hh':'mm':'ss");
         button.onClick.AddListener(() => OnClickLevel(level));
     }
 

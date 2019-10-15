@@ -6,10 +6,12 @@ public class Level
 {
     public int levelNumber;
     public bool isCompleted;
+    public string levelName;
 
-    public Level(int levelNumber, int isCompleted)
+    public Level(int levelNumber, int isCompleted, string levelName)
     {
         this.levelNumber = levelNumber;
+        this.levelName = levelName;
         if(isCompleted == 0)
         {
             this.isCompleted = false;

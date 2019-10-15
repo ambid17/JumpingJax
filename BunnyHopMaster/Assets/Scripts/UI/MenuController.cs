@@ -8,17 +8,19 @@ public class MenuController : MonoBehaviour
     public GameObject levelObjectPrefab;
 
     public GameObject levelsPanel;
-    public GameObject settingsPanel;
+    public PauseMenu pauseMenu;
+
+    public string[] sceneNames;
 
     private void Start()
     {
         levelsPanel.SetActive(true);
-        settingsPanel.SetActive(false);
+        pauseMenu.gameObject.SetActive(false);
         for(int i = 1; i <= PlayerStatsManager._PlayerStats.numberOfLevels; i++)
         {
             GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
             LevelButton levelButton = newLevelButton.GetComponentInChildren<LevelButton>();
-            levelButton.SetupButton(i, PlayerStatsManager._PlayerStats.levels[i-1].isCompleted);
+            levelButton.SetupButton(i, PlayerStatsManager._PlayerStats.levels[i-1].isCompleted, sceneNames[i]);
         }
     }
 
@@ -33,6 +35,6 @@ public class MenuController : MonoBehaviour
     public void ToggleSettingsMenu()
     {
         levelsPanel.SetActive(!levelsPanel.activeInHierarchy);
-        settingsPanel.SetActive(!settingsPanel.activeInHierarchy);
+        pauseMenu.gameObject.SetActive(!pauseMenu.gameObject.activeInHierarchy);
     }
 }

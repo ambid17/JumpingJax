@@ -8,6 +8,7 @@ public class OptionsMenu : MonoBehaviour {
     public Text sensitivityValue;
 
     public AudioMixer audioMixer;
+    public Slider volumeSlider;
     public Text volumeValue;
 
     public Dropdown resolutionDropdown;
@@ -41,7 +42,7 @@ public class OptionsMenu : MonoBehaviour {
         resolutionDropdown.RefreshShownValue();
 
         float volume = OptionsPreferencesManager.GetVolume();
-        SetVolume(volume);
+        InitializeVolume(volume);
 
         graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
         graphicsQualityDropdown.RefreshShownValue();
@@ -59,9 +60,27 @@ public class OptionsMenu : MonoBehaviour {
     }
 
     public void SetVolume(float volume) {
-        audioMixer.SetFloat("Volume", volume);
-        volumeValue.text = volume + "%";
-        OptionsPreferencesManager.SetVolume(volume);
+        volumeValue.text = (int)(volume * 100) + "%";
+
+        float volumeInDecibels = ConvertToDecibel(volume);
+        audioMixer.SetFloat("MusicVolume", volumeInDecibels);
+        OptionsPreferencesManager.SetVolume(volumeInDecibels);
+    }
+    
+    public void InitializeVolume(float volume)
+    {
+        volumeSlider.value = ConvertFromDecibel(volume);
+        SetVolume(volumeSlider.value);
+    }
+
+    public float ConvertToDecibel(float value)
+    {
+        return Mathf.Log10(value) * 20;
+    }
+
+    public float ConvertFromDecibel(float value)
+    {
+        return Mathf.Pow(10, value / 20);
     }
 
     public void SetQuality(int qualityIndex) {
@@ -78,8 +97,11 @@ public class OptionsMenu : MonoBehaviour {
     public void SetSensitivity(float sensitivity)
     {
         PlayerMovement playerMovement = GetComponentInParent<PlayerMovement>();
-        playerMovement.xMouseSensitivity = sensitivity;
-        playerMovement.yMouseSensitivity = sensitivity;
+        if(playerMovement != null)
+        {
+            playerMovement.xMouseSensitivity = sensitivity;
+            playerMovement.yMouseSensitivity = sensitivity;
+        }
 
         sensitivityValue.text = sensitivity.ToString();
 

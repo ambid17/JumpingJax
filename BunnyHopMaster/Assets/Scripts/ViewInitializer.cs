@@ -13,7 +13,7 @@ public class ViewInitializer : MonoBehaviour
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
-        audioMixer.SetFloat("Volume", volume);
+        audioMixer.SetFloat("MusicVolume", volume);
 
         int width = OptionsPreferencesManager.GetResolutionWidth();
         int height = OptionsPreferencesManager.GetResolutionHeight();

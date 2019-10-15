@@ -31,6 +31,7 @@ public class PlayerStatsManager : MonoBehaviour
 
         numberOfLevels = SceneManager.sceneCountInBuildSettings - 1;
         levels = new Level[numberOfLevels];
+        Scene s = SceneManager.GetSceneByBuildIndex(1);
 
         for (int i = 1; i <= numberOfLevels; i++)
         {
@@ -38,7 +39,7 @@ public class PlayerStatsManager : MonoBehaviour
             if (PlayerPrefs.HasKey(levelKey))
             {
                 int isCompleted = PlayerPrefs.GetInt(levelKey);
-                levels[i - 1] = new Level(i, isCompleted);
+                levels[i - 1] = new Level(i, isCompleted, SceneManager.GetSceneByBuildIndex(i).name);
             }
             else
             {
