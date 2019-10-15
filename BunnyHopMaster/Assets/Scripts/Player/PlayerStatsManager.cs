@@ -8,6 +8,8 @@ public class PlayerStatsManager : MonoBehaviour
     public static PlayerStatsManager _PlayerStats;
 
     public int numberOfLevels;
+
+    [SerializeField]
     public Level[] levels;
 
     void Awake()
@@ -29,16 +31,26 @@ public class PlayerStatsManager : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
 
+        InitializeStats();
+    }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        InitializeStats();
+    }
+
+    public void InitializeStats()
+    {
         numberOfLevels = SceneManager.sceneCountInBuildSettings - 1;
         levels = new Level[numberOfLevels];
         Scene s = SceneManager.GetSceneByBuildIndex(1);
 
         for (int i = 1; i <= numberOfLevels; i++)
         {
-            string levelKey = "Level" + i;
+            string levelKey = "LevelCompletion" + i;
             if (PlayerPrefs.HasKey(levelKey))
             {
-                int isCompleted = PlayerPrefs.GetInt(levelKey);
+                float isCompleted = PlayerPrefs.GetFloat(levelKey, float.PositiveInfinity);
                 levels[i - 1] = new Level(i, isCompleted, SceneManager.GetSceneByBuildIndex(i).name);
             }
             else
@@ -50,7 +62,7 @@ public class PlayerStatsManager : MonoBehaviour
 
     public static void SetLevelCompletion(int level, float completionTime)
     {
-        string completionKey = "Complete" + level;
+        string completionKey = "LevelCompletion" + level;
         float currentBestTime = PlayerPrefs.GetFloat(completionKey, float.PositiveInfinity);
         if(completionTime < currentBestTime)
         {
@@ -60,7 +72,7 @@ public class PlayerStatsManager : MonoBehaviour
 
     public static float GetLevelCompletion(int level)
     {
-        string completionKey = "Complete" + level;
+        string completionKey = "LevelCompletion" + level;
         return PlayerPrefs.GetFloat(completionKey, 0);
     }
 }

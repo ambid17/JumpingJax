@@ -1,18 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class Level
 {
+    [SerializeField]
     public int levelNumber;
+    [SerializeField]
     public bool isCompleted;
+    [SerializeField]
     public string levelName;
+    [SerializeField]
+    public float completionTime;
 
-    public Level(int levelNumber, int isCompleted, string levelName)
+    public Level(int levelNumber, float completionTime, string levelName)
     {
         this.levelNumber = levelNumber;
         this.levelName = levelName;
-        if(isCompleted == 0)
+        if(completionTime == float.PositiveInfinity)
         {
             this.isCompleted = false;
         }
@@ -20,5 +27,6 @@ public class Level
         {
             this.isCompleted = true;
         }
+        this.completionTime = completionTime;
     }
 }

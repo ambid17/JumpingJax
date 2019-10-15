@@ -11,6 +11,8 @@ public class LevelButton : MonoBehaviour
     {
         Button button = gameObject.GetComponentInChildren<Button>();
         button.name = levelName;
+        Image backgroundImage = GetComponentInChildren<Image>();
+        backgroundImage.color = isLevelCompleted ? Color.green : Color.red;
 
         TimeSpan time = TimeSpan.FromSeconds(PlayerStatsManager.GetLevelCompletion(level));
 

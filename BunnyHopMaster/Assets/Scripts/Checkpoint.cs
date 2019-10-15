@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
+    [SerializeField]
     public int level;
+    
     public Material completedMaterial;
     public MeshRenderer renderer;
 

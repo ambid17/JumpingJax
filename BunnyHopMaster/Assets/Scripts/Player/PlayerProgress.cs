@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerProgress : MonoBehaviour
 {
-    private Checkpoint currentCheckpoint;
+    [SerializeField]
+    public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
     public bool didWin = false;
 
