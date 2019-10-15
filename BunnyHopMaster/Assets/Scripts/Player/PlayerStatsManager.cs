@@ -48,15 +48,8 @@ public class PlayerStatsManager : MonoBehaviour
         for (int i = 1; i <= numberOfLevels; i++)
         {
             string levelKey = "LevelCompletion" + i;
-            if (PlayerPrefs.HasKey(levelKey))
-            {
-                float isCompleted = PlayerPrefs.GetFloat(levelKey, float.PositiveInfinity);
-                levels[i - 1] = new Level(i, isCompleted, SceneManager.GetSceneByBuildIndex(i).name);
-            }
-            else
-            {
-                PlayerPrefs.SetInt(levelKey, 0);
-            }
+            float isCompleted = PlayerPrefs.GetFloat(levelKey, float.PositiveInfinity);
+            levels[i - 1] = new Level(i, isCompleted, SceneManager.GetSceneByBuildIndex(i).name);
         }
     }
 

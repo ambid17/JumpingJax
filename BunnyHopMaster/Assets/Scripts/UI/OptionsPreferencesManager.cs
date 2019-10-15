@@ -22,7 +22,7 @@ public class OptionsPreferencesManager
 
     public static float GetVolume()
     {
-        return PlayerPrefs.GetFloat("Volume", 0);
+        return PlayerPrefs.GetFloat("Volume", -20);
     }
 
     public static void SetVolume(float volume)
