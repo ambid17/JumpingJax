@@ -8,6 +8,7 @@ public class PlayerProgress : MonoBehaviour
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
     public bool didWin = false;
+    public float minimumY = 0;
 
     private void Start()
     {
@@ -21,7 +22,7 @@ public class PlayerProgress : MonoBehaviour
             Respawn();
         }
 
-        if(gameObject.transform.position.y < -50) 
+        if(gameObject.transform.position.y < minimumY) 
         {
             Respawn();
         }
