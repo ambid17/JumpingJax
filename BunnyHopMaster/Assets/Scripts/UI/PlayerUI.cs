@@ -40,6 +40,7 @@ public class PlayerUI : MonoBehaviour {
     public void Pause()
     {
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
         isPaused = true;
         Time.timeScale = 0;
         pauseMenu.gameObject.SetActive(true);
@@ -50,6 +51,7 @@ public class PlayerUI : MonoBehaviour {
     public void UnPause()
     {
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         isPaused = false;
         Time.timeScale = 1;
         pauseMenu.gameObject.SetActive(false);

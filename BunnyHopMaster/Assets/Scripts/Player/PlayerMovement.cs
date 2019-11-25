@@ -43,7 +43,6 @@ public class PlayerMovement : MonoBehaviour {
     private float rotX = 0.0f;
     private float rotY = 0.0f;
 
-    private Vector3 moveDirectionNorm = Vector3.zero;
     private Vector3 playerVelocity = Vector3.zero;
     public float playerTopVelocity = 0.0f;
 
@@ -101,6 +100,7 @@ public class PlayerMovement : MonoBehaviour {
         /* Movement, here's the important part */
         QueueJump();
         if (_controller.isGrounded)
+            //check ground material
             GroundMove();
         else if (!_controller.isGrounded)
             AirMove();
@@ -166,7 +166,6 @@ public class PlayerMovement : MonoBehaviour {
         wishspeed *= moveSpeed;
 
         wishdir.Normalize();
-        moveDirectionNorm = wishdir;
 
         // CPM: Aircontrol
         float wishspeed2 = wishspeed;
@@ -221,7 +220,6 @@ public class PlayerMovement : MonoBehaviour {
             playerVelocity.z = playerVelocity.z * speed + wishdir.z * k;
 
             playerVelocity.Normalize();
-            moveDirectionNorm = playerVelocity;
         }
 
         playerVelocity.x *= speed;
@@ -246,7 +244,6 @@ public class PlayerMovement : MonoBehaviour {
         wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
         wishdir.Normalize();
-        moveDirectionNorm = wishdir;
 
         var wishspeed = wishdir.magnitude;
         wishspeed *= moveSpeed;

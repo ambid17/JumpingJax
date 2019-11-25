@@ -14,12 +14,9 @@ public class PlayerPortal : MonoBehaviour
     public Portal bluePortalInstance;
     public Portal redPortalInstance;
 
-    public CharacterController _controller;
-
     void Start()
     {
         layerMask = 1 << portalMaterialLayer;
-        _controller = GetComponent<CharacterController>();
     }
 
     void Update()

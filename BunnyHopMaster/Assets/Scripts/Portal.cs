@@ -15,19 +15,17 @@ public class Portal : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("triggerEnter: " + other.gameObject.name);
-        CharacterController characterController = other.GetComponent<CharacterController>();
-        if (characterController != null && otherPortal != null)
+        //Check that the trigger is the playerCollider, not the water
+        if (otherPortal != null && other.GetComponent<BoxCollider>())
         {
-            characterController.enabled = false;
             if (portalType == PortalType.red)
             {
-                other.transform.position = otherPortal.transform.position;
+                other.transform.parent.position = otherPortal.transform.position;
             }
             else
             {
-                other.transform.position = otherPortal.transform.position;
+                other.transform.parent.position = otherPortal.transform.position;
             }
-            characterController.enabled = true;
         }
 
         Destroy(otherPortal);

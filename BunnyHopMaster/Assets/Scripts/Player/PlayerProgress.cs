@@ -43,9 +43,9 @@ public class PlayerProgress : MonoBehaviour
         PlayerStatsManager.SetLevelCompletion(GameManager._GameManager.currentLevel, GameManager._GameManager.completionTime);
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void OnTriggerEnter(Collider other)
     {
-        Checkpoint checkPointHit = hit.gameObject.GetComponent<Checkpoint>();
+        Checkpoint checkPointHit = other.gameObject.GetComponent<Checkpoint>();
         if (checkPointHit)
         {
             HitNewCheckPoint(checkPointHit);
@@ -56,6 +56,7 @@ public class PlayerProgress : MonoBehaviour
     {
         if (currentCheckpoint == null)
         {
+            checkpoint.SetCompleted();
             currentCheckpoint = checkpoint;
         }
         else
