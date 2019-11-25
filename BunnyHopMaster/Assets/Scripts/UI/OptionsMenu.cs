@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Fragsurf.Movement;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -18,8 +19,10 @@ public class OptionsMenu : MonoBehaviour {
 
     Resolution[] resolutions;
 
-    private void Start() {
+    PlayerAiming playerAiming;
 
+    private void Start() {
+        playerAiming = GetComponentInParent<SurfCharacter>().GetComponentInChildren<PlayerAiming>();
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
@@ -96,14 +99,13 @@ public class OptionsMenu : MonoBehaviour {
 
     public void SetSensitivity(float sensitivity)
     {
-        PlayerMovement playerMovement = GetComponentInParent<PlayerMovement>();
-        if(playerMovement != null)
+        if(playerAiming != null)
         {
-            playerMovement.xMouseSensitivity = sensitivity;
-            playerMovement.yMouseSensitivity = sensitivity;
+            playerAiming.sensitivityMultiplier = sensitivity;
         }
 
-        sensitivityValue.text = sensitivity.ToString();
+        int percentage = Mathf.RoundToInt(sensitivity * 100);
+        sensitivityValue.text = percentage + "%";
 
         OptionsPreferencesManager.SetSensitivity(sensitivity);
     }

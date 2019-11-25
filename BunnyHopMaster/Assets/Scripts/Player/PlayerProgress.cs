@@ -73,9 +73,7 @@ public class PlayerProgress : MonoBehaviour
     {
         Vector3 newPos = GetCurrentCheckpointPosition();
         newPos.y += 0.2f;
-        GetComponent<CharacterController>().enabled = false;
         transform.position = newPos;
-        GetComponent<CharacterController>().enabled = true;
     }
 
     public Vector3 GetCurrentCheckpointPosition()

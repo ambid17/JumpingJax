@@ -53,7 +53,7 @@ public class OptionsPreferencesManager
 
     public static float GetSensitivity()
     {
-        return PlayerPrefs.GetFloat("Sensitivity", 50);
+        return PlayerPrefs.GetFloat("Sensitivity", 1f);
     }
 
     public static void SetSensitivity(float sensitivity)
