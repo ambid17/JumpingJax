@@ -62,6 +62,7 @@ public class PlayerUI : MonoBehaviour {
     public void ShowWinScreen()
     {
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         winMenu.gameObject.SetActive(true);
         winMenu.levelText.text = "You beat level " + GameManager._GameManager.currentLevel.ToString();
         winMenu.completionTimeText.text = "Completion time: " + GetTimeString(GameManager._GameManager.completionTime);
