@@ -3653,6 +3653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfLevels: 4
+  levels: []
 --- !u!4 &1117766838
 Transform:
   m_ObjectHideFlags: 0
@@ -5020,10 +5021,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1206062958}
   m_HandleRect: {fileID: 35243950}
   m_Direction: 0
-  m_MinValue: 10
-  m_MaxValue: 100
-  m_WholeNumbers: 1
-  m_Value: 50
+  m_MinValue: 0
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6018,6 +6019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivityValue: {fileID: 965798114}
+  sensitivitySlider: {fileID: 1589418130}
   audioMixer: {fileID: 24100000, guid: af3796b8a4d7fdf4d8d3e68696dccf4a, type: 2}
   volumeSlider: {fileID: 815228837}
   volumeValue: {fileID: 332320923}

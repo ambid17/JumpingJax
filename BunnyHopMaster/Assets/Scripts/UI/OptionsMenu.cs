@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour {
     public Text sensitivityValue;
+    public Slider sensitivitySlider;
 
     public AudioMixer audioMixer;
     public Slider volumeSlider;
@@ -22,7 +23,12 @@ public class OptionsMenu : MonoBehaviour {
     PlayerAiming playerAiming;
 
     private void Start() {
-        playerAiming = GetComponentInParent<SurfCharacter>().GetComponentInChildren<PlayerAiming>();
+        SurfCharacter playerCharacter = GetComponentInParent<SurfCharacter>();
+        if(playerCharacter != null)
+        {
+            playerAiming = playerCharacter.GetComponentInChildren<PlayerAiming>();
+        }
+
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
@@ -106,6 +112,8 @@ public class OptionsMenu : MonoBehaviour {
 
         int percentage = Mathf.RoundToInt(sensitivity * 100);
         sensitivityValue.text = percentage + "%";
+        sensitivitySlider.value = sensitivity;
+        Debug.Log("setsens: " + sensitivity);
 
         OptionsPreferencesManager.SetSensitivity(sensitivity);
     }

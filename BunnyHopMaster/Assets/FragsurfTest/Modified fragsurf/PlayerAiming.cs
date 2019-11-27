@@ -35,6 +35,8 @@ public class PlayerAiming : MonoBehaviour
 		// Lock the mouse
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible   = false;
+        sensitivityMultiplier = OptionsPreferencesManager.GetSensitivity();
+        Debug.Log("sens: " + sensitivityMultiplier);
 	}
 
 	private void Update()
