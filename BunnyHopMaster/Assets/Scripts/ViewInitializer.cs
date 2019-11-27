@@ -9,11 +9,12 @@ using UnityEngine.Audio;
 public class ViewInitializer : MonoBehaviour
 {
     public AudioMixer audioMixer;
+    private const string musicVolumeKey = "MusicVolume";
 
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
-        audioMixer.SetFloat("MusicVolume", volume);
+        audioMixer.SetFloat(musicVolumeKey, volume);
 
         int width = OptionsPreferencesManager.GetResolutionWidth();
         int height = OptionsPreferencesManager.GetResolutionHeight();
