@@ -14,6 +14,7 @@ public class WinMenu : MonoBehaviour
     {
         Cursor.visible = false;
         gameObject.SetActive(false);
+        Time.timeScale = 1;
         SceneManager.LoadScene(GameManager._GameManager.currentLevel);
     }
 
@@ -21,6 +22,7 @@ public class WinMenu : MonoBehaviour
     {
         Cursor.visible = false;
         gameObject.SetActive(false);
+        Time.timeScale = 1;
         SceneManager.LoadScene(GameManager._GameManager.currentLevel + 1);
     }
 
@@ -28,6 +30,7 @@ public class WinMenu : MonoBehaviour
     {
         Cursor.visible = true;
         gameObject.SetActive(false);
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
 }

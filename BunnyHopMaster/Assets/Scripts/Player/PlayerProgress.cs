@@ -34,6 +34,7 @@ public class PlayerProgress : MonoBehaviour
                 didWin = true;
                 UpdatePlayerStats();
                 playerUI.ShowWinScreen();
+                Time.timeScale = 0;
             }
         }
     }
