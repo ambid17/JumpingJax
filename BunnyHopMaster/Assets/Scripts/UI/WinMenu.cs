@@ -20,10 +20,18 @@ public class WinMenu : MonoBehaviour
 
     public void NextLevel()
     {
-        Cursor.visible = false;
         gameObject.SetActive(false);
         Time.timeScale = 1;
-        SceneManager.LoadScene(GameManager._GameManager.currentLevel + 1);
+        if(GameManager._GameManager.currentLevel == PlayerStatsManager._PlayerStats.levels.Length)
+        {
+            Cursor.visible = true;
+            SceneManager.LoadScene(0);
+        }
+        else
+        {
+            Cursor.visible = false;
+            SceneManager.LoadScene(GameManager._GameManager.currentLevel + 1);
+        }
     }
 
     public void GoToMainMenu()
