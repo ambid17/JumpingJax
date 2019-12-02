@@ -14,6 +14,8 @@ public class PlayerPortal : MonoBehaviour
     public Portal bluePortalInstance;
     public Portal redPortalInstance;
 
+   
+
     void Start()
     {
         layerMask = 1 << portalMaterialLayer;
