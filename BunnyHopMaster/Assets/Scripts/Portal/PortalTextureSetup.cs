@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class PortalTextureSetup : MonoBehaviour
 {
-    public Camera camera;
+    public Camera portalCamera;
 
     public Material cameraMaterial;
+    public Shader cutoutShader;
     Resolution resolution;
 
     void Start()
     {
+        portalCamera = GetComponent<Camera>();
+        cutoutShader = Shader.Find("Unlit/ScreenCutoutShader");
+        cameraMaterial = new Material(cutoutShader);
         resolution = Screen.currentResolution;
         UpdateRenderTexture();
+        UpdatePortalMaterial();
     }
 
     void Update()
@@ -24,14 +29,20 @@ public class PortalTextureSetup : MonoBehaviour
         }
     }
 
+    void UpdatePortalMaterial()
+    {
+        MeshRenderer renderer = GetComponentInParent<MeshRenderer>();
+        renderer.sharedMaterial = cameraMaterial;
+    }
+
     void UpdateRenderTexture()
     {
-        if (camera.targetTexture != null)
+        if (portalCamera.targetTexture != null)
         {
-            camera.targetTexture.Release();
+            portalCamera.targetTexture.Release();
         }
 
-        camera.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
-        cameraMaterial.mainTexture = camera.targetTexture;
+        portalCamera.targetTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        cameraMaterial.mainTexture = portalCamera.targetTexture;
     }
 }

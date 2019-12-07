@@ -53,17 +53,29 @@ public class Portal : MonoBehaviour
         //Check that the trigger is the playerCollider, not the water
         if (otherPortal != null && other.GetComponent<BoxCollider>())
         {
-            if (portalType == PortalType.red)
-            {
-                other.transform.parent.position = otherPortal.transform.position;
-            }
-            else
-            {
-                other.transform.parent.position = otherPortal.transform.position;
-            }
+            TeleportPlayer(other.gameObject);
         }
 
         Destroy(otherPortal);
         Destroy(this.gameObject);
+    }
+
+    private void TeleportPlayer(GameObject playerObject)
+    {
+        Vector3 portalToPlayer = playerObject.transform.position - transform.position;
+        float dotProduct = Vector3.Dot(transform.up, portalToPlayer);
+
+        //Player has moved across portal, need to teleport them
+        if(dotProduct < 0f)
+        {
+            float rotationDiff = Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
+            rotationDiff += 180;
+            playerObject.transform.Rotate(Vector3.up, rotationDiff);
+
+            Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
+            playerObject.transform.position = otherPortal.transform.position + positionOffset;
+        }
+
+        playerObject.transform.parent.position = otherPortal.transform.position;
     }
 }
