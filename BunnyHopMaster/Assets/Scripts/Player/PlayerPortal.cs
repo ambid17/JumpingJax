@@ -23,6 +23,11 @@ public class PlayerPortal : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         //Create Blue portal
         if (Input.GetMouseButtonDown(0))
         {

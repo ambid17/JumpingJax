@@ -28,8 +28,6 @@ namespace Fragsurf.Movement {
         [Header ("Features")]
         public bool crouchingEnabled = true;
         public bool slidingEnabled = false;
-        public bool laddersEnabled = true;
-        public bool supportAngledLadders = true;
 
         [Header ("Step offset (can be buggy, enable at your own risk)")]
         public bool useStepOffset = false;
@@ -45,8 +43,6 @@ namespace Fragsurf.Movement {
         private Vector3 _angles;
         private Vector3 _startPosition;
         private GameObject _colliderObject;
-        private GameObject _cameraWaterCheckObject;
-        private CameraWaterCheck _cameraWaterCheck;
 
         private MoveData _moveData = new MoveData ();
         private SurfController _controller = new SurfController ();
@@ -55,8 +51,6 @@ namespace Fragsurf.Movement {
 
         private List<Collider> triggers = new List<Collider> ();
         private int numberOfTriggers = 0;
-
-        private bool underwater = false;
 
         ///// Properties /////
 
@@ -88,41 +82,22 @@ namespace Fragsurf.Movement {
 		}
 		
         private void Awake () {
-            
             _controller.playerTransform = playerRotationTransform;
             
             if (viewTransform != null) {
 
                 _controller.camera = viewTransform;
                 _controller.cameraYPos = viewTransform.localPosition.y;
-
             }
-
         }
 
         private void Start () {
-            
             _colliderObject = new GameObject ("PlayerCollider");
             _colliderObject.layer = gameObject.layer;
             _colliderObject.transform.SetParent (transform);
             _colliderObject.transform.rotation = Quaternion.identity;
             _colliderObject.transform.localPosition = Vector3.zero;
             _colliderObject.transform.SetSiblingIndex (0);
-
-            // Water check
-            _cameraWaterCheckObject = new GameObject ("Camera water check");
-            _cameraWaterCheckObject.layer = gameObject.layer;
-            _cameraWaterCheckObject.transform.position = viewTransform.position;
-
-            SphereCollider _cameraWaterCheckSphere = _cameraWaterCheckObject.AddComponent<SphereCollider> ();
-            _cameraWaterCheckSphere.radius = 0.1f;
-            _cameraWaterCheckSphere.isTrigger = true;
-
-            Rigidbody _cameraWaterCheckRb = _cameraWaterCheckObject.AddComponent<Rigidbody> ();
-            _cameraWaterCheckRb.useGravity = false;
-            _cameraWaterCheckRb.isKinematic = true;
-
-            _cameraWaterCheck = _cameraWaterCheckObject.AddComponent<CameraWaterCheck> ();
 
             prevPosition = transform.position;
 
@@ -160,8 +135,6 @@ namespace Fragsurf.Movement {
             _moveData.rigidbodyPushForce = rigidbodyPushForce;
 
             _moveData.slidingEnabled = slidingEnabled;
-            _moveData.laddersEnabled = laddersEnabled;
-            _moveData.angledLaddersEnabled = supportAngledLadders;
 
             _moveData.playerTransform = transform;
             _moveData.viewTransform = viewTransform;
@@ -197,21 +170,13 @@ namespace Fragsurf.Movement {
             if (numberOfTriggers != triggers.Count) {
                 numberOfTriggers = triggers.Count;
 
-                underwater = false;
                 triggers.RemoveAll (item => item == null);
                 foreach (Collider trigger in triggers) {
                     if (trigger == null)
                         continue;
-
-                    if (trigger.GetComponentInParent<Water> ())
-                        underwater = true;
                 }
             }
 
-            _moveData.cameraUnderwater = _cameraWaterCheck.IsUnderwater ();
-            _cameraWaterCheckObject.transform.position = viewTransform.position;
-            moveData.underwater = underwater;
-            
             if (allowCrouch)
                 _controller.Crouch (this, movementConfig, Time.deltaTime);
 
@@ -221,7 +186,6 @@ namespace Fragsurf.Movement {
             prevPosition = transform.position;
 
             _colliderObject.transform.rotation = Quaternion.identity;
-
         }
 
         private void UpdateMoveData () {
@@ -268,13 +232,11 @@ namespace Fragsurf.Movement {
         }
 
         private void DisableInput () {
-
             _moveData.verticalAxis = 0f;
             _moveData.horizontalAxis = 0f;
             _moveData.sideMove = 0f;
             _moveData.forwardMove = 0f;
             _moveData.wishJump = false;
-
         }
 
         /// <summary>

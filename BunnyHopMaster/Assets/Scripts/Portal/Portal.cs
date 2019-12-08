@@ -36,8 +36,16 @@ public class Portal : MonoBehaviour
     {
         if(playerCamera != null && portalCamera != null && otherPortal != null)
         {
-            Vector3 playerOffsetFromRedPortal = playerCamera.position - otherPortal.transform.position;
-            portalCamera.position = transform.position + playerOffsetFromRedPortal;
+            Vector3 playerOffsetFromPortal = playerCamera.position - otherPortal.transform.position;
+            Vector3 newPos = transform.position - playerOffsetFromPortal;
+            portalCamera.transform.position = newPos;
+
+            Debug.Log("portal: " + gameObject.name
+                + " offset: " + playerOffsetFromPortal
+                + " mypos: " + transform.position
+                + " otherpos: " + otherPortal.transform.position
+                + " player: " + playerCamera.transform.position
+                + " newPos: " + newPos);
 
             float angularDifferenceBetweenPortalRotations = Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
 
