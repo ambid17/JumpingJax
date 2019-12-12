@@ -17,10 +17,6 @@ Portals are a custom implementation that will:
 
 ![](https://github.com/oneleif/olWebsite/blob/master/Public/images/homeLogo.png?raw=true)
 
-### Project Info
-
-// TODO
-
 This project is a oneleif active project.
 
 [![](https://img.shields.io/badge/oneleif-Twitter-blue.svg)](https://twitter.com/oneleifdev)
