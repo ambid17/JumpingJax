@@ -9,7 +9,7 @@ The movement mechancis are in large part thanks to Olezen: https://github.com/Ol
 ## Portals
 Portals are a custom implementation that will:
 * Teleport a player
-* Allow the player to see a new location
+* Allow the player to see a new location through the portal
 
 
 ****
