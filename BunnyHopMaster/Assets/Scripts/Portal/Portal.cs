@@ -7,30 +7,24 @@ public enum PortalType
     red, blue
 }
 
-public static class MathUtil
-{
-    public static Quaternion QuaternionFromMatrix(Matrix4x4 m)
-    {
-        return Quaternion.LookRotation(m.GetColumn(2), m.GetColumn(1));
-    }
-
-    public static Vector4 PosToV4(Vector3 v) { return new Vector4(v.x, v.y, v.z, 1.0f); }
-    public static Vector3 ToV3(Vector4 v) { return new Vector3(v.x, v.y, v.z); }
-
-    public static Vector3 ZeroV3 = new Vector3(0.0f, 0.0f, 0.0f);
-    public static Vector3 OneV3 = new Vector3(1.0f, 1.0f, 1.0f);
-}
-
 public class Portal : MonoBehaviour
 {
     public PortalType portalType;
-    public Transform source;
+    public Transform destinationPortal;
 
     public Camera playerCamera;
     public Camera portalCamera;
 
+    bool canTeleport;
+    float teleportTimer;
+    float timeToTeleport;
+
     private void Start()
     {
+        canTeleport = true;
+        teleportTimer = 0f;
+        timeToTeleport = 1f;
+
         playerCamera = Camera.main;
 
         if (playerCamera == null)
@@ -48,12 +42,38 @@ public class Portal : MonoBehaviour
 
     private void Update()
     {
-        if(playerCamera != null && portalCamera != null && source != null)
+        CheckCanTeleport();
+        TransformPortalCamera();
+    }
+    
+    private void CheckCanTeleport()
+    {
+        if(destinationPortal == null)
+        {
+            canTeleport = false;
+            return;
+        }
+
+
+        if (!canTeleport)
+        {
+            teleportTimer += Time.deltaTime;
+        }
+
+        if(teleportTimer >= timeToTeleport)
+        {
+            canTeleport = true;
+        }
+    }
+
+    private void TransformPortalCamera()
+    {
+        if (playerCamera != null && portalCamera != null && destinationPortal != null)
         {
             // Rotate Source 180 degrees so PortalCamera is mirror image of MainCamera
             Matrix4x4 destinationFlipRotation =
                 Matrix4x4.TRS(MathUtil.ZeroV3, Quaternion.AngleAxis(180.0f, Vector3.up), MathUtil.OneV3);
-            Matrix4x4 sourceInvMat = destinationFlipRotation * source.worldToLocalMatrix;
+            Matrix4x4 sourceInvMat = destinationFlipRotation * destinationPortal.worldToLocalMatrix;
 
             // Calculate translation and rotation of MainCamera in Source space
             Vector3 cameraPositionInSourceSpace =
@@ -85,33 +105,37 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("triggerEnter: " + other.gameObject.name);
-        //Check that the trigger is the playerCollider, not the water
-        if (source != null && other.GetComponent<BoxCollider>())
+        if (canTeleport)
         {
-            TeleportPlayer(other.gameObject);
+            Debug.Log("triggerEnter: " + other.gameObject.name);
+            if (other.GetComponentInParent<PlayerProgress>() && canTeleport)
+            {
+                //Keep the player from teleporting for 1 second
+                DidTeleport();
+                TeleportPlayer(other.transform);
+            }
         }
-
-        Destroy(source);
-        Destroy(this.gameObject);
     }
 
-    private void TeleportPlayer(GameObject playerObject)
+    private void TeleportPlayer(Transform playerObject)
     {
-        Vector3 portalToPlayer = playerObject.transform.position - transform.position;
-        float dotProduct = Vector3.Dot(transform.up, portalToPlayer);
+        //The box collider is a child of the player, thus we need to move the parent
+        playerObject.parent.position = destinationPortal.transform.position;
+    }
 
-        //Player has moved across portal, need to teleport them
-        if(dotProduct < 0f)
-        {
-            float rotationDiff = Quaternion.Angle(transform.rotation, source.transform.rotation);
-            rotationDiff += 180;
-            playerObject.transform.Rotate(Vector3.up, rotationDiff);
+    public void DidTeleport()
+    {
+        canTeleport = false;
+        teleportTimer = 0;
 
-            Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
-            playerObject.transform.position = source.transform.position + positionOffset;
+        Portal otherPortal = destinationPortal.GetComponent<Portal>();
+        if (otherPortal != null){
+            otherPortal.canTeleport = false;
+            otherPortal.teleportTimer = 0;
         }
-
-        playerObject.transform.parent.position = source.transform.position;
+        else
+        {
+            Debug.Log("Could not find destination portal");
+        }
     }
 }
