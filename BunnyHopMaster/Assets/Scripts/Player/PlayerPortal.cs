@@ -48,9 +48,9 @@ public class PlayerPortal : MonoBehaviour
         {
             if(bluePortalInstance != null)
             {
-                if(redPortalInstance.otherPortal != null)
+                if(redPortalInstance.source != null)
                 {
-                    redPortalInstance.otherPortal = null;
+                    redPortalInstance.source = null;
                 }
                 Destroy(bluePortalInstance.gameObject);
             }
@@ -63,8 +63,8 @@ public class PlayerPortal : MonoBehaviour
 
             if(redPortalInstance != null)
             {
-                portal.otherPortal = redPortalInstance.gameObject;
-                redPortalInstance.otherPortal = portal.gameObject;
+                portal.source = redPortalInstance.transform;
+                redPortalInstance.source = portal.transform;
             }
         }
     }
@@ -77,9 +77,9 @@ public class PlayerPortal : MonoBehaviour
         {
             if (redPortalInstance != null)
             {
-                if (bluePortalInstance.otherPortal != null)
+                if (bluePortalInstance.source != null)
                 {
-                    bluePortalInstance.otherPortal = null;
+                    bluePortalInstance.source = null;
                 }
                 Destroy(redPortalInstance.gameObject);
             }
@@ -92,8 +92,8 @@ public class PlayerPortal : MonoBehaviour
 
             if (bluePortalInstance != null)
             {
-                portal.otherPortal = bluePortalInstance.gameObject;
-                bluePortalInstance.otherPortal = portal.gameObject;
+                portal.source = bluePortalInstance.transform;
+                bluePortalInstance.source = portal.transform;
             }
         }
     }
