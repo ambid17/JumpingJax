@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviour {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Confined;
 
+        // Get the Camera If it not added
         if (playerView == null) {
             playerView = GetComponentInChildren<Camera>().transform;
         }

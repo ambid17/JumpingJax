@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerStatsManager : MonoBehaviour
 {
+
     public static PlayerStatsManager _PlayerStats;
 
     public int numberOfLevels;

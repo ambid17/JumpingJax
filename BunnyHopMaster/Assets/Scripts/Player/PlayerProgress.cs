@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerProgress : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerProgress : MonoBehaviour
     public PlayerUI playerUI;
     public bool didWin = false;
     public float minimumY = 0;
+    public string last_Scene_name;
 
     private void Start()
     {
@@ -36,6 +38,10 @@ public class PlayerProgress : MonoBehaviour
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
             }
+        }
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName(last_Scene_name) & didWin == true)
+        {
+            SceneManager.LoadScene("Credits");
         }
     }
 
