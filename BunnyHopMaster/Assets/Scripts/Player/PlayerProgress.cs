@@ -10,7 +10,7 @@ public class PlayerProgress : MonoBehaviour
     public PlayerUI playerUI;
     public bool didWin = false;
     public float minimumY = 0;
-    public string last_Scene_name;
+    public string lastScenename;
 
     private void Start()
     {
@@ -39,7 +39,7 @@ public class PlayerProgress : MonoBehaviour
                 Time.timeScale = 0;
             }
         }
-        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName(last_Scene_name) & didWin == true)
+        if (SceneManager.GetActiveScene() == SceneManager.GetSceneByName(lastScenename) && didWin)
         {
             SceneManager.LoadScene("Credits");
         }
