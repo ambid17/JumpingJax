@@ -11,7 +11,6 @@ Portals are a custom implementation that will:
 * Teleport a player
 * Allow the player to see a new location through the portal
 
-
 ****
 # <Project Name>
 ## oneleif Active Project
