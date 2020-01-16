@@ -9,14 +9,19 @@ public class Movement : MonoBehaviour
 {
     public int PlayerLayer = 12;
     public int notPlayerLayerMask = 1 << 12;
-    public float MoveSpeed = 7f;
-    public float MaxVelocity = 35f;
-    public float Gravity = 8;
+    public float MoveSpeed = 10f;
+    public float MaxVelocity = 100f;
+
+    public float Gravity = 9.8f;
     public float JumpPower = 5f;
-    public float Acceleration = 1f;
+
+    public float GroundAcceleration = 1.1f;
     public float AirAcceleration = 1.5f;
+
     public float StopSpeed = 8f;
-    public float Friction = 0.4f;
+    public float Friction = 1f;
+    public float normalSurfaceFriction = 1f;
+
     public float AirCap = 3f;
     public BoxCollider AABB;
     public Vector3 _newVelocity;
@@ -27,7 +32,7 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
-        AABB = GetComponent<BoxCollider>();
+        AABB = GetComponentInParent<BoxCollider>();
     }
 
     private void FixedUpdate()
@@ -42,13 +47,13 @@ public class Movement : MonoBehaviour
 
         if (_grounded)
         {
-            ApplyGroundAcceleration(wishDir, wishSpeed, Acceleration, Time.deltaTime, 1f);
+            ApplyGroundAcceleration(wishDir, wishSpeed, normalSurfaceFriction);
             ClampVelocity(MoveSpeed);
             ApplyFriction();
         }
         else
         {
-            ApplyAirAcceleration(wishDir, wishSpeed, AirAcceleration, AirCap, Time.deltaTime);
+            ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
         ClampVelocity(MaxVelocity);
@@ -74,7 +79,7 @@ public class Movement : MonoBehaviour
             halfExtents: transform.localScale,
             direction: Vector3.down,
             orientation: transform.rotation,
-            maxDistance: 1
+            maxDistance: 0.1f
             );
         
         var wasGrounded = _grounded;
@@ -99,7 +104,7 @@ public class Movement : MonoBehaviour
             if (closestHit.normal.y < 1)
             {
                 Debug.Log("ground not flat");
-                ClipVelocity(closestHit.normal, 1.0f);
+                ClipVelocity(closestHit.normal);
             }
             else
             {
@@ -108,11 +113,11 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f && x.point != Vector3.zero).OrderBy(x => x.distance);
+            var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
             if (surfHits.Count() > 0)
             {
                 transform.position += surfHits.First().normal * 0.02f;
-                ClipVelocity(surfHits.First().normal, 1.0f);
+                ClipVelocity(surfHits.First().normal);
                 _surfing = true;
             }
         }
@@ -141,23 +146,29 @@ public class Movement : MonoBehaviour
         return transform.TransformDirection(inputVelocity);
     }
 
-    private void ApplyGroundAcceleration(Vector3 wishDir, float wishSpeed, float accel, float deltaTime, float surfaceFriction)
+    //wishDir: the direction the player wishes to go in the newest frame
+    //wishSpeed: the speed the player wishes to go this frame
+    private void ApplyGroundAcceleration(Vector3 wishDir, float wishSpeed, float surfaceFriction)
     {
-        var currentSpeed = Vector3.Dot(_newVelocity, wishDir);
-        var addSpeed = wishSpeed - currentSpeed;
+        var currentSpeed = Vector3.Dot(_newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
+        var speedToAdd = wishSpeed - currentSpeed;
 
-        if (addSpeed <= 0)
+        var acceleration = GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+
+        if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(accel * deltaTime * wishSpeed * surfaceFriction, addSpeed);
-        _newVelocity += accelspeed * wishDir;
+        var accelspeed = Mathf.Min(acceleration * wishSpeed * surfaceFriction, speedToAdd);
+        _newVelocity += accelspeed * wishDir; //add acceleration in the new direction
     }
 
-    private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed, float accel, float airCap, float deltaTime)
+    //wishDir: the direction the player  wishes to goin the newest frame
+    //wishSpeed: the speed the player wishes to go this frame
+    private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
     {
-        var wishSpd = Mathf.Min(wishSpeed, airCap);
+        var wishSpd = Mathf.Min(wishSpeed, AirCap);
         var currentSpeed = Vector3.Dot(_newVelocity, wishDir);
         var addSpeed = wishSpd - currentSpeed;
 
@@ -166,7 +177,7 @@ public class Movement : MonoBehaviour
             return;
         }
 
-        var accelspeed = Mathf.Min(addSpeed, accel * wishSpeed * deltaTime);
+        var accelspeed = Mathf.Min(addSpeed, AirAcceleration * wishSpeed * Time.deltaTime);
         _newVelocity += accelspeed * wishDir;
     }
 
@@ -174,21 +185,20 @@ public class Movement : MonoBehaviour
     {
         var speed = _newVelocity.magnitude;
 
-        if (speed == 0f)
+        //Don't apply friction if the player isn't moving
+        //Clear speed if it's too low to prevent accidental movement
+        if (speed < 0.01f)
         {
+            _newVelocity = Vector3.zero;
             return;
         }
 
-        var control = (speed < StopSpeed) ? StopSpeed : speed;
-
-        var drop = control * Friction * Time.deltaTime;
-
-        var newSpeed = Mathf.Max(speed - drop, 0);
+        var lossInSpeed = speed * Friction * Time.deltaTime;
+        var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)
         {
-            newSpeed /= speed;
-            _newVelocity *= newSpeed;
+            _newVelocity *= newSpeed / speed; //Scale velocity based on friction
         }
     }
 
@@ -197,32 +207,29 @@ public class Movement : MonoBehaviour
         _newVelocity = Vector3.ClampMagnitude(_newVelocity, MaxVelocity);
     }
 
-    private void ClipVelocity(Vector3 normal, float overbounce)
+    //Slide off of the impacting surface
+    private void ClipVelocity(Vector3 normal)
     {
-        var input = _newVelocity;
-
         // Determine how far along plane to slide based on incoming direction.
-        var backoff = Vector3.Dot(input, normal) * overbounce;
+        var backoff = Vector3.Dot(_newVelocity, normal);
 
         for (int i = 0; i < 3; i++)
         {
             var change = normal[i] * backoff;
-            _newVelocity[i] = input[i] - change;
+            _newVelocity[i] -= change;
         }
 
         // iterate once to make sure we aren't still moving through the plane
-        var adjust = Vector3.Dot(_newVelocity, normal);
-        if (adjust < 0.0f)
-        {
-            _newVelocity -= (normal * adjust);
-        }
-
-        GlobalDebug.Debug("normal: " + normal + " currentVel: " + input + " backoff: " + backoff + " adjust: " + adjust + " newVel: " + _newVelocity);
+        //var adjust = Vector3.Dot(_newVelocity, normal);
+        //if (adjust < 0.0f)
+        //{
+        //    _newVelocity -= (normal * adjust);
+        //}
     }
 
     private void ResolveCollisions()
     {
-        var center = transform.position + AABB.center;
+        var center = transform.position + AABB.center; // get center of bounding box in world space
         var overlaps = Physics.OverlapBox(center, AABB.size, Quaternion.identity, notPlayerLayerMask);
 
         foreach (var other in overlaps)
@@ -236,7 +243,7 @@ public class Movement : MonoBehaviour
                     continue;
                 }
 
-                Vector3 penetrationVector = dir * dist;
+                Vector3 penetrationVector = dir * dist; // The vector needed to get outside of the collision
 
                 if (!_surfing)
                 {
@@ -245,7 +252,7 @@ public class Movement : MonoBehaviour
                 }
                 else
                 {
-                    ClipVelocity(dir, 1.0f);
+                    ClipVelocity(dir);
                 }
             }
         }
