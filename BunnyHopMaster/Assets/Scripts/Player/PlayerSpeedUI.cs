@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class PlayerSpeedUI : MonoBehaviour
 {
-    public SurfCharacter playerMovement;
+    public Movement playerMovement;
 
     /*print() style */
     public GUIStyle style;
 
     private void Awake()
     {
-        playerMovement = GetComponent<SurfCharacter>();
+        playerMovement = GetComponent<Movement>();
     }
     private void OnGUI()
     {
-        var velocity = playerMovement.moveData.velocity;
+        var velocity = playerMovement._newVelocity;
         velocity.y = 0;
         GUI.Label(new Rect(0, 15, 400, 100), "Speed: " + Mathf.Round(velocity.magnitude * 100) / 100 + "m/s", style);
     }
