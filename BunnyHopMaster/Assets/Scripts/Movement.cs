@@ -15,11 +15,11 @@ public class Movement : MonoBehaviour
     public float Gravity = 9.8f;
     public float JumpPower = 5f;
 
-    public float GroundAcceleration = 1.1f;
-    public float AirAcceleration = 1.5f;
+    public float GroundAcceleration = 7f;
+    public float AirAcceleration = 2.5f;
 
     public float StopSpeed = 8f;
-    public float Friction = 1f;
+    public float Friction = 6f;
     public float normalSurfaceFriction = 1f;
 
     public float AirCap = 3f;
@@ -80,25 +80,22 @@ public class Movement : MonoBehaviour
             halfExtents: transform.localScale,
             direction: Vector3.down,
             orientation: transform.rotation,
-            maxDistance: .5f
+            maxDistance: 0.01f
             );
         
         var wasGrounded = _grounded;
         var validHits = hits
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance);
+            .OrderBy(hit => hit.distance)
+            .Where(hit => hit.collider.name != "TestPlayer");
 
         _grounded = validHits.Count() > 0;
-        if(hits.Count() > 0)
-        {
-            Debug.Log("hits: " + hits.Count() + " hitting: " + hits.First().collider.name);
-
-        }
         if (_grounded)
         {
-            Debug.Log("grounded, hits: " + validHits.Count() + " hitting: " + validHits.First().collider.name);
             var closestHit = validHits.First();
+
+            
             //if (!wasGrounded)
             //{
             //    //bounce off the ground on first hit
@@ -108,7 +105,6 @@ public class Movement : MonoBehaviour
             //If the ground is NOT perfectly flat
             if (closestHit.normal.y < 1)
             {
-                Debug.Log("ground not flat");
                 ClipVelocity(closestHit.normal);
             }
             else
@@ -175,14 +171,14 @@ public class Movement : MonoBehaviour
     {
         var wishSpd = Mathf.Min(wishSpeed, AirCap);
         var currentSpeed = Vector3.Dot(_newVelocity, wishDir);
-        var addSpeed = wishSpd - currentSpeed;
+        var speedToAdd = wishSpd - currentSpeed;
 
-        if (addSpeed <= 0)
+        if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(addSpeed, AirAcceleration * wishSpeed * Time.deltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, AirAcceleration * wishSpeed * Time.deltaTime);
         _newVelocity += accelspeed * wishDir;
     }
 
@@ -225,21 +221,27 @@ public class Movement : MonoBehaviour
         }
 
         // iterate once to make sure we aren't still moving through the plane
-        //var adjust = Vector3.Dot(_newVelocity, normal);
-        //if (adjust < 0.0f)
-        //{
-        //    _newVelocity -= (normal * adjust);
-        //}
+        var adjust = Vector3.Dot(_newVelocity, normal);
+        if (adjust < 0.0f)
+        {
+            _newVelocity -= (normal * adjust);
+        }
     }
 
     private void ResolveCollisions()
     {
         var center = transform.position + AABB.center; // get center of bounding box in world space
-        var overlaps = Physics.OverlapBox(center, AABB.size, Quaternion.identity, notPlayerLayerMask);
+        var overlaps = Physics.OverlapBox(center, AABB.bounds.size, Quaternion.identity);
 
         foreach (var other in overlaps)
         {
-            if (Physics.ComputePenetration(AABB, AABB.transform.position, AABB.transform.rotation,
+            // If the collider is my own, check the next one
+            if(other == AABB)
+            {
+                continue;
+            }
+
+            if (Physics.ComputePenetration(AABB, transform.position, transform.rotation,
                 other, other.transform.position, other.transform.rotation,
                 out Vector3 dir, out float dist))
             {
