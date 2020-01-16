@@ -4,6 +4,7 @@ public class PlayerAiming : MonoBehaviour
 {
 	[Header("References")]
 	public Transform bodyTransform;
+    public Transform camera;
 
 	[Header("Sensitivity")]
 	public float sensitivityMultiplier = 1f;
@@ -23,6 +24,7 @@ public class PlayerAiming : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible   = false;
         sensitivityMultiplier = OptionsPreferencesManager.GetSensitivity();
+        camera = Camera.main.transform;
 	}
 
 	private void Update()
@@ -39,9 +41,12 @@ public class PlayerAiming : MonoBehaviour
 		realRotation   = new Vector3(Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation), realRotation.y + xMovement, realRotation.z);
 		realRotation.z = Mathf.Lerp(realRotation.z, 0f, Time.deltaTime * 3f);
 
-		//Apply real rotation to body
-		bodyTransform.eulerAngles = Vector3.Scale(realRotation, new Vector3(0f, 1f, 0f));
+        //Apply real rotation to body
+        Vector3 playerRotation = realRotation;
+        playerRotation.x = 0;
+        playerRotation.z = 0;
+		bodyTransform.eulerAngles = playerRotation;
 
-		transform.eulerAngles = realRotation;
+        camera.eulerAngles = realRotation;
 	}
 }

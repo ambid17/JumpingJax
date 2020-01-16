@@ -8,7 +8,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public int PlayerLayer = 12;
-    public int notPlayerLayerMask = 1 << 12;
+    public LayerMask notPlayerLayerMask;
     public float MoveSpeed = 10f;
     public float MaxVelocity = 100f;
 
@@ -32,7 +32,8 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
-        AABB = GetComponentInParent<BoxCollider>();
+        AABB = GetComponent<BoxCollider>();
+        notPlayerLayerMask = LayerMask.GetMask("Default");
     }
 
     private void FixedUpdate()
@@ -79,7 +80,7 @@ public class Movement : MonoBehaviour
             halfExtents: transform.localScale,
             direction: Vector3.down,
             orientation: transform.rotation,
-            maxDistance: 0.1f
+            maxDistance: .5f
             );
         
         var wasGrounded = _grounded;
@@ -89,7 +90,11 @@ public class Movement : MonoBehaviour
             .OrderBy(hit => hit.distance);
 
         _grounded = validHits.Count() > 0;
+        if(hits.Count() > 0)
+        {
+            Debug.Log("hits: " + hits.Count() + " hitting: " + hits.First().collider.name);
 
+        }
         if (_grounded)
         {
             Debug.Log("grounded, hits: " + validHits.Count() + " hitting: " + validHits.First().collider.name);
