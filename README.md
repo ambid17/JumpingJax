@@ -1,6 +1,8 @@
 # BunnyHopMaster
 A 3D platformer the Source engine movement mechanics, portals, and a basis in speedrunning
 
+Unity Version: 2019.3.0f3
+
 ## Movement mechanics
 The movement mechanics are based off of the Source Engine (2013): https://github.com/ValveSoftware/source-sdk-2013
 
