@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public int PlayerLayer = 12;
+    public LayerMask layersToIgnore;
     public float MoveSpeed = 10f;
     public float MaxVelocity = 100f;
 
@@ -76,23 +77,22 @@ public class PlayerMovement : MonoBehaviour
 
         var hits = Physics.BoxCastAll(center: AABB.bounds.center,
             halfExtents: transform.localScale,
-            direction: Vector3.down,
+            direction: -transform.up,
             orientation: transform.rotation,
-            maxDistance: 0.01f
+            maxDistance: 1f,
+            layerMask: layersToIgnore
             );
         
         var wasGrounded = _grounded;
         var validHits = hits
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance)
-            .Where(hit => hit.collider.gameObject.layer != PlayerLayer);
+            .OrderBy(hit => hit.distance);
 
         _grounded = validHits.Count() > 0;
         if (_grounded)
         {
             var closestHit = validHits.First();
-
             
             //if (!wasGrounded)
             //{
