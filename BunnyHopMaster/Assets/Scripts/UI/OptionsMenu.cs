@@ -1,5 +1,4 @@
-﻿using Fragsurf.Movement;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -23,7 +22,7 @@ public class OptionsMenu : MonoBehaviour {
     PlayerAiming playerAiming;
 
     private void Start() {
-        SurfCharacter playerCharacter = GetComponentInParent<SurfCharacter>();
+        PlayerMovement playerCharacter = GetComponentInParent<PlayerMovement>();
         if(playerCharacter != null)
         {
             playerAiming = playerCharacter.GetComponentInChildren<PlayerAiming>();

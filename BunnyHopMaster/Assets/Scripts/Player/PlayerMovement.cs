@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public int PlayerLayer = 12;
-    public LayerMask notPlayerLayerMask;
     public float MoveSpeed = 10f;
     public float MaxVelocity = 100f;
 
@@ -33,7 +32,6 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         AABB = GetComponent<BoxCollider>();
-        notPlayerLayerMask = LayerMask.GetMask("Default");
     }
 
     private void FixedUpdate()
@@ -88,7 +86,7 @@ public class Movement : MonoBehaviour
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
             .OrderBy(hit => hit.distance)
-            .Where(hit => hit.collider.name != "TestPlayer");
+            .Where(hit => hit.collider.gameObject.layer != PlayerLayer);
 
         _grounded = validHits.Count() > 0;
         if (_grounded)

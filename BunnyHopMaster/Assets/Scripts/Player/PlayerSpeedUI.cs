@@ -1,18 +1,17 @@
-﻿using Fragsurf.Movement;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSpeedUI : MonoBehaviour
 {
-    public Movement playerMovement;
+    public PlayerMovement playerMovement;
 
     /*print() style */
     public GUIStyle style;
 
     private void Awake()
     {
-        playerMovement = GetComponent<Movement>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
     private void OnGUI()
     {
