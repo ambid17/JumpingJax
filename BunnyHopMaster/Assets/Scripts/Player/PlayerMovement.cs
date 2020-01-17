@@ -7,23 +7,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public int PlayerLayer = 12;
     public LayerMask layersToIgnore;
-    public float MoveSpeed = 10f;
-    public float MaxVelocity = 100f;
-
-    public float Gravity = 9.8f;
-    public float JumpPower = 5f;
-
-    public float GroundAcceleration = 7f;
-    public float AirAcceleration = 2.5f;
-
-    public float StopSpeed = 8f;
-    public float Friction = 6f;
-    public float normalSurfaceFriction = 1f;
-
-    public float AirCap = 3f;
-    public BoxCollider AABB;
+    
+    public BoxCollider myCollider; 
     public Vector3 _newVelocity;
     [SerializeField]
     private bool _grounded;
@@ -32,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        AABB = GetComponent<BoxCollider>();
+        myCollider = GetComponent<BoxCollider>();
     }
 
     private void FixedUpdate()
@@ -47,8 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (_grounded)
         {
-            ApplyGroundAcceleration(wishDir, wishSpeed, normalSurfaceFriction);
-            ClampVelocity(MoveSpeed);
+            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.normalSurfaceFriction);
+            ClampVelocity(PlayerConstants.MoveSpeed);
             ApplyFriction();
         }
         else
@@ -56,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
             ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
-        ClampVelocity(MaxVelocity);
+        ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += _newVelocity * Time.deltaTime;
 
@@ -67,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!_grounded)
         {
-            _newVelocity.y -= Gravity * Time.deltaTime;
+            _newVelocity.y -= PlayerConstants.Gravity * Time.deltaTime;
         }
     }
 
@@ -75,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _surfing = false;
 
-        var hits = Physics.BoxCastAll(center: AABB.bounds.center,
+        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
             halfExtents: transform.localScale,
             direction: -transform.up,
             orientation: transform.rotation,
@@ -93,14 +79,8 @@ public class PlayerMovement : MonoBehaviour
         if (_grounded)
         {
             var closestHit = validHits.First();
-            
-            //if (!wasGrounded)
-            //{
-            //    //bounce off the ground on first hit
-            //    transform.position = new Vector3(transform.position.x, closestHit.point.y + .1, transform.position.z);
-            //}
 
-            //If the ground is NOT perfectly flat
+            //If the ground is NOT perfectly flat, slide across it
             if (closestHit.normal.y < 1)
             {
                 ClipVelocity(closestHit.normal);
@@ -112,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            //Find the closest collision where the slope is at least 45 degrees
             var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
             if (surfHits.Count() > 0)
             {
@@ -126,19 +107,19 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_grounded && Input.GetKey(KeyCode.Space))
         {
-            _newVelocity.y += JumpPower;
+            _newVelocity.y += PlayerConstants.JumpPower;
             _grounded = false;
         }
     }
 
     private Vector3 GetInputVector()
     {
-        var horiz = Input.GetKey(KeyCode.A) ? -MoveSpeed : Input.GetKey(KeyCode.D) ? MoveSpeed : 0;
-        var vert = Input.GetKey(KeyCode.S) ? -MoveSpeed : Input.GetKey(KeyCode.W) ? MoveSpeed : 0;
+        var horiz = Input.GetKey(KeyCode.A) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.D) ? PlayerConstants.MoveSpeed : 0;
+        var vert = Input.GetKey(KeyCode.S) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.W) ? PlayerConstants.MoveSpeed : 0;
         var inputVelocity = new Vector3(horiz, 0, vert);
-        if (inputVelocity.magnitude > MoveSpeed)
+        if (inputVelocity.magnitude > PlayerConstants.MoveSpeed)
         {
-            inputVelocity *= MoveSpeed / inputVelocity.magnitude;
+            inputVelocity *= PlayerConstants.MoveSpeed / inputVelocity.magnitude;
         }
 
         //Get the velocity vector in world space coordinates
@@ -152,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
         var currentSpeed = Vector3.Dot(_newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
 
-        var acceleration = GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+        var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
 
         if (speedToAdd <= 0)
         {
@@ -167,7 +148,7 @@ public class PlayerMovement : MonoBehaviour
     //wishSpeed: the speed the player wishes to go this frame
     private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
     {
-        var wishSpd = Mathf.Min(wishSpeed, AirCap);
+        var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
         var currentSpeed = Vector3.Dot(_newVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
 
@@ -176,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, AirAcceleration * wishSpeed * Time.deltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
         _newVelocity += accelspeed * wishDir;
     }
 
@@ -192,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var lossInSpeed = speed * Friction * Time.deltaTime;
+        var lossInSpeed = speed * PlayerConstants.Friction * Time.deltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)
@@ -203,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ClampVelocity(float range)
     {
-        _newVelocity = Vector3.ClampMagnitude(_newVelocity, MaxVelocity);
+        _newVelocity = Vector3.ClampMagnitude(_newVelocity, PlayerConstants.MaxVelocity);
     }
 
     //Slide off of the impacting surface
@@ -228,18 +209,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void ResolveCollisions()
     {
-        var center = transform.position + AABB.center; // get center of bounding box in world space
-        var overlaps = Physics.OverlapBox(center, AABB.bounds.size, Quaternion.identity);
+        var center = transform.position + myCollider.center; // get center of bounding box in world space
+        var overlaps = Physics.OverlapBox(center, myCollider.bounds.size, Quaternion.identity);
 
         foreach (var other in overlaps)
         {
             // If the collider is my own, check the next one
-            if(other == AABB)
+            if(other == myCollider)
             {
                 continue;
             }
 
-            if (Physics.ComputePenetration(AABB, transform.position, transform.rotation,
+            if (Physics.ComputePenetration(myCollider, transform.position, transform.rotation,
                 other, other.transform.position, other.transform.rotation,
                 out Vector3 dir, out float dist))
             {
