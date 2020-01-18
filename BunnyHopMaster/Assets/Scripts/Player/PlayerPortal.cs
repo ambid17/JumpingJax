@@ -27,12 +27,12 @@ public class PlayerPortal : MonoBehaviour
         }
 
         //Create Blue portal
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(HotKeyManager.instance.GetKeyFor(PlayerConstants.Portal1)))
         {
             CreatePortal(PortalType.blue);
         }
         //Create Red portal
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(HotKeyManager.instance.GetKeyFor(PlayerConstants.Portal2)))
         {
             CreatePortal(PortalType.red);
         }
@@ -46,9 +46,6 @@ public class PlayerPortal : MonoBehaviour
         {
             CleanPortals(portalType);
             CreateNewPortal(portalType, hit);
-
-
-            
         }
     }
 

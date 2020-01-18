@@ -105,6 +105,7 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("ctele");
         if (canTeleport)
         {
             Debug.Log("triggerEnter: " + other.gameObject.name);
@@ -120,7 +121,7 @@ public class Portal : MonoBehaviour
     private void TeleportPlayer(Transform playerObject)
     {
         //The box collider is a child of the player, thus we need to move the parent
-        playerObject.parent.position = destinationPortal.transform.position;
+        playerObject.position = destinationPortal.transform.position;
     }
 
     public void DidTeleport()
