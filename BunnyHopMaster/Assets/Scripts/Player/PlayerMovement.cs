@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
             halfExtents: transform.localScale,
             direction: -transform.up,
             orientation: transform.rotation,
-            maxDistance: 1f,
+            maxDistance: 0.11f,
             layerMask: layersToIgnore
             );
         
@@ -76,6 +76,12 @@ public class PlayerMovement : MonoBehaviour
             .OrderBy(hit => hit.distance);
 
         _grounded = validHits.Count() > 0;
+
+        if(hits.Count() > 0)
+        {
+            Debug.Log("hits " + hits.Count() + " " + hits.First().collider.gameObject.name);
+
+        }
         if (_grounded)
         {
             var closestHit = validHits.First();
@@ -127,6 +133,7 @@ public class PlayerMovement : MonoBehaviour
             inputVelocity *= PlayerConstants.MoveSpeed / inputVelocity.magnitude;
         }
 
+        Debug.Log(inputVelocity);
         //Get the velocity vector in world space coordinates
         return transform.TransformDirection(inputVelocity);
     }

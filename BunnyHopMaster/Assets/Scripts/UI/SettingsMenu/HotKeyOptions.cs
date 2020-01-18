@@ -66,7 +66,7 @@ public class HotKeyOptions : MonoBehaviour
         foreach(string hotkey in keys.Keys)
         {
             GameObject newItem = Instantiate(hotKeySelectionPrefab);
-            newItem.transform.parent = scrollViewContent;
+            newItem.transform.SetParent(scrollViewContent, false);
 
             HotKeyItem item = newItem.GetComponentInChildren<HotKeyItem>();
             item.SetItemText(hotkey);

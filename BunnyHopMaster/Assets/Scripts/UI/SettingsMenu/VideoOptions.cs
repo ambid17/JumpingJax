@@ -15,6 +15,7 @@ public class VideoOptions : MonoBehaviour
     {
         SetupResolutionDropdown();
         SetupGraphicsDropdown();
+        SetupFullscreenDropdown();
     }
 
     public void SetDefaults()
@@ -45,15 +46,27 @@ public class VideoOptions : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+
+        resolutionDropdown.onValueChanged.RemoveAllListeners();
+        resolutionDropdown.onValueChanged.AddListener(SetResolution);
     }
 
     void SetupGraphicsDropdown()
     {
         graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
         graphicsQualityDropdown.RefreshShownValue();
+
+        graphicsQualityDropdown.onValueChanged.RemoveAllListeners();
+        graphicsQualityDropdown.onValueChanged.AddListener(SetQuality);
     }
 
-    public void SetResolution(int resolutionIndex)
+    void SetupFullscreenDropdown()
+    {
+        fullScreenDropdowne.onValueChanged.RemoveAllListeners();
+        fullScreenDropdowne.onValueChanged.AddListener(SetFullScreen);
+    }
+
+    void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);

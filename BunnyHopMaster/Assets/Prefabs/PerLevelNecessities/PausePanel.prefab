@@ -2139,6 +2139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7989124690906214252}
   - component: {fileID: 3661467074902879428}
+  - component: {fileID: 5434495491290819521}
   m_Layer: 12
   m_Name: Content
   m_TagString: Untagged
@@ -2191,6 +2192,20 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &5434495491290819521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381738934686406565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &1468142153672702045
 GameObject:
   m_ObjectHideFlags: 0
@@ -2341,7 +2356,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollViewContent: {fileID: 270106060623297210}
-  hotKeyManager: {fileID: 0}
   hotKeySelectionPrefab: {fileID: 2766767513055718235, guid: 5334f7acca34fc0408976f0d0611c671,
     type: 3}
 --- !u!1 &1484803042356258061
@@ -3116,6 +3130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7295005987116961663}
   - component: {fileID: 715119082574917190}
+  - component: {fileID: 2409485444042940603}
   m_Layer: 12
   m_Name: Content
   m_TagString: Untagged
@@ -3168,6 +3183,20 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &2409485444042940603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946555079343205947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &1992799384611631640
 GameObject:
   m_ObjectHideFlags: 0
@@ -3255,6 +3284,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8024203885183671194}
   - component: {fileID: 3503522438071728134}
+  - component: {fileID: 5197509384064729383}
   m_Layer: 12
   m_Name: Content
   m_TagString: Untagged
@@ -3309,6 +3339,20 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &5197509384064729383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041669897019076592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2051533855745651571
 GameObject:
   m_ObjectHideFlags: 0
@@ -10617,13 +10661,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: 1920 X 1080
-      m_Image: {fileID: 0}
-    - m_Text: 1420 X 1960
-      m_Image: {fileID: 0}
-    - m_Text: 800 X 600
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

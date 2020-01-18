@@ -73,7 +73,7 @@ public class PlayerProgress : MonoBehaviour
     void Respawn()
     {
         Vector3 newPos = GetCurrentCheckpointPosition();
-        newPos.y += 0.2f;
+        newPos.y += 2f;
         transform.position = newPos;
     }
 
