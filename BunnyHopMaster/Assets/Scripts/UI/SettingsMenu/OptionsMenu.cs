@@ -92,8 +92,9 @@ public class OptionsMenu : MonoBehaviour {
 
         ColorBlock selectedColors = new ColorBlock();
         selectedColors.normalColor = new Color(1, 0, 0);
-        selectedColors.highlightedColor = new Color(0.7f, 0, 0);
-        selectedColors.selectedColor = new Color(0.5f, 0, 0);
+        selectedColors.highlightedColor = new Color(0.9f, 0, 0);
+        selectedColors.selectedColor = new Color(0.9f, 0, 0);
+        selectedColors.colorMultiplier = 2;
 
         switch (tabToSet)
         {
@@ -125,8 +126,9 @@ public class OptionsMenu : MonoBehaviour {
 
         ColorBlock normalColors = new ColorBlock();
         normalColors.normalColor = new Color(1, 1, 1);
-        normalColors.highlightedColor = new Color(0, 0, 0.1f);
-        normalColors.selectedColor = new Color(0, 0, 1);
+        normalColors.highlightedColor = new Color(0.9f, 0, 0);
+        normalColors.selectedColor = new Color(0.9f, 0, 0);
+        normalColors.colorMultiplier = 2;
 
         controlsTabButton.colors = normalColors;
         videoTabButton.colors = normalColors;
