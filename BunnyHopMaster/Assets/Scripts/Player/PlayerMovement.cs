@@ -105,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
-        if (_grounded && Input.GetKey(KeyCode.Space))
+        if (_grounded && Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Jump)))
         {
             _newVelocity.y += PlayerConstants.JumpPower;
             _grounded = false;
@@ -114,8 +114,13 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetInputVector()
     {
-        var horiz = Input.GetKey(KeyCode.A) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.D) ? PlayerConstants.MoveSpeed : 0;
-        var vert = Input.GetKey(KeyCode.S) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.W) ? PlayerConstants.MoveSpeed : 0;
+        KeyCode left = HotKeyManager.instance.GetKeyFor(PlayerConstants.Left);
+        KeyCode right = HotKeyManager.instance.GetKeyFor(PlayerConstants.Right);
+        KeyCode forward = HotKeyManager.instance.GetKeyFor(PlayerConstants.Forward);
+        KeyCode back = HotKeyManager.instance.GetKeyFor(PlayerConstants.Back);
+
+        var horiz = Input.GetKey(left) ? -PlayerConstants.MoveSpeed : Input.GetKey(right) ? PlayerConstants.MoveSpeed : 0;
+        var vert = Input.GetKey(back) ? -PlayerConstants.MoveSpeed : Input.GetKey(forward) ? PlayerConstants.MoveSpeed : 0;
         var inputVelocity = new Vector3(horiz, 0, vert);
         if (inputVelocity.magnitude > PlayerConstants.MoveSpeed)
         {
