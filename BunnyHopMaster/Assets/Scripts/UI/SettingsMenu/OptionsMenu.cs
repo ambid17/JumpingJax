@@ -10,12 +10,13 @@ public class OptionsMenu : MonoBehaviour {
         controls, video, audio, misc
     }
 
-    [Header("All values set at runtime")]
+    [Header("set at runtime")]
     public HotKeyOptions controlsPanel;
     public VideoOptions videoPanel;
     public AudioOptions audioPanel;
     public MiscOptions miscPanel;
-    
+
+    [Header("set in editor")]
     public Button controlsTabButton;
     public Button videoTabButton;
     public Button audioTabButton;
@@ -46,23 +47,15 @@ public class OptionsMenu : MonoBehaviour {
     // Get subcomponents to prevent messing up in the editor
     private void GetSubcomponents()
     {
-        controlsPanel = GetComponentInChildren<HotKeyOptions>();
+        controlsPanel = GetComponentInChildren<HotKeyOptions>(true);
 
         if(controlsPanel == null)
         {
             Debug.LogError("panel not found");
         }
-        videoPanel = GetComponentInChildren<VideoOptions>();
-        audioPanel = GetComponentInChildren<AudioOptions>();
-        miscPanel = GetComponentInChildren<MiscOptions>();
-
-        controlsTabButton = transform.Find("ControlsButton").GetComponent<Button>();
-        videoTabButton = transform.Find("VideoButton").GetComponent<Button>();
-        audioTabButton = transform.Find("AudioButton").GetComponent<Button>();
-        miscTabButton = transform.Find("MiscButton").GetComponent<Button>();
-
-        backButton = transform.Find("BackButton").GetComponent<Button>();
-        defaultButton = transform.Find("DefaultButton").GetComponent<Button>();
+        videoPanel = GetComponentInChildren<VideoOptions>(true);
+        audioPanel = GetComponentInChildren<AudioOptions>(true);
+        miscPanel = GetComponentInChildren<MiscOptions>(true);
     }
 
     // Remove all listeners and add them in case this script is ran twice
@@ -84,13 +77,13 @@ public class OptionsMenu : MonoBehaviour {
     public void InitializeBackButton()
     {
         backButton.onClick.RemoveAllListeners();
-        backButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.controls));
+        backButton.onClick.AddListener(() => Back());
     }
 
     public void InitializeDefaultButton()
     {
         defaultButton.onClick.RemoveAllListeners();
-        defaultButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.controls));
+        defaultButton.onClick.AddListener(() => DefaultCurrentOptions());
     }
 
     public void SetCurrentTab(SettingsTabs tabToSet)

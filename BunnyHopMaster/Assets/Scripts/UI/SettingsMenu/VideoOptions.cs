@@ -6,16 +6,25 @@ using UnityEngine.UI;
 public class VideoOptions : MonoBehaviour
 {
     public Dropdown resolutionDropdown;
-
+    public Dropdown fullScreenDropdowne;
     public Dropdown graphicsQualityDropdown;
-    public Toggle fullScreenToggle;
 
     Resolution[] resolutions;
 
     void Start()
     {
-        resolutions = Screen.resolutions;
+        SetupResolutionDropdown();
+        SetupGraphicsDropdown();
+    }
 
+    public void SetDefaults()
+    {
+
+    }
+
+    void SetupResolutionDropdown()
+    {
+        resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
         List<string> options = new List<string>();
@@ -36,16 +45,12 @@ public class VideoOptions : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
-
-        graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
-        graphicsQualityDropdown.RefreshShownValue();
-
-        fullScreenToggle.isOn = Screen.fullScreen;
     }
 
-    public void SetDefaults()
+    void SetupGraphicsDropdown()
     {
-
+        graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
+        graphicsQualityDropdown.RefreshShownValue();
     }
 
     public void SetResolution(int resolutionIndex)
@@ -55,16 +60,17 @@ public class VideoOptions : MonoBehaviour
         OptionsPreferencesManager.SetResolution(resolution.width, resolution.height);
     }
 
+    public void SetFullScreen(int isFullScreenSelection)
+    {
+        bool isFullScreen = isFullScreenSelection == 1 ? true : false;
+        Screen.fullScreen = isFullScreen ? true : false;
+        OptionsPreferencesManager.SetFullScreen(isFullScreen);
+    }
+
     public void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
         PlayerPrefs.SetInt("Quality", qualityIndex);
         OptionsPreferencesManager.SetQuality(qualityIndex);
-    }
-
-    public void SetFullScreen(bool isFullScreen)
-    {
-        Screen.fullScreen = isFullScreen;
-        OptionsPreferencesManager.SetFullScreen(isFullScreen);
     }
 }
