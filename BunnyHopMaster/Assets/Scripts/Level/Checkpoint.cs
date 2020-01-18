@@ -8,16 +8,16 @@ public class Checkpoint : MonoBehaviour
     public int level;
     
     public Material completedMaterial;
-    public MeshRenderer renderer;
+    public MeshRenderer myRenderer;
 
     private void Start()
     {
-        renderer = GetComponent<MeshRenderer>();
+        myRenderer = GetComponent<MeshRenderer>();
     }
 
     public void SetCompleted()
     {
         Debug.Log("Reached checkpoint: " + level);
-        renderer.sharedMaterial = completedMaterial;
+        myRenderer.sharedMaterial = completedMaterial;
     }
 }

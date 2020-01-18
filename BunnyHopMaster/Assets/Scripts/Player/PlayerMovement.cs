@@ -73,7 +73,8 @@ public class PlayerMovement : MonoBehaviour
         var validHits = hits
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance);
+            .OrderBy(hit => hit.distance)
+            .Where(hit => !hit.collider.isTrigger);
 
         _grounded = validHits.Count() > 0;
         

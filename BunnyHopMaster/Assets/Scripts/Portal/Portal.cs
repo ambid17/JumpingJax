@@ -105,7 +105,6 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("ctele");
         if (canTeleport)
         {
             Debug.Log("triggerEnter: " + other.gameObject.name);
