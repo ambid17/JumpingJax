@@ -19,6 +19,9 @@ public static class PlayerConstants
 
     public static float AirAccelerationCap = 3f;
 
+    public static Vector3 BoxCastExtents = new Vector3(0.3f, 0.9f, 0.3f);
+    public static float BoxCastDistance = 0.11f;
+
     //HotKeys
     public static string Forward = "Forward";
     public static string ForwardDefault = "W";

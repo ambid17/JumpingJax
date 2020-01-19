@@ -8,8 +8,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public LayerMask layersToIgnore;
-    
-    public BoxCollider myCollider; 
+
+    public BoxCollider myCollider;
     public Vector3 _newVelocity;
     [SerializeField]
     private bool _grounded;
@@ -62,13 +62,13 @@ public class PlayerMovement : MonoBehaviour
         _surfing = false;
 
         var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
-            halfExtents: transform.localScale,
+            halfExtents: PlayerConstants.BoxCastExtents,
             direction: -transform.up,
-            orientation: transform.rotation,
-            maxDistance: 0.11f,
+            orientation: Quaternion.identity,
+            maxDistance: PlayerConstants.BoxCastDistance,
             layerMask: layersToIgnore
             );
-        
+
         var wasGrounded = _grounded;
         var validHits = hits
             .ToList()
@@ -77,7 +77,12 @@ public class PlayerMovement : MonoBehaviour
             .Where(hit => !hit.collider.isTrigger);
 
         _grounded = validHits.Count() > 0;
-        
+
+        if (validHits.Count() > 0)
+        {
+            Debug.Log("hits: " + validHits.Count() + " " + validHits.First().collider.gameObject.name);
+        }
+
         if (_grounded)
         {
             var closestHit = validHits.First();
@@ -217,12 +222,12 @@ public class PlayerMovement : MonoBehaviour
     private void ResolveCollisions()
     {
         var center = transform.position + myCollider.center; // get center of bounding box in world space
-        var overlaps = Physics.OverlapBox(center, myCollider.bounds.size, Quaternion.identity);
+        var overlaps = Physics.OverlapBox(center, PlayerConstants.BoxCastExtents, Quaternion.identity);
 
         foreach (var other in overlaps)
         {
             // If the collider is my own, check the next one
-            if(other == myCollider || other.isTrigger)
+            if (other == myCollider || other.isTrigger)
             {
                 continue;
             }
@@ -236,11 +241,13 @@ public class PlayerMovement : MonoBehaviour
                     continue;
                 }
 
-                Vector3 penetrationVector = dir * dist; // The vector needed to get outside of the collision
+                Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
+
+                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(_newVelocity, -dir).ToString("F5"));
 
                 if (!_surfing)
                 {
-                    transform.position += penetrationVector;
+                    transform.position += depenetrationVector;
                     _newVelocity -= Vector3.Project(_newVelocity, -dir);
                 }
                 else
