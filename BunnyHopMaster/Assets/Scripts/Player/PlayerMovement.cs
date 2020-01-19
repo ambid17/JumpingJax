@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
             halfExtents: transform.localScale,
             direction: -transform.up,
             orientation: transform.rotation,
-            maxDistance: 1f,
+            maxDistance: 0.11f,
             layerMask: layersToIgnore
             );
         
@@ -73,9 +73,11 @@ public class PlayerMovement : MonoBehaviour
         var validHits = hits
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance);
+            .OrderBy(hit => hit.distance)
+            .Where(hit => !hit.collider.isTrigger);
 
         _grounded = validHits.Count() > 0;
+        
         if (_grounded)
         {
             var closestHit = validHits.First();
@@ -105,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
-        if (_grounded && Input.GetKey(KeyCode.Space))
+        if (_grounded && Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Jump)))
         {
             _newVelocity.y += PlayerConstants.JumpPower;
             _grounded = false;
@@ -114,8 +116,13 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetInputVector()
     {
-        var horiz = Input.GetKey(KeyCode.A) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.D) ? PlayerConstants.MoveSpeed : 0;
-        var vert = Input.GetKey(KeyCode.S) ? -PlayerConstants.MoveSpeed : Input.GetKey(KeyCode.W) ? PlayerConstants.MoveSpeed : 0;
+        KeyCode left = HotKeyManager.instance.GetKeyFor(PlayerConstants.Left);
+        KeyCode right = HotKeyManager.instance.GetKeyFor(PlayerConstants.Right);
+        KeyCode forward = HotKeyManager.instance.GetKeyFor(PlayerConstants.Forward);
+        KeyCode back = HotKeyManager.instance.GetKeyFor(PlayerConstants.Back);
+
+        var horiz = Input.GetKey(left) ? -PlayerConstants.MoveSpeed : Input.GetKey(right) ? PlayerConstants.MoveSpeed : 0;
+        var vert = Input.GetKey(back) ? -PlayerConstants.MoveSpeed : Input.GetKey(forward) ? PlayerConstants.MoveSpeed : 0;
         var inputVelocity = new Vector3(horiz, 0, vert);
         if (inputVelocity.magnitude > PlayerConstants.MoveSpeed)
         {
@@ -215,7 +222,7 @@ public class PlayerMovement : MonoBehaviour
         foreach (var other in overlaps)
         {
             // If the collider is my own, check the next one
-            if(other == myCollider)
+            if(other == myCollider || other.isTrigger)
             {
                 continue;
             }
