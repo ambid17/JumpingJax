@@ -15,7 +15,7 @@ public class PlayerSpeedUI : MonoBehaviour
     }
     private void OnGUI()
     {
-        var velocity = playerMovement._newVelocity;
+        var velocity = playerMovement.newVelocity;
         velocity.y = 0;
         GUI.Label(new Rect(0, 15, 400, 100), "Speed: " + Mathf.Round(velocity.magnitude * 100) / 100 + "m/s", style);
     }

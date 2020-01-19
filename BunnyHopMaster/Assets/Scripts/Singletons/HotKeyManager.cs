@@ -34,6 +34,7 @@ public class HotKeyManager : MonoBehaviour {
         AddPlayerDefaultKey(PlayerConstants.Left, PlayerConstants.LeftDefault);
         AddPlayerDefaultKey(PlayerConstants.Right, PlayerConstants.RightDefault);
         AddPlayerDefaultKey(PlayerConstants.Jump, PlayerConstants.JumpDefault);
+        AddPlayerDefaultKey(PlayerConstants.Crouch, PlayerConstants.CrouchDefault);
         AddPlayerDefaultKey(PlayerConstants.ResetLevel, PlayerConstants.ResetLevelDefault);
         AddPlayerDefaultKey(PlayerConstants.Portal1, PlayerConstants.Portal1Default);
         AddPlayerDefaultKey(PlayerConstants.Portal2, PlayerConstants.Portal2Default);

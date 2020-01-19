@@ -5,10 +5,12 @@ using UnityEngine;
 public static class PlayerConstants
 {
     public static float MoveSpeed = 10f;
+    public static float CrouchingMoveSpeed = 5f;
     public static float MaxVelocity = 100f;
 
     public static float Gravity = 9.8f;
     public static float JumpPower = 5f;
+    public static float CrouchingJumpPower = 3f;
 
     public static float GroundAcceleration = 7f;
     public static float AirAcceleration = 2.5f;
@@ -20,7 +22,13 @@ public static class PlayerConstants
     public static float AirAccelerationCap = 3f;
 
     public static Vector3 BoxCastExtents = new Vector3(0.3f, 0.9f, 0.3f);
+    public static Vector3 CrouchingBoxCastExtents = new Vector3(0.3f, 0.5f, 0.3f);
+
+    public static Vector3 BoxColliderSize = new Vector3(1f, 1.8f, 1f);
+    public static Vector3 CrouchingBoxColliderSize = new Vector3(1f, 1f, 1f);
+
     public static float BoxCastDistance = 0.11f;
+    public static float CrouchingBoxCastDistance = 0.11f;
 
     //HotKeys
     public static string Forward = "Forward";
@@ -42,7 +50,7 @@ public static class PlayerConstants
     public static string ResetLevelDefault = "R";
 
     public static string Crouch = "Crouch";
-    public static string CrouchDefault = "Left Control";
+    public static string CrouchDefault = "LeftControl";
 
     public static string Portal1 = "Portal1";
     public static string Portal1Default = "Mouse0";
