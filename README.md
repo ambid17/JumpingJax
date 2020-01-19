@@ -1,5 +1,5 @@
 # BunnyHopMaster
-A 3D platformer the Source engine movement mechanics, portals, and a basis in speedrunning
+A 3D platformer based on the Source engine movement mechanics, portals, and a basis in speedrunning
 
 Unity Version: 2019.3.0f3
 
