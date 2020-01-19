@@ -1,7 +1,4 @@
-﻿// Author: Crayz
-// https://youtube.com/crayz92
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
