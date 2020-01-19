@@ -4,78 +4,93 @@ using UnityEngine;
 
 public class OptionsPreferencesManager
 {
-    private const string resolutionWidthKey = "ResolutionWidth";
-    private const int defaultResolutionWidth = 1920;
-    
-    private const string resolutionHeightKey = "ResolutionHeight";
-    private const int defaultResolutionHeight = 1080;
+	private const string resolutionWidthKey = "ResolutionWidth";
+	private const int defaultResolutionWidth = 1920;
 
-    private const string volumeKey = "Volume";
-    private const int defaultVolume = -20;
+	private const string resolutionHeightKey = "ResolutionHeight";
+	private const int defaultResolutionHeight = 1080;
 
-    private const string qualityKey = "Quality";
-    private const int defaultQuality = 0;
+	private const string volumeKey = "Volume";
+	private const int defaultVolume = -20;
 
-    private const string fullScreenKey = "IsFullScreen";
-    private const int defaultIsFullScreen = 0;
+	private const string qualityKey = "Quality";
+	private const int defaultQuality = 0;
 
-    private const string sensitivityKey = "Sensitivity";
-    private const float defaultSensitivity = 0.5f;
+	private const string fullScreenKey = "IsFullScreen";
+	private const int defaultIsFullScreen = 0;
 
-    public static int GetResolutionWidth()
-    {
-        return PlayerPrefs.GetInt(resolutionWidthKey, defaultResolutionWidth);
-    }
+	private const string sensitivityKey = "Sensitivity";
+	private const float defaultSensitivity = 0.5f;
 
-    public static int GetResolutionHeight()
-    {
-        return PlayerPrefs.GetInt(resolutionWidthKey, defaultResolutionHeight);
-    }
+	private const string fovKey = "FOV";
+	private const int defaultFOV = 70;
 
-    public static void SetResolution(int width, int height)
-    {
-        PlayerPrefs.SetInt(resolutionWidthKey, width);
-        PlayerPrefs.SetInt(resolutionHeightKey, height);
-    }
 
-    public static float GetVolume()
-    {
-        return PlayerPrefs.GetFloat(volumeKey, defaultVolume);
-    }
+	public static int GetResolutionWidth()
+	{
+		return PlayerPrefs.GetInt(resolutionWidthKey, defaultResolutionWidth);
+	}
 
-    public static void SetVolume(float volume)
-    {
-        PlayerPrefs.SetFloat(volumeKey, volume);
-    }
+	public static int GetResolutionHeight()
+	{
+		return PlayerPrefs.GetInt(resolutionWidthKey, defaultResolutionHeight);
+	}
 
-    public static int GetQuality()
-    {
-        return PlayerPrefs.GetInt(qualityKey, defaultQuality);
-    }
+	public static void SetResolution(int width, int height)
+	{
+		PlayerPrefs.SetInt(resolutionWidthKey, width);
+		PlayerPrefs.SetInt(resolutionHeightKey, height);
+	}
 
-    public static void SetQuality(int quality)
-    {
-        PlayerPrefs.SetInt(qualityKey, quality);
-    }
+	public static float GetVolume()
+	{
+		return PlayerPrefs.GetFloat(volumeKey, defaultVolume);
+	}
 
-    public static bool GetFullScreen()
-    {
-        int isFullScreen = PlayerPrefs.GetInt(fullScreenKey, defaultIsFullScreen);
-        return isFullScreen == 0 ? false : true;
-    }
+	public static void SetVolume(float volume)
+	{
+		PlayerPrefs.SetFloat(volumeKey, volume);
+	}
 
-    public static void SetFullScreen(bool isFullScreen)
-    {
-        PlayerPrefs.SetInt(fullScreenKey, isFullScreen ? 1 : 0);
-    }
+	public static int GetQuality()
+	{
+		return PlayerPrefs.GetInt(qualityKey, defaultQuality);
+	}
 
-    public static float GetSensitivity()
-    {
-        return PlayerPrefs.GetFloat(sensitivityKey, defaultSensitivity);
-    }
+	public static void SetQuality(int quality)
+	{
+		PlayerPrefs.SetInt(qualityKey, quality);
+	}
 
-    public static void SetSensitivity(float sensitivity)
-    {
-        PlayerPrefs.SetFloat(sensitivityKey, sensitivity);
-    }
+	public static bool GetFullScreen()
+	{
+		int isFullScreen = PlayerPrefs.GetInt(fullScreenKey, defaultIsFullScreen);
+		return isFullScreen == 0 ? false : true;
+	}
+
+	public static void SetFullScreen(bool isFullScreen)
+	{
+		PlayerPrefs.SetInt(fullScreenKey, isFullScreen ? 1 : 0);
+	}
+
+	public static float GetSensitivity()
+	{
+		return PlayerPrefs.GetFloat(sensitivityKey, defaultSensitivity);
+	}
+
+	public static void SetSensitivity(float sensitivity)
+	{
+		PlayerPrefs.SetFloat(sensitivityKey, sensitivity);
+	}
+
+	public static int GetFOV()
+	{
+		return PlayerPrefs.GetInt(fovKey, defaultFOV);
+	}
+
+	public static void setFOV(int fov)
+	{
+		PlayerPrefs.SetInt(fovKey, fov);
+	}
 }
+
