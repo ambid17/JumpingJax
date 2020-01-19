@@ -78,11 +78,6 @@ public class PlayerMovement : MonoBehaviour
 
         _grounded = validHits.Count() > 0;
 
-        if (validHits.Count() > 0)
-        {
-            Debug.Log("hits: " + validHits.Count() + " " + validHits.First().collider.gameObject.name);
-        }
-
         if (_grounded)
         {
             var closestHit = validHits.First();
