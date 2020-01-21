@@ -1,309 +1,323 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-// Contains the command the user wishes upon the character
-struct Cmd {
-    public float forwardMove;
-    public float rightMove;
-    public float upMove;
-}
+public class PlayerMovement : MonoBehaviour
+{
+    public LayerMask layersToIgnore;
+    public BoxCollider myCollider;
 
-public class PlayerMovement : MonoBehaviour {
-    public Transform playerView;     // Camera
-    public float playerViewYOffset = 1.8f; // The height at which the camera is bound to
-    public float xMouseSensitivity = 30.0f;
-    public float yMouseSensitivity = 30.0f;
+    //The velocity applied at the end of every physics frame
+    public Vector3 newVelocity;
 
-    /*Frame occuring factors*/
-    public float gravity = 20.0f;
+    [SerializeField]
+    private bool grounded;
+    [SerializeField]
+    private bool surfing;
+    [SerializeField]
+    private bool crouching;
+    [SerializeField]
+    private bool wasCrouching;
 
-    public float friction = 6; //Ground friction
-
-    /* Movement stuff */
-    public float moveSpeed = 7.0f;                // Ground move speed
-    public float runAcceleration = 14.0f;         // Ground accel
-    public float runDeacceleration = 10.0f;       // Deacceleration that occurs when running on the ground
-    public float airAcceleration = 2.0f;          // Air accel
-    public float airDecceleration = 2.0f;         // Deacceleration experienced when ooposite strafing
-    public float airControl = 0.3f;               // How precise air control is
-    public float sideStrafeAcceleration = 50.0f;  // How fast acceleration occurs to get up to sideStrafeSpeed when
-    public float sideStrafeSpeed = 1.0f;          // What the max speed to generate when side strafing
-    public float jumpSpeed = 8.0f;                // The speed at which the character's up axis gains when hitting jump
-    public bool holdJumpToBhop = false;           // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
-
-    /*FPS Stuff */
-    public float fpsDisplayRate = 4.0f; // 4 updates per sec
-
-    private int frameCount = 0;
-    private float deltaTime = 0.0f;
-    private float fps = 0.0f;
-
-    private CharacterController _controller;
-
-    // Camera rotations
-    private float rotX = 0.0f;
-    private float rotY = 0.0f;
-
-    private Vector3 playerVelocity = Vector3.zero;
-    public float playerTopVelocity = 0.0f;
-
-    // Q3: players can queue the next jump just before he hits the ground
-    private bool wishJump = false;
-
-    // Used to display real time fricton values
-    private float playerFriction = 0.0f;
-
-    // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
-    private Cmd _cmd;
-
-    private void Start() {
-        // Hide the cursor
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined;
-
-        if (playerView == null) {
-            playerView = GetComponentInChildren<Camera>().transform;
-        }
-
-        // Put the camera inside the capsule collider
-        playerView.position = new Vector3(
-            transform.position.x,
-            transform.position.y + playerViewYOffset,
-            transform.position.z);
-
-        _controller = GetComponent<CharacterController>();
-        _controller.enabled = true;
+    private void Start()
+    {
+        myCollider = GetComponent<BoxCollider>();
     }
 
-    private void Update() {
-        // Do FPS calculation
-        frameCount++;
-        deltaTime += Time.deltaTime;
-        if (deltaTime > 1.0 / fpsDisplayRate)
+    private void FixedUpdate()
+    {
+        CheckCrouch();
+        ApplyGravity();
+        CheckGrounded();
+        CheckJump();
+
+        var inputVector = GetWorldSpaceInputVector();
+        var wishDir = inputVector.normalized;
+        var wishSpeed = inputVector.magnitude;
+
+        if (grounded)
         {
-            fps = Mathf.Round(frameCount / deltaTime);
-            frameCount = 0;
-            deltaTime -= 1.0f / fpsDisplayRate;
+            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.normalSurfaceFriction);
+            ClampVelocity(PlayerConstants.MoveSpeed);
+            ApplyFriction();
         }
-
-        /* Camera rotation stuff, mouse controls this shit */
-        rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
-        rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
-
-        // Clamp the X rotation
-        if (rotX < -90)
-            rotX = -90;
-        else if (rotX > 90)
-            rotX = 90;
-
-        transform.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the collider
-
-        /* Movement, here's the important part */
-        QueueJump();
-        if (_controller.isGrounded)
-            //check ground material
-            GroundMove();
-        else if (!_controller.isGrounded)
-            AirMove();
-
-        // Move the controller
-        _controller.Move(playerVelocity * Time.deltaTime);
-
-        /* Calculate top velocity */
-        Vector3 udp = playerVelocity;
-        udp.y = 0.0f;
-        if (udp.magnitude > playerTopVelocity)
-            playerTopVelocity = udp.magnitude;
-
-        //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
-        // Set the camera's position to the transform
-        playerView.position = new Vector3(
-            transform.position.x,
-            transform.position.y + playerViewYOffset,
-            transform.position.z);
-    }
-
-    /*******************************************************************************************************\
-   |* MOVEMENT
-   \*******************************************************************************************************/
-
-    /**
-     * Sets the movement direction based on player input
-     */
-    private void SetMovementDir() {
-        _cmd.forwardMove = Input.GetAxisRaw("Vertical");
-        _cmd.rightMove = Input.GetAxisRaw("Horizontal");
-    }
-
-    /**
-     * Queues the next jump just like in Q3
-     */
-    private void QueueJump() {
-        if (holdJumpToBhop) {
-            wishJump = Input.GetButton("Jump");
-            return;
-        }
-
-        if (Input.GetButtonDown("Jump") && !wishJump)
-            wishJump = true;
-        if (Input.GetButtonUp("Jump"))
-            wishJump = false;
-    }
-
-    /**
-     * Execs when the player is in the air
-    */
-    private void AirMove() {
-        Vector3 wishdir;
-        float wishvel = airAcceleration;
-        float accel;
-
-        SetMovementDir();
-
-        wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
-        wishdir = transform.TransformDirection(wishdir);
-
-        float wishspeed = wishdir.magnitude;
-        wishspeed *= moveSpeed;
-
-        wishdir.Normalize();
-
-        // CPM: Aircontrol
-        float wishspeed2 = wishspeed;
-        if (Vector3.Dot(playerVelocity, wishdir) < 0)
-            accel = airDecceleration;
         else
-            accel = airAcceleration;
-        // If the player is ONLY strafing left or right
-        if (_cmd.forwardMove == 0 && _cmd.rightMove != 0) {
-            if (wishspeed > sideStrafeSpeed)
-                wishspeed = sideStrafeSpeed;
-            accel = sideStrafeAcceleration;
+        {
+            ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
-        Accelerate(wishdir, wishspeed, accel);
-        if (airControl > 0)
-            AirControl(wishdir, wishspeed2);
-        // !CPM: Aircontrol
+        ClampVelocity(PlayerConstants.MaxVelocity);
 
-        // Apply gravity
-        playerVelocity.y -= gravity * Time.deltaTime;
+        transform.position += newVelocity * Time.deltaTime;
+
+        ResolveCollisions();
     }
 
-    /**
-     * Air control occurs when the player is in the air, it allows
-     * players to move side to side much faster rather than being
-     * 'sluggish' when it comes to cornering.
-     */
-    private void AirControl(Vector3 wishdir, float wishspeed) {
-        float zspeed;
-        float speed;
-        float dot;
-        float k;
+    private void CheckCrouch()
+    {
+        wasCrouching = crouching;
 
-        // Can't control movement if not moving forward or backward
-        if (Mathf.Abs(_cmd.forwardMove) < 0.001 || Mathf.Abs(wishspeed) < 0.001)
-            return;
-        zspeed = playerVelocity.y;
-        playerVelocity.y = 0;
-        /* Next two lines are equivalent to idTech's VectorNormalize() */
-        speed = playerVelocity.magnitude;
-        playerVelocity.Normalize();
-
-        dot = Vector3.Dot(playerVelocity, wishdir);
-        k = 32;
-        k *= airControl * dot * dot * Time.deltaTime;
-
-        // Change direction while slowing down
-        if (dot > 0) {
-            playerVelocity.x = playerVelocity.x * speed + wishdir.x * k;
-            playerVelocity.y = playerVelocity.y * speed + wishdir.y * k;
-            playerVelocity.z = playerVelocity.z * speed + wishdir.z * k;
-
-            playerVelocity.Normalize();
+        if (Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Crouch)))
+        {
+            crouching = true;
+            myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
         }
-
-        playerVelocity.x *= speed;
-        playerVelocity.y = zspeed; // Note this line
-        playerVelocity.z *= speed;
-    }
-
-    /**
-     * Called every frame when the engine detects that the player is on the ground
-     */
-    private void GroundMove() {
-        Vector3 wishdir;
-
-        // Do not apply friction if the player is queueing up the next jump
-        if (!wishJump)
-            ApplyFriction(1.0f);
         else
-            ApplyFriction(0);
+        {
+            crouching = false;
 
-        SetMovementDir();
+            if (grounded && wasCrouching)
+            {
+                transform.position += new Vector3(0, 1, 0);
+            }
 
-        wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
-        wishdir = transform.TransformDirection(wishdir);
-        wishdir.Normalize();
-
-        var wishspeed = wishdir.magnitude;
-        wishspeed *= moveSpeed;
-
-        Accelerate(wishdir, wishspeed, runAcceleration);
-
-        // Reset the gravity velocity
-        playerVelocity.y = -gravity * Time.deltaTime;
-
-        if (wishJump) {
-            playerVelocity.y = jumpSpeed;
-            wishJump = false;
+            myCollider.size = PlayerConstants.BoxColliderSize;
         }
     }
 
-    /**
-     * Applies friction to the player, called in both the air and on the ground
-     */
-    private void ApplyFriction(float t) {
-        Vector3 vec = playerVelocity; // Equivalent to: VectorCopy();
-        float speed;
-        float newspeed;
-        float control;
-        float drop;
-
-        vec.y = 0.0f;
-        speed = vec.magnitude;
-        drop = 0.0f;
-
-        /* Only if the player is on the ground then apply friction */
-        if (_controller.isGrounded) {
-            control = speed < runDeacceleration ? runDeacceleration : speed;
-            drop = control * friction * Time.deltaTime * t;
+    private void ApplyGravity()
+    {
+        if (!grounded)
+        {
+            newVelocity.y -= PlayerConstants.Gravity * Time.deltaTime;
         }
-
-        newspeed = speed - drop;
-        playerFriction = newspeed;
-        if (newspeed < 0)
-            newspeed = 0;
-        if (speed > 0)
-            newspeed /= speed;
-
-        playerVelocity.x *= newspeed;
-        playerVelocity.z *= newspeed;
     }
 
-    private void Accelerate(Vector3 wishdir, float wishspeed, float accel) {
-        float addspeed;
-        float accelspeed;
-        float currentspeed;
+    private void CheckGrounded()
+    {
+        surfing = false;
 
-        currentspeed = Vector3.Dot(playerVelocity, wishdir);
-        addspeed = wishspeed - currentspeed;
-        if (addspeed <= 0)
+        Vector3 extents = PlayerConstants.BoxCastExtents;
+        if (crouching)
+        {
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+        }
+
+        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
+            halfExtents: extents,
+            direction: -transform.up,
+            orientation: Quaternion.identity,
+            maxDistance: PlayerConstants.BoxCastDistance,
+            layerMask: layersToIgnore
+            );
+
+        var wasGrounded = grounded;
+        var validHits = hits
+            .ToList()
+            .FindAll(hit => hit.normal.y >= 0.7f)
+            .OrderBy(hit => hit.distance)
+            .Where(hit => !hit.collider.isTrigger);
+
+        grounded = validHits.Count() > 0;
+
+        if (grounded)
+        {
+            var closestHit = validHits.First();
+
+            //If the ground is NOT perfectly flat, slide across it
+            if (closestHit.normal.y < 1)
+            {
+                ClipVelocity(closestHit.normal);
+            }
+            else
+            {
+                newVelocity.y = 0;
+            }
+        }
+        else
+        {
+            //Find the closest collision where the slope is at least 45 degrees
+            var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
+            if (surfHits.Count() > 0)
+            {
+                transform.position += surfHits.First().normal * 0.02f;
+                ClipVelocity(surfHits.First().normal);
+                surfing = true;
+            }
+        }
+    }
+
+    private void CheckJump()
+    {
+        if (grounded && Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Jump)))
+        {
+            newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
+            grounded = false;
+        }
+    }
+
+    private Vector3 GetWorldSpaceInputVector()
+    {
+        float moveSpeed = crouching ? PlayerConstants.CrouchingMoveSpeed : PlayerConstants.MoveSpeed;
+
+        var inputVelocity = GetInputVelocity(moveSpeed);
+        if (inputVelocity.magnitude > moveSpeed)
+        {
+            inputVelocity *= moveSpeed / inputVelocity.magnitude;
+        }
+
+        //Get the velocity vector in world space coordinates
+        return transform.TransformDirection(inputVelocity);
+    }
+
+    private Vector3 GetInputVelocity(float moveSpeed)
+    {
+        KeyCode left = HotKeyManager.instance.GetKeyFor(PlayerConstants.Left);
+        KeyCode right = HotKeyManager.instance.GetKeyFor(PlayerConstants.Right);
+        KeyCode forward = HotKeyManager.instance.GetKeyFor(PlayerConstants.Forward);
+        KeyCode back = HotKeyManager.instance.GetKeyFor(PlayerConstants.Back);
+
+        float horizontalSpeed = 0;
+        float verticalSpeed = 0;
+
+        if (Input.GetKey(left))
+        {
+            horizontalSpeed = -moveSpeed;
+        }
+
+        if (Input.GetKey(right))
+        {
+            horizontalSpeed = moveSpeed;
+        }
+
+        if (Input.GetKey(back))
+        {
+            verticalSpeed = -moveSpeed;
+        }
+
+        if (Input.GetKey(forward))
+        {
+            verticalSpeed = moveSpeed;
+        }
+
+        return new Vector3(horizontalSpeed, 0, verticalSpeed);
+    }
+
+    //wishDir: the direction the player wishes to go in the newest frame
+    //wishSpeed: the speed the player wishes to go this frame
+    private void ApplyGroundAcceleration(Vector3 wishDir, float wishSpeed, float surfaceFriction)
+    {
+        var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
+        var speedToAdd = wishSpeed - currentSpeed;
+
+        var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+
+        if (speedToAdd <= 0)
+        {
             return;
-        accelspeed = accel * Time.deltaTime * wishspeed;
-        if (accelspeed > addspeed)
-            accelspeed = addspeed;
+        }
 
-        playerVelocity.x += accelspeed * wishdir.x;
-        playerVelocity.z += accelspeed * wishdir.z;
+        var accelspeed = Mathf.Min(acceleration * wishSpeed * surfaceFriction, speedToAdd);
+        newVelocity += accelspeed * wishDir; //add acceleration in the new direction
     }
+
+    //wishDir: the direction the player  wishes to goin the newest frame
+    //wishSpeed: the speed the player wishes to go this frame
+    private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
+    {
+        var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
+        var currentSpeed = Vector3.Dot(newVelocity, wishDir);
+        var speedToAdd = wishSpd - currentSpeed;
+
+        if (speedToAdd <= 0)
+        {
+            return;
+        }
+
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
+        newVelocity += accelspeed * wishDir;
+    }
+
+    private void ApplyFriction()
+    {
+        var speed = newVelocity.magnitude;
+
+        //Don't apply friction if the player isn't moving
+        //Clear speed if it's too low to prevent accidental movement
+        if (speed < 0.01f)
+        {
+            newVelocity = Vector3.zero;
+            return;
+        }
+
+        var lossInSpeed = speed * PlayerConstants.Friction * Time.deltaTime;
+        var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
+
+        if (newSpeed != speed)
+        {
+            newVelocity *= newSpeed / speed; //Scale velocity based on friction
+        }
+    }
+
+    private void ClampVelocity(float range)
+    {
+        newVelocity = Vector3.ClampMagnitude(newVelocity, PlayerConstants.MaxVelocity);
+    }
+
+    //Slide off of the impacting surface
+    private void ClipVelocity(Vector3 normal)
+    {
+        // Determine how far along plane to slide based on incoming direction.
+        var backoff = Vector3.Dot(newVelocity, normal);
+
+        for (int i = 0; i < 3; i++)
+        {
+            var change = normal[i] * backoff;
+            newVelocity[i] -= change;
+        }
+
+        // iterate once to make sure we aren't still moving through the plane
+        var adjust = Vector3.Dot(newVelocity, normal);
+        if (adjust < 0.0f)
+        {
+            newVelocity -= (normal * adjust);
+        }
+    }
+
+    private void ResolveCollisions()
+    {
+        var center = transform.position + myCollider.center; // get center of bounding box in world space
+
+        Vector3 extents = PlayerConstants.BoxCastExtents;
+        if (crouching)
+        {
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+        }
+
+        var overlaps = Physics.OverlapBox(center, extents, Quaternion.identity);
+
+        foreach (var other in overlaps)
+        {
+            // If the collider is my own, check the next one
+            if (other == myCollider || other.isTrigger)
+            {
+                continue;
+            }
+
+            if (Physics.ComputePenetration(myCollider, transform.position, transform.rotation,
+                other, other.transform.position, other.transform.rotation,
+                out Vector3 dir, out float dist))
+            {
+                if (Vector3.Dot(dir, newVelocity.normalized) > 0)
+                {
+                    continue;
+                }
+
+                Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
+
+                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+
+                if (!surfing)
+                {
+                    transform.position += depenetrationVector;
+                    newVelocity -= Vector3.Project(newVelocity, -dir);
+                }
+                else
+                {
+                    ClipVelocity(dir);
+                }
+            }
+        }
+    }
+
 }

@@ -14,8 +14,6 @@ public class PlayerPortal : MonoBehaviour
     public Portal bluePortalInstance;
     public Portal redPortalInstance;
 
-   
-
     void Start()
     {
         layerMask = 1 << portalMaterialLayer;
@@ -29,71 +27,82 @@ public class PlayerPortal : MonoBehaviour
         }
 
         //Create Blue portal
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(HotKeyManager.instance.GetKeyFor(PlayerConstants.Portal1)))
         {
-            CreateBluePortal();
+            CreatePortal(PortalType.blue);
         }
         //Create Red portal
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(HotKeyManager.instance.GetKeyFor(PlayerConstants.Portal2)))
         {
-            CreateRedPortal();
+            CreatePortal(PortalType.red);
         }
     }
 
-    void CreateBluePortal()
-    {
-        RaycastHit hit;
-
-        if(Physics.Raycast(transform.position, transform.forward, out hit, 1000, layerMask))
-        {
-            if(bluePortalInstance != null)
-            {
-                if(redPortalInstance.otherPortal != null)
-                {
-                    redPortalInstance.otherPortal = null;
-                }
-                Destroy(bluePortalInstance.gameObject);
-            }
-            bluePortalInstance = Instantiate(bluePortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal)).GetComponent<Portal>();
-            Vector3 crossX = Vector3.Cross(hit.normal, Vector3.forward);
-            bluePortalInstance.transform.Rotate(-crossX, Time.deltaTime * 10f);
-
-            Portal portal = bluePortalInstance.GetComponent<Portal>();
-            portal.portalType = PortalType.blue;
-
-            if(redPortalInstance != null)
-            {
-                portal.otherPortal = redPortalInstance.gameObject;
-                redPortalInstance.otherPortal = portal.gameObject;
-            }
-        }
-    }
-
-    void CreateRedPortal()
+    void CreatePortal(PortalType portalType)
     {
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, transform.forward, out hit, 1000, layerMask))
         {
+            CleanPortals(portalType);
+            CreateNewPortal(portalType, hit);
+        }
+    }
+
+    void CleanPortals(PortalType portalType)
+    {
+        if(portalType == PortalType.blue)
+        {
+            if(bluePortalInstance != null)
+            {
+                Destroy(bluePortalInstance.gameObject);
+            }
+
             if (redPortalInstance != null)
             {
-                if (bluePortalInstance.otherPortal != null)
-                {
-                    bluePortalInstance.otherPortal = null;
-                }
+                redPortalInstance.destinationPortal = null;
+            }
+        }
+        else
+        {
+            if (redPortalInstance != null)
+            {
                 Destroy(redPortalInstance.gameObject);
             }
-            redPortalInstance = Instantiate(redPortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal)).GetComponent<Portal>();
-            Vector3 crossX = Vector3.Cross(hit.normal, Vector3.forward);
-            redPortalInstance.transform.Rotate(-crossX, Time.deltaTime * 10f);
-
-            Portal portal = redPortalInstance.GetComponent<Portal>();
-            portal.portalType = PortalType.red;
 
             if (bluePortalInstance != null)
             {
-                portal.otherPortal = bluePortalInstance.gameObject;
-                bluePortalInstance.otherPortal = portal.gameObject;
+                bluePortalInstance.destinationPortal = null;
+            }
+        }
+    }
+    
+    void CreateNewPortal(PortalType portalType, RaycastHit hit)
+    {
+        if(portalType == PortalType.blue)
+        {
+            GameObject instance = Instantiate(bluePortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
+            Portal portal = instance.GetComponent<Portal>();
+            portal.portalType = portalType;
+            bluePortalInstance = portal;
+
+            if (redPortalInstance != null)
+            {
+                portal.destinationPortal = redPortalInstance.transform;
+                redPortalInstance.destinationPortal = portal.transform;
+            }
+        }
+        else
+        {
+            GameObject instance = Instantiate(redPortalPrefab, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
+            Portal portal = instance.GetComponent<Portal>();
+            portal.portalType = portalType;
+            redPortalInstance = portal;
+
+            if (bluePortalInstance != null)
+            {
+                portal.destinationPortal = bluePortalInstance.transform;
+                bluePortalInstance.destinationPortal = portal.transform;
             }
         }
     }

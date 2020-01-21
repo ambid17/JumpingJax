@@ -73,12 +73,12 @@ public class PlayerProgress : MonoBehaviour
     void Respawn()
     {
         Vector3 newPos = GetCurrentCheckpointPosition();
-        newPos.y += 0.2f;
         transform.position = newPos;
     }
 
     public Vector3 GetCurrentCheckpointPosition()
     {
-        return currentCheckpoint.gameObject.transform.position;
+        // Add 2 in the "y" direction on respawn to prevent spawning inside of the ground
+        return currentCheckpoint.gameObject.transform.position + new Vector3(0,2,0);
     }
 }

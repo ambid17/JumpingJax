@@ -10,21 +10,29 @@ public enum PortalType
 public class Portal : MonoBehaviour
 {
     public PortalType portalType;
-    public GameObject otherPortal;
+    public Transform destinationPortal;
 
-    public Transform playerCamera;
-    public Transform portalCamera;
+    public Camera playerCamera;
+    public Camera portalCamera;
+
+    bool canTeleport;
+    float teleportTimer;
+    float timeToTeleport;
 
     private void Start()
     {
-        playerCamera = Camera.main.transform;
+        canTeleport = true;
+        teleportTimer = 0f;
+        timeToTeleport = 1f;
+
+        playerCamera = Camera.main;
 
         if (playerCamera == null)
         {
             Debug.Log("Could not find player camera");
         }
 
-        portalCamera = GetComponentInChildren<Camera>().transform;
+        portalCamera = GetComponentInChildren<Camera>();
 
         if(portalCamera == null)
         {
@@ -34,56 +42,100 @@ public class Portal : MonoBehaviour
 
     private void Update()
     {
-        if(playerCamera != null && portalCamera != null && otherPortal != null)
+        CheckCanTeleport();
+        TransformPortalCamera();
+    }
+    
+    private void CheckCanTeleport()
+    {
+        if(destinationPortal == null)
         {
-            Vector3 playerOffsetFromPortal = playerCamera.position - otherPortal.transform.position;
-            Vector3 newPos = transform.position - playerOffsetFromPortal;
-            portalCamera.transform.position = newPos;
+            canTeleport = false;
+            return;
+        }
 
-            Debug.Log("portal: " + gameObject.name
-                + " offset: " + playerOffsetFromPortal
-                + " mypos: " + transform.position
-                + " otherpos: " + otherPortal.transform.position
-                + " player: " + playerCamera.transform.position
-                + " newPos: " + newPos);
 
-            float angularDifferenceBetweenPortalRotations = Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
+        if (!canTeleport)
+        {
+            teleportTimer += Time.deltaTime;
+        }
 
-            Quaternion portalRotationalDifference = Quaternion.AngleAxis(angularDifferenceBetweenPortalRotations, Vector3.up);
-            Vector3 newCameraDirection = portalRotationalDifference * playerCamera.forward;
-            portalCamera.rotation = Quaternion.LookRotation(newCameraDirection, Vector3.up);
+        if(teleportTimer >= timeToTeleport)
+        {
+            canTeleport = true;
+        }
+    }
+
+    private void TransformPortalCamera()
+    {
+        if (playerCamera != null && portalCamera != null && destinationPortal != null)
+        {
+            // Rotate Source 180 degrees so PortalCamera is mirror image of MainCamera
+            Matrix4x4 destinationFlipRotation =
+                Matrix4x4.TRS(MathUtil.ZeroV3, Quaternion.AngleAxis(180.0f, Vector3.up), MathUtil.OneV3);
+            Matrix4x4 sourceInvMat = destinationFlipRotation * destinationPortal.worldToLocalMatrix;
+
+            // Calculate translation and rotation of MainCamera in Source space
+            Vector3 cameraPositionInSourceSpace =
+                MathUtil.ToV3(sourceInvMat * MathUtil.PosToV4(playerCamera.transform.position));
+            Quaternion cameraRotationInSourceSpace =
+                MathUtil.QuaternionFromMatrix(sourceInvMat) * playerCamera.transform.rotation;
+
+            // Transform Portal Camera to World Space relative to Destination transform,
+            // matching the Main Camera position/orientation
+            portalCamera.transform.position = transform.TransformPoint(cameraPositionInSourceSpace);
+            portalCamera.transform.rotation = transform.rotation * cameraRotationInSourceSpace;
+
+            // Calculate clip plane for portal (for culling of objects in-between destination camera and portal)
+            Vector4 clipPlaneWorldSpace =
+                new Vector4(
+                    transform.forward.x,
+                    transform.forward.y,
+                    transform.forward.z,
+                    Vector3.Dot(transform.position, -transform.forward));
+
+            Vector4 clipPlaneCameraSpace =
+                Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlaneWorldSpace;
+
+            // Update projection based on new clip plane
+            // Note: http://aras-p.info/texts/obliqueortho.html and http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
+            portalCamera.projectionMatrix = playerCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("triggerEnter: " + other.gameObject.name);
-        //Check that the trigger is the playerCollider, not the water
-        if (otherPortal != null && other.GetComponent<BoxCollider>())
+        if (canTeleport)
         {
-            TeleportPlayer(other.gameObject);
+            Debug.Log("triggerEnter: " + other.gameObject.name);
+            if (other.GetComponentInParent<PlayerProgress>() && canTeleport)
+            {
+                //Keep the player from teleporting for 1 second
+                DidTeleport();
+                TeleportPlayer(other.transform);
+            }
         }
-
-        Destroy(otherPortal);
-        Destroy(this.gameObject);
     }
 
-    private void TeleportPlayer(GameObject playerObject)
+    private void TeleportPlayer(Transform playerObject)
     {
-        Vector3 portalToPlayer = playerObject.transform.position - transform.position;
-        float dotProduct = Vector3.Dot(transform.up, portalToPlayer);
+        //The box collider is a child of the player, thus we need to move the parent
+        playerObject.position = destinationPortal.transform.position;
+    }
 
-        //Player has moved across portal, need to teleport them
-        if(dotProduct < 0f)
-        {
-            float rotationDiff = Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
-            rotationDiff += 180;
-            playerObject.transform.Rotate(Vector3.up, rotationDiff);
+    public void DidTeleport()
+    {
+        canTeleport = false;
+        teleportTimer = 0;
 
-            Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * portalToPlayer;
-            playerObject.transform.position = otherPortal.transform.position + positionOffset;
+        Portal otherPortal = destinationPortal.GetComponent<Portal>();
+        if (otherPortal != null){
+            otherPortal.canTeleport = false;
+            otherPortal.teleportTimer = 0;
         }
-
-        playerObject.transform.parent.position = otherPortal.transform.position;
+        else
+        {
+            Debug.Log("Could not find destination portal");
+        }
     }
 }
