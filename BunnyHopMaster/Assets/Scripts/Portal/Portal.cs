@@ -2,140 +2,205 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PortalType
-{
-    red, blue
-}
-
+[RequireComponent(typeof(BoxCollider))]
 public class Portal : MonoBehaviour
 {
-    public PortalType portalType;
-    public Transform destinationPortal;
+    [SerializeField]
+    private Portal otherPortal;
 
-    public Camera playerCamera;
-    public Camera portalCamera;
+    [SerializeField]
+    private Renderer outlineRenderer;
 
-    bool canTeleport;
-    float teleportTimer;
-    float timeToTeleport;
+    [SerializeField]
+    private Color portalColour;
+
+    [SerializeField]
+    private LayerMask placementMask;
+
+    private bool isPlaced = true;
+    [SerializeField]
+    private Collider wallCollider;
+
+    private List<PortalableObject> portalObjects = new List<PortalableObject>();
+
+    private Material material;
+    private new Renderer renderer;
+    private new BoxCollider collider;
+
+    private void Awake()
+    {
+        collider = GetComponent<BoxCollider>();
+        renderer = GetComponent<Renderer>();
+        material = renderer.material;
+    }
 
     private void Start()
     {
-        canTeleport = true;
-        teleportTimer = 0f;
-        timeToTeleport = 1f;
-
-        playerCamera = Camera.main;
-
-        if (playerCamera == null)
-        {
-            Debug.Log("Could not find player camera");
-        }
-
-        portalCamera = GetComponentInChildren<Camera>();
-
-        if(portalCamera == null)
-        {
-            Debug.Log("Could not find child with camera");
-        }
+        PlacePortal(wallCollider, transform.position, transform.rotation);
+        SetColour(portalColour);
     }
 
     private void Update()
     {
-        CheckCanTeleport();
-        TransformPortalCamera();
-    }
-    
-    private void CheckCanTeleport()
-    {
-        if(destinationPortal == null)
+        for (int i = 0; i < portalObjects.Count; ++i)
         {
-            canTeleport = false;
-            return;
-        }
+            Vector3 objPos = transform.InverseTransformPoint(portalObjects[i].transform.position);
 
-
-        if (!canTeleport)
-        {
-            teleportTimer += Time.deltaTime;
-        }
-
-        if(teleportTimer >= timeToTeleport)
-        {
-            canTeleport = true;
-        }
-    }
-
-    private void TransformPortalCamera()
-    {
-        if (playerCamera != null && portalCamera != null && destinationPortal != null)
-        {
-            // Rotate Source 180 degrees so PortalCamera is mirror image of MainCamera
-            Matrix4x4 destinationFlipRotation =
-                Matrix4x4.TRS(MathUtil.ZeroV3, Quaternion.AngleAxis(180.0f, Vector3.up), MathUtil.OneV3);
-            Matrix4x4 sourceInvMat = destinationFlipRotation * destinationPortal.worldToLocalMatrix;
-
-            // Calculate translation and rotation of MainCamera in Source space
-            Vector3 cameraPositionInSourceSpace =
-                MathUtil.ToV3(sourceInvMat * MathUtil.PosToV4(playerCamera.transform.position));
-            Quaternion cameraRotationInSourceSpace =
-                MathUtil.QuaternionFromMatrix(sourceInvMat) * playerCamera.transform.rotation;
-
-            // Transform Portal Camera to World Space relative to Destination transform,
-            // matching the Main Camera position/orientation
-            portalCamera.transform.position = transform.TransformPoint(cameraPositionInSourceSpace);
-            portalCamera.transform.rotation = transform.rotation * cameraRotationInSourceSpace;
-
-            // Calculate clip plane for portal (for culling of objects in-between destination camera and portal)
-            Vector4 clipPlaneWorldSpace =
-                new Vector4(
-                    transform.forward.x,
-                    transform.forward.y,
-                    transform.forward.z,
-                    Vector3.Dot(transform.position, -transform.forward));
-
-            Vector4 clipPlaneCameraSpace =
-                Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlaneWorldSpace;
-
-            // Update projection based on new clip plane
-            // Note: http://aras-p.info/texts/obliqueortho.html and http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
-            portalCamera.projectionMatrix = playerCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (canTeleport)
-        {
-            Debug.Log("triggerEnter: " + other.gameObject.name);
-            if (other.GetComponentInParent<PlayerProgress>() && canTeleport)
+            if (objPos.z > 0.0f)
             {
-                //Keep the player from teleporting for 1 second
-                DidTeleport();
-                TeleportPlayer(other.transform);
+                portalObjects[i].Warp();
             }
         }
     }
 
-    private void TeleportPlayer(Transform playerObject)
+    public Portal GetOtherPortal()
     {
-        //The box collider is a child of the player, thus we need to move the parent
-        playerObject.position = destinationPortal.transform.position;
+        return otherPortal;
     }
 
-    public void DidTeleport()
+    public Color GetColour()
     {
-        canTeleport = false;
-        teleportTimer = 0;
+        return portalColour;
+    }
 
-        Portal otherPortal = destinationPortal.GetComponent<Portal>();
-        if (otherPortal != null){
-            otherPortal.canTeleport = false;
-            otherPortal.teleportTimer = 0;
-        }
-        else
+    public void SetColour(Color colour)
+    {
+        material.SetColor("_Colour", colour);
+        outlineRenderer.material.SetColor("_OutlineColour", colour);
+    }
+
+    public void SetMaskID(int id)
+    {
+        material.SetInt("_MaskID", id);
+    }
+
+    public void SetTexture(RenderTexture tex)
+    {
+        material.mainTexture = tex;
+    }
+
+    public bool IsRendererVisible()
+    {
+        return renderer.isVisible;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var obj = other.GetComponent<PortalableObject>();
+        if (obj != null)
         {
-            Debug.Log("Could not find destination portal");
+            portalObjects.Add(obj);
+            obj.SetIsInPortal(this, otherPortal, wallCollider);
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var obj = other.GetComponent<PortalableObject>();
+
+        if(portalObjects.Contains(obj))
+        {
+            portalObjects.Remove(obj);
+            obj.ExitPortal(wallCollider);
+        }
+    }
+
+    public void PlacePortal(Collider wallCollider, Vector3 pos, Quaternion rot)
+    {
+        this.wallCollider = wallCollider;
+        transform.position = pos;
+        transform.rotation = rot;
+        transform.position -= transform.forward * 0.001f;
+
+        FixOverhangs();
+        FixIntersects();
+    }
+
+    // Ensure the portal cannot extend past the edge of a surface.
+    private void FixOverhangs()
+    {
+        var testPoints = new List<Vector3>
+        {
+            new Vector3(-1.1f,  0.0f, 0.1f),
+            new Vector3( 1.1f,  0.0f, 0.1f),
+            new Vector3( 0.0f, -2.1f, 0.1f),
+            new Vector3( 0.0f,  2.1f, 0.1f)
+        };
+
+        var testDirs = new List<Vector3>
+        {
+             Vector3.right,
+            -Vector3.right,
+             Vector3.up,
+            -Vector3.up
+        };
+
+        for(int i = 0; i < 4; ++i)
+        {
+            RaycastHit hit;
+            Vector3 raycastPos = transform.TransformPoint(testPoints[i]);
+            Vector3 raycastDir = transform.TransformDirection(testDirs[i]);
+
+            if(Physics.CheckSphere(raycastPos, 0.05f, placementMask))
+            {
+                break;
+            }
+            else if(Physics.Raycast(raycastPos, raycastDir, out hit, 2.1f, placementMask))
+            {
+                var offset = hit.point - raycastPos;
+                transform.Translate(offset, Space.World);
+            }
+        }
+    }
+
+    // Ensure the portal cannot intersect a section of wall.
+    private void FixIntersects()
+    {
+        var testDirs = new List<Vector3>
+        {
+             Vector3.right,
+            -Vector3.right,
+             Vector3.up,
+            -Vector3.up
+        };
+
+        var testDists = new List<float> { 1.1f, 1.1f, 2.1f, 2.1f };
+
+        for (int i = 0; i < 4; ++i)
+        {
+            RaycastHit hit;
+            Vector3 raycastPos = transform.TransformPoint(0.0f, 0.0f, -0.1f);
+            Vector3 raycastDir = transform.TransformDirection(testDirs[i]);
+
+            if (Physics.Raycast(raycastPos, raycastDir, out hit, testDists[i], placementMask))
+            {
+                var offset = (hit.point - raycastPos);
+                var newOffset = -raycastDir * (testDists[i] - offset.magnitude);
+                transform.Translate(newOffset, Space.World);
+            }
+        }
+    }
+
+    // Once positioning has taken place, ensure the portal isn't intersecting anything.
+    private bool CheckOverlap()
+    {
+        var checkPosition = transform.position - new Vector3(0.0f, 0.0f, 0.1f);
+        var checkExtents = new Vector3(0.9f, 1.9f, 0.05f);
+        if (Physics.CheckBox(checkPosition, checkExtents, transform.rotation, placementMask))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void RemovePortal()
+    {
+        gameObject.SetActive(false);
+        isPlaced = false;
+    }
+
+    public bool IsPlaced()
+    {
+        return isPlaced;
     }
 }
