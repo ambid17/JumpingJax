@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RedPortal
-  m_Shader: {fileID: 4800000, guid: f88fcd70238f4074c81148dd2c9360d6, type: 3}
+  m_Name: RecursivePortalMask 1
+  m_Shader: {fileID: 4800000, guid: 1f39a71d3b05fb44ba460e2fbdc4eb18, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 8400000, guid: 76dc77cd21d45e3448fcd34bb2195adc, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -63,6 +63,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MaskID: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -74,4 +75,5 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0.7830189, g: 0.23268957, b: 0.23268957, a: 1}
+    - _Colour: {r: 0.3372549, g: 0.42352945, b: 0.56078434, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
