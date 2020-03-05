@@ -10,15 +10,16 @@ public class CameraMove : MonoBehaviour
 
     public Quaternion TargetRotation { private set; get; }
     
-    private Vector3 moveVector = Vector3.zero;
-    private float moveY = 0.0f;
+    //private Vector3 moveVector = Vector3.zero;
+    //private float moveY = 0.0f;
 
-    private new Rigidbody rigidbody;
+    //private new Rigidbody rigidbody;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        //rigidbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         TargetRotation = transform.rotation;
     }
@@ -41,16 +42,16 @@ public class CameraMove : MonoBehaviour
         // Move the camera.
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        moveVector = new Vector3(x, 0.0f, z) * moveSpeed;
+        //moveVector = new Vector3(x, 0.0f, z) * moveSpeed;
 
-        moveY = Input.GetAxis("Elevation");
+        //moveY = Input.GetAxis("Elevation");
     }
 
     private void FixedUpdate()
     {
-        Vector3 newVelocity = transform.TransformDirection(moveVector);
-        newVelocity.y += moveY * moveSpeed;
-        rigidbody.velocity = newVelocity;
+        //Vector3 newVelocity = transform.TransformDirection(moveVector);
+        //newVelocity.y += moveY * moveSpeed;
+        //rigidbody.velocity = newVelocity;
     }
 
     public void ResetTargetRotation()
