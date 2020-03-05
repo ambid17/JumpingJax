@@ -15,11 +15,11 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private Camera mainCamera;
 
-    private const int iterations = 7;
+    private const int portalRecursions = 7;
 
     private void Awake()
     {
-        mainCamera = GetComponent<Camera>();
+        mainCamera = Camera.main;
 
         tempTexture1 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
         tempTexture2 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
@@ -33,6 +33,7 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private void OnPreRender()
     {
+        Debug.Log("p");
         if (!portals[0].IsPlaced() || !portals[1].IsPlaced())
         {
             return;
@@ -41,7 +42,7 @@ public class RecursivePortalCamera : MonoBehaviour
         if (portals[0].IsRendererVisible())
         {
             portalCamera.targetTexture = tempTexture1;
-            for (int i = iterations - 1; i >= 0; --i)
+            for (int i = portalRecursions - 1; i >= 0; --i)
             {
                 RenderCamera(portals[0], portals[1], i);
             }
@@ -50,14 +51,14 @@ public class RecursivePortalCamera : MonoBehaviour
         if(portals[1].IsRendererVisible())
         {
             portalCamera.targetTexture = tempTexture2;
-            for (int i = iterations - 1; i >= 0; --i)
+            for (int i = portalRecursions - 1; i >= 0; --i)
             {
                 RenderCamera(portals[1], portals[0], i);
             }
         }
     }
 
-    private void RenderCamera(Portal inPortal, Portal outPortal, int iterationID)
+    private void RenderCamera(Portal inPortal, Portal outPortal, int recursionId)
     {
         Transform inTransform = inPortal.transform;
         Transform outTransform = outPortal.transform;
@@ -66,7 +67,7 @@ public class RecursivePortalCamera : MonoBehaviour
         cameraTransform.position = transform.position;
         cameraTransform.rotation = transform.rotation;
 
-        for(int i = 0; i <= iterationID; ++i)
+        for(int i = 0; i <= recursionId; ++i)
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inTransform.InverseTransformPoint(cameraTransform.position);

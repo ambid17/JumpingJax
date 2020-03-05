@@ -11,8 +11,8 @@ public class PortalPlacement : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
-    [SerializeField]
-    private Crosshair crosshair;
+    //[SerializeField]
+    //private Crosshair crosshair;
 
     private CameraMove cameraMove;
 
@@ -88,7 +88,7 @@ public class PortalPlacement : MonoBehaviour
             
             portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
 
-            crosshair.SetPortalPlaced(portalID, true);
+            //crosshair.SetPortalPlaced(portalID, true);
         }
     }
 }
