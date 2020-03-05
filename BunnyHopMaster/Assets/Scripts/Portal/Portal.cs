@@ -81,12 +81,12 @@ public class Portal : MonoBehaviour
 
     public bool IsRendererVisible()
     {
-        Debug.Log(gameObject.name + "isVis");
         return renderer.isVisible;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("triggerEntered: " + other.gameObject.name);
         var obj = other.GetComponent<PortalableObject>();
         if (obj != null)
         {

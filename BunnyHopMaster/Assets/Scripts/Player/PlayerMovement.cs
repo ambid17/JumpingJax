@@ -305,7 +305,7 @@ public class PlayerMovement : MonoBehaviour
 
                 Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
 
-                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                //Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
 
                 if (!surfing)
                 {

@@ -64,6 +64,7 @@ public class PortalableObject : MonoBehaviour
     {
         this.inPortal = inPortal;
         this.outPortal = outPortal;
+        Debug.Log("SetIsInPortal: " + wallCollider.gameObject.name);
 
         Physics.IgnoreCollision(collider, wallCollider);
 
