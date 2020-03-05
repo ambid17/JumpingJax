@@ -23,7 +23,12 @@ public class PortalPlacement : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetButtonDown("Fire1"))
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        if (Input.GetButtonDown("Fire1"))
         {
             FirePortal(0, transform.position, transform.forward, 250.0f);
         }

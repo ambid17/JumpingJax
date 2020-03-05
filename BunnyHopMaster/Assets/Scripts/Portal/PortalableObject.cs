@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))]
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class PortalableObject : MonoBehaviour
 {
-    private GameObject cloneObject;
+    protected GameObject cloneObject;
 
-    private int inPortalCount = 0;
+    protected int inPortalCount = 0;
     
-    private Portal inPortal;
-    private Portal outPortal;
+    protected Portal inPortal;
+    protected Portal outPortal;
 
     private new Rigidbody rigidbody;
     protected new Collider collider;
 
-    private static readonly Quaternion halfTurn = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    protected static readonly Quaternion halfTurn = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
     protected virtual void Awake()
     {
