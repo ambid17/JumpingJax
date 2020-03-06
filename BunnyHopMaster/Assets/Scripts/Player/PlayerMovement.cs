@@ -106,7 +106,9 @@ public class PlayerMovement : MonoBehaviour
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
             .OrderBy(hit => hit.distance)
-            .Where(hit => !hit.collider.isTrigger);
+            .Where(hit => !hit.collider.isTrigger)
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider));
+        //Physics.GetIgnoreCollision(myCollider, other)
 
         grounded = validHits.Count() > 0;
 
