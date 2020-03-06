@@ -106,7 +106,9 @@ public class PlayerMovement : MonoBehaviour
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
             .OrderBy(hit => hit.distance)
-            .Where(hit => !hit.collider.isTrigger);
+            .Where(hit => !hit.collider.isTrigger)
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider));
+        //Physics.GetIgnoreCollision(myCollider, other)
 
         grounded = validHits.Count() > 0;
 
@@ -298,14 +300,15 @@ public class PlayerMovement : MonoBehaviour
                 other, other.transform.position, other.transform.rotation,
                 out Vector3 dir, out float dist))
             {
-                if (Vector3.Dot(dir, newVelocity.normalized) > 0)
+                if (Vector3.Dot(dir, newVelocity.normalized) > 0 ||
+                    Physics.GetIgnoreCollision(myCollider, other))
                 {
                     continue;
                 }
 
                 Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
 
-                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                //Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
 
                 if (!surfing)
                 {
