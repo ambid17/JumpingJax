@@ -3,7 +3,7 @@ A 3D platformer based on the Source engine movement mechanics, portals, and a ba
 
 Unity Version: 2019.3.0f3
 
-![Preview](https://gph.is/g/E3mYq1N)
+![https://gph.is/g/E3mYq1N](https://gph.is/g/E3mYq1N)
 
 ## Movement mechanics
 The movement mechanics are based off of the Source Engine (2013): https://github.com/ValveSoftware/source-sdk-2013
