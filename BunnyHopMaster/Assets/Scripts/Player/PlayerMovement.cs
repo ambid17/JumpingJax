@@ -298,7 +298,8 @@ public class PlayerMovement : MonoBehaviour
                 other, other.transform.position, other.transform.rotation,
                 out Vector3 dir, out float dist))
             {
-                if (Vector3.Dot(dir, newVelocity.normalized) > 0)
+                if (Vector3.Dot(dir, newVelocity.normalized) > 0 ||
+                    Physics.GetIgnoreCollision(myCollider, other))
                 {
                     continue;
                 }
