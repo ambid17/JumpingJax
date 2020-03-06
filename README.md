@@ -3,7 +3,7 @@ A 3D platformer based on the Source engine movement mechanics, portals, and a ba
 
 Unity Version: 2019.3.0f3
 
-![Preview](MarketingAssets/bunnyHop0.2.mp4)
+![Preview](https://github.com/ambid17/BunnyHopMaster/blob/development/MarketingAssets/bunnyHop0.2.mp4)
 
 ## Movement mechanics
 The movement mechanics are based off of the Source Engine (2013): https://github.com/ValveSoftware/source-sdk-2013
