@@ -64,10 +64,10 @@ public class PlayerUI : MonoBehaviour {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         winMenu.gameObject.SetActive(true);
-        winMenu.levelText.text = "You beat level " + (GameManager._GameManager.currentLevel - 1);
-        winMenu.completionTimeText.text = "Completion time: " + GetTimeString(GameManager._GameManager.completionTime);
+        winMenu.levelText.text = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelIndex].ToString();
+        winMenu.completionTimeText.text = "Completion time: " + GetTimeString(GameManager.Instance.currentCompletionTime);
 
-        TimeSpan time = TimeSpan.FromSeconds(PlayerStatsManager.GetLevelCompletion(GameManager._GameManager.currentLevel));
+        TimeSpan time = TimeSpan.FromSeconds(GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelIndex].completionTime);
         winMenu.bestTimeText.text = "Best time: " + time.ToString("hh':'mm':'ss");
     }
 
