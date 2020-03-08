@@ -108,7 +108,6 @@ public class PlayerMovement : MonoBehaviour
             .OrderBy(hit => hit.distance)
             .Where(hit => !hit.collider.isTrigger)
             .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider));
-        //Physics.GetIgnoreCollision(myCollider, other)
 
         grounded = validHits.Count() > 0;
 
@@ -201,6 +200,8 @@ public class PlayerMovement : MonoBehaviour
     {
         var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
+        Debug.Log("wishDir: " + wishDir + " currSpeed: " + currentSpeed);
+
 
         var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
 
@@ -236,13 +237,14 @@ public class PlayerMovement : MonoBehaviour
 
         //Don't apply friction if the player isn't moving
         //Clear speed if it's too low to prevent accidental movement
-        if (speed < 0.01f)
+        if (speed < 0.1f)
         {
             newVelocity = Vector3.zero;
             return;
         }
 
-        var lossInSpeed = speed * PlayerConstants.Friction * Time.deltaTime;
+        var control = (speed < PlayerConstants.StopSpeed) ? PlayerConstants.StopSpeed : speed;
+        var lossInSpeed = control * PlayerConstants.Friction * Time.deltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)

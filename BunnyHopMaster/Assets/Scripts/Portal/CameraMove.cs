@@ -8,6 +8,7 @@ public class CameraMove : MonoBehaviour
     private const float cameraSpeed = 3.0f;
 
     public Quaternion TargetRotation { private set; get; }
+    public Camera playerCamera;
     
     //private Vector3 moveVector = Vector3.zero;
     //private float moveY = 0.0f;
@@ -21,6 +22,7 @@ public class CameraMove : MonoBehaviour
         Cursor.visible = false;
 
         TargetRotation = transform.rotation;
+        playerCamera = Camera.main;
     }
 
     private void Update()
@@ -35,8 +37,10 @@ public class CameraMove : MonoBehaviour
         targetEuler.x = Mathf.Clamp(targetEuler.x, -75.0f, 75.0f);
         TargetRotation = Quaternion.Euler(targetEuler);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, TargetRotation, 
+        Quaternion rotationToApply = Quaternion.Slerp(playerCamera.transform.rotation, TargetRotation,
             Time.deltaTime * 15.0f);
+        playerCamera.transform.rotation = rotationToApply;
+        transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
 
         // Move the camera.
         float x = Input.GetAxis("Horizontal");
