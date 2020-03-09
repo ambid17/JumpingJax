@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         {
-            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.normalSurfaceFriction);
+            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.NormalSurfaceFriction);
             ClampVelocity(PlayerConstants.MoveSpeed);
             ApplyFriction();
         }
@@ -310,7 +310,7 @@ public class PlayerMovement : MonoBehaviour
 
                 Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
 
-                //Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
 
                 if (!surfing)
                 {

@@ -79,11 +79,11 @@ public class PortalPlacement : MonoBehaviour
             
             if(Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
             {
-                portalRight = (portalRight.x >= 0) ? Vector3.right : -Vector3.right;
+                portalRight = Vector3.right * ((portalRight.x >= 0) ? 1 : -1);
             }
             else
             {
-                portalRight = (portalRight.z >= 0) ? Vector3.forward : -Vector3.forward;
+                portalRight = Vector3.forward * ((portalRight.z >= 0) ? 1 : -1);
             }
 
             var portalForward = -hit.normal;
@@ -93,6 +93,7 @@ public class PortalPlacement : MonoBehaviour
             
             portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
 
+            // leaving this in until i figure out how i want to handle the crosshair
             //crosshair.SetPortalPlaced(portalID, true);
         }
     }

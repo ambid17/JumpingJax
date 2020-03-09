@@ -102,9 +102,8 @@ public class PortalableObject : MonoBehaviour
     public void ExitPortal(Collider wallCollider)
     {
         Physics.IgnoreCollision(collider, wallCollider, false);
-        --inPortalCount;
 
-        if (inPortalCount == 0)
+        if (--inPortalCount == 0)
         {
             cloneObject.SetActive(false);
         }
