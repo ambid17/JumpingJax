@@ -48,7 +48,7 @@ public class PlayerProgress : MonoBehaviour
     private void UpdateLevelStats()
     {
         float completionTime = GameManager.Instance.currentCompletionTime;
-        Level levelToUpdate = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelIndex - 1];
+        Level levelToUpdate = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1];
 
         levelToUpdate.isCompleted = true;
 

@@ -22,7 +22,7 @@ public class LevelButton : MonoBehaviour
 
     public void OnClickLevel(int sceneIndex)
     {
-        GameManager.Instance.currentLevelIndex = sceneIndex;
+        GameManager.Instance.currentLevelBuildIndex = sceneIndex;
         SceneManager.LoadScene(sceneIndex);
     }
 }

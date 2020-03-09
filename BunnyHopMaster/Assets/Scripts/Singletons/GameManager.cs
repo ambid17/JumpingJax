@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public AudioSource musicSource;
     public LevelDataContainer levelDataContainer;
 
-    public int currentLevelIndex;
+    public int currentLevelBuildIndex;
     public float currentCompletionTime;
 
     void Awake()
