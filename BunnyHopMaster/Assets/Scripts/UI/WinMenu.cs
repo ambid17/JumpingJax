@@ -15,14 +15,15 @@ public class WinMenu : MonoBehaviour
         Cursor.visible = false;
         gameObject.SetActive(false);
         Time.timeScale = 1;
-        SceneManager.LoadScene(GameManager._GameManager.currentLevel);
+        SceneManager.LoadScene(GameManager.Instance.currentLevelBuildIndex);
     }
 
     public void NextLevel()
     {
         gameObject.SetActive(false);
         Time.timeScale = 1;
-        if(GameManager._GameManager.currentLevel == PlayerStatsManager._PlayerStats.levels.Length)
+        //This assumes the main menu is build index 0
+        if(GameManager.Instance.currentLevelBuildIndex >= GameManager.Instance.levelDataContainer.levels.Length)
         {
             Cursor.visible = true;
             SceneManager.LoadScene(0);
@@ -30,7 +31,8 @@ public class WinMenu : MonoBehaviour
         else
         {
             Cursor.visible = false;
-            SceneManager.LoadScene(GameManager._GameManager.currentLevel + 1);
+            GameManager.Instance.currentLevelBuildIndex++;
+            SceneManager.LoadScene(GameManager.Instance.currentLevelBuildIndex);
         }
     }
 
@@ -39,6 +41,6 @@ public class WinMenu : MonoBehaviour
         Cursor.visible = true;
         gameObject.SetActive(false);
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(PlayerConstants.BuildSceneIndex);
     }
 }

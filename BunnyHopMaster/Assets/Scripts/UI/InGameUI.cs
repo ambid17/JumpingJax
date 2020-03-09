@@ -10,9 +10,9 @@ public class InGameUI : MonoBehaviour
 
     void Update()
     {
-        if(GameManager._GameManager != null)
+        if(GameManager.Instance != null)
         {
-            TimeSpan time = TimeSpan.FromSeconds(GameManager._GameManager.completionTime);
+            TimeSpan time = TimeSpan.FromSeconds(GameManager.Instance.currentCompletionTime);
             completionTimeText.text = "Time: " + time.ToString("hh':'mm':'ss");
         }
     }

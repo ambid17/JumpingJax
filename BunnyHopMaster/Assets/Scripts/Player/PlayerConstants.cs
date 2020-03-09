@@ -60,4 +60,6 @@ public static class PlayerConstants
 
     public static string MouseX = "Mouse X";
     public static string MouseY = "Mouse Y";
+
+    public static int BuildSceneIndex = 0;
 }

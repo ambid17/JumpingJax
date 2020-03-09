@@ -8,7 +8,8 @@ public class PlayerProgress : MonoBehaviour
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
     public bool didWin = false;
-    public float minimumY = 0;
+    [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
+    public float playerFallingBoundsReset = 0;
 
     private void Start()
     {
@@ -17,12 +18,17 @@ public class PlayerProgress : MonoBehaviour
 
     void Update()
     {
+        if(Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             Respawn();
         }
 
-        if(gameObject.transform.position.y < minimumY) 
+        if(gameObject.transform.position.y < playerFallingBoundsReset) 
         {
             Respawn();
         }
@@ -32,16 +38,24 @@ public class PlayerProgress : MonoBehaviour
             if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
             {
                 didWin = true;
-                UpdatePlayerStats();
+                UpdateLevelStats();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
             }
         }
     }
 
-    private void UpdatePlayerStats()
+    private void UpdateLevelStats()
     {
-        PlayerStatsManager.SetLevelCompletion(GameManager._GameManager.currentLevel, GameManager._GameManager.completionTime);
+        float completionTime = GameManager.Instance.currentCompletionTime;
+        Level levelToUpdate = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1];
+
+        levelToUpdate.isCompleted = true;
+
+        if(levelToUpdate.completionTime < completionTime)
+        {
+            levelToUpdate.completionTime = completionTime;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
