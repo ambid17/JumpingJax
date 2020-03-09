@@ -11,11 +11,14 @@ public class PortalPlacement : MonoBehaviour
     [SerializeField]
     private LayerMask layerMask;
 
+    // Leaving this in until crosshair is added
     //[SerializeField]
     //private Crosshair crosshair;
 
     private CameraMove cameraMove;
 
+    private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    private const float portalRaycastDistance = 250;
     private void Awake()
     {
         cameraMove = GetComponent<CameraMove>();
@@ -58,12 +61,12 @@ public class PortalPlacement : MonoBehaviour
 
                 // Update position of raycast origin with small offset.
                 Vector3 relativePos = inPortal.transform.InverseTransformPoint(hit.point + dir);
-                relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
+                relativePos = flippedYRotation * relativePos;
                 pos = outPortal.transform.TransformPoint(relativePos);
 
                 // Update direction of raycast.
                 Vector3 relativeDir = inPortal.transform.InverseTransformDirection(dir);
-                relativeDir = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeDir;
+                relativeDir = flippedYRotation * relativeDir;
                 dir = outPortal.transform.TransformDirection(relativeDir);
 
                 distance -= Vector3.Distance(pos, hit.point);
