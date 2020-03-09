@@ -8,7 +8,7 @@ Unity Version: 2019.3.0f3
 ## Movement mechanics
 The movement mechanics are based off of the Source Engine (2013): https://github.com/ValveSoftware/source-sdk-2013
 
-The movement mechancis are in large part thanks to Olezen: https://github.com/Olezen/UnitySourceMovement
+The movement mechanic conversion to C# are in large part thanks to Olezen: https://github.com/Olezen/UnitySourceMovement
 
 ## Portals
 Portals are a custom implementation that will:
