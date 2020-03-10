@@ -922,7 +922,7 @@ MonoBehaviour:
   currentCheckpoint: {fileID: 0}
   playerUI: {fileID: 1844322298415541209}
   didWin: 0
-  minimumY: 0
+  playerFallingBoundsReset: 0
 --- !u!114 &4259481642829858136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -956,6 +956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3431ae1226440b14bb71b1762dc1638d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sensitivityMultiplier: 0
   playerCamera: {fileID: 441310430673922142}
 --- !u!114 &441310430289080764
 MonoBehaviour:
@@ -972,7 +973,7 @@ MonoBehaviour:
   portals: {fileID: 0}
   layerMask:
     serializedVersion: 2
-    m_Bits: 1025
+    m_Bits: 2049
 --- !u!114 &441310430289080767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2714,7 +2715,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4611649452306197394}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
+  m_MaxValue: 10
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:

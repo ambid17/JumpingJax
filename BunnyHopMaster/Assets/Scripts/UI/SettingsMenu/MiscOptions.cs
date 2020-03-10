@@ -8,14 +8,14 @@ public class MiscOptions : MonoBehaviour
     public Text sensitivityValue;
     public Slider sensitivitySlider;
 
-    PlayerAiming playerAiming;
+    CameraMove playerAiming;
 
     void Start()
     {
         PlayerMovement playerCharacter = GetComponentInParent<PlayerMovement>();
         if (playerCharacter != null)
         {
-            playerAiming = playerCharacter.GetComponentInChildren<PlayerAiming>();
+            playerAiming = playerCharacter.GetComponentInChildren<CameraMove>();
         }
 
         float sensitivity = OptionsPreferencesManager.GetSensitivity();

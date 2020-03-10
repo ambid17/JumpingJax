@@ -27,6 +27,9 @@ public class Portal : MonoBehaviour
     private new Renderer renderer;
     private new BoxCollider collider;
 
+    private float sphereCastSize = 0.05f;
+    private float overhangCheckDistance = 2.1f;
+
     private void Awake()
     {
         collider = GetComponent<BoxCollider>();
@@ -142,11 +145,12 @@ public class Portal : MonoBehaviour
             Vector3 raycastPos = transform.TransformPoint(testPoints[i]);
             Vector3 raycastDir = transform.TransformDirection(testDirs[i]);
 
-            if(Physics.CheckSphere(raycastPos, 0.05f, placementMask))
+            // If the point is already in a wall, it's not overhanging
+            if(Physics.CheckSphere(raycastPos, sphereCastSize, placementMask))
             {
                 break;
             }
-            else if(Physics.Raycast(raycastPos, raycastDir, out hit, 2.1f, placementMask))
+            else if(Physics.Raycast(raycastPos, raycastDir, out hit, overhangCheckDistance, placementMask))
             {
                 var offset = hit.point - raycastPos;
                 transform.Translate(offset, Space.World);
