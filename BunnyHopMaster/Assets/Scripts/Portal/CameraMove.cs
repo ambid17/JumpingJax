@@ -5,13 +5,17 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour
 {
     public float sensitivityMultiplier;
+    public Camera playerCamera;
 
     public Quaternion TargetRotation { private set; get; }
-    public Camera playerCamera;
+
+    private const float maxCameraXRotation = 75;
+    private const float halfRotation = 180;
+    private const float fullRotation =  360;
+
 
     private void Awake()
     {
-        //rigidbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -32,16 +36,17 @@ public class CameraMove : MonoBehaviour
         }
 
         // Rotate the camera.
-        var rotation = new Vector2(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"));
+        var rotation = new Vector2(-Input.GetAxis(PlayerConstants.MouseY), Input.GetAxis(PlayerConstants.MouseX));
         var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * sensitivityMultiplier;
-        if(targetEuler.x > 180.0f)
+        if(targetEuler.x > halfRotation)
         {
-            targetEuler.x -= 360.0f;
+            targetEuler.x -= fullRotation;
         }
-        targetEuler.x = Mathf.Clamp(targetEuler.x, -75.0f, 75.0f);
+        targetEuler.x = Mathf.Clamp(targetEuler.x, -maxCameraXRotation, maxCameraXRotation);
         TargetRotation = Quaternion.Euler(targetEuler);
 
         playerCamera.transform.rotation = TargetRotation;
+        // The player itself should only rotate on the y-axis to prevent rotating the collider
         transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
     }
 

@@ -16,13 +16,16 @@ public class RecursivePortalCamera : MonoBehaviour
     private Camera mainCamera;
 
     private const int portalRecursions = 7;
+    private const int renderTextureDepth = 24;
+
+    private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
     private void Awake()
     {
         mainCamera = Camera.main;
 
-        tempTexture1 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
-        tempTexture2 = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
+        tempTexture1 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
+        tempTexture2 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
     }
 
     private void Start()
@@ -70,12 +73,12 @@ public class RecursivePortalCamera : MonoBehaviour
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inTransform.InverseTransformPoint(cameraTransform.position);
-            relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
+            relativePos = flippedYRotation * relativePos;
             cameraTransform.position = outTransform.TransformPoint(relativePos);
 
             // Rotate the camera to look through the other portal.
             Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * cameraTransform.rotation;
-            relativeRot = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativeRot;
+            relativeRot = flippedYRotation * relativeRot;
             cameraTransform.rotation = outTransform.rotation * relativeRot;
         }
 

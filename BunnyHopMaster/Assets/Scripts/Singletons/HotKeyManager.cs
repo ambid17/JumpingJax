@@ -8,18 +8,18 @@ public class HotKeyManager : MonoBehaviour {
     private Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>();
     private Dictionary<string, KeyCode> defaults = new Dictionary<string, KeyCode>();
 
-    public static HotKeyManager instance;
+    public static HotKeyManager Instance;
     
 
     private void Awake()
     {
-        if(instance != null)
+        if(Instance != null)
         {
             Destroy(gameObject);
         }
         else
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 

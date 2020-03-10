@@ -8,9 +8,10 @@ public class PlayerProgress : MonoBehaviour
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
     public bool didWin = false;
-    public PlayerMovement playerMovement;
     [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
     public float playerFallingBoundsReset = 0;
+
+    public PlayerMovement playerMovement;
 
     private void Start()
     {
@@ -88,14 +89,8 @@ public class PlayerProgress : MonoBehaviour
 
     void Respawn()
     {
-        Vector3 newPos = GetCurrentCheckpointPosition();
-        transform.position = newPos;
+        Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
+        transform.position = respawnPosition;
         playerMovement.newVelocity = Vector3.zero;
-    }
-
-    public Vector3 GetCurrentCheckpointPosition()
-    {
-        // Add 2 in the "y" direction on respawn to prevent spawning inside of the ground
-        return currentCheckpoint.gameObject.transform.position + new Vector3(0, 2, 0);
     }
 }
