@@ -25,7 +25,7 @@ public class VideoOptions : MonoBehaviour
 
     void SetupResolutionDropdown()
     {
-        resolutions = Screen.resolutions;
+        resolutions = GetBestResolutions();
         resolutionDropdown.ClearOptions();
 
         List<string> options = new List<string>();
@@ -85,5 +85,31 @@ public class VideoOptions : MonoBehaviour
         QualitySettings.SetQualityLevel(qualityIndex);
         PlayerPrefs.SetInt("Quality", qualityIndex);
         OptionsPreferencesManager.SetQuality(qualityIndex);
+    }
+
+    // Get only the resolutions for the highest framerate
+    private Resolution[] GetBestResolutions()
+    {
+        Resolution[] allResolutions = Screen.resolutions;
+        List<Resolution> bestResolutions = new List<Resolution>();
+
+        int highestRefreshRate = 0;
+        foreach (Resolution resolution in allResolutions)
+        {
+            if (resolution.refreshRate > highestRefreshRate)
+            {
+                highestRefreshRate = resolution.refreshRate;
+            }
+        }
+
+        foreach (Resolution resolution in allResolutions)
+        {
+            if (resolution.refreshRate == highestRefreshRate)
+            {
+                bestResolutions.Add(resolution);
+            }
+        }
+
+        return bestResolutions.ToArray();
     }
 }
