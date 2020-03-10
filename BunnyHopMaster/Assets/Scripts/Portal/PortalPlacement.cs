@@ -33,11 +33,11 @@ public class PortalPlacement : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            FirePortal(0, transform.position, transform.forward, 250.0f);
+            FirePortal(0, transform.position, transform.forward, portalRaycastDistance);
         }
         else if (Input.GetButtonDown("Fire2"))
         {
-            FirePortal(1, transform.position, transform.forward, 250.0f);
+            FirePortal(1, transform.position, transform.forward, portalRaycastDistance);
         }
     }
 
@@ -48,6 +48,7 @@ public class PortalPlacement : MonoBehaviour
 
         if(hit.collider != null)
         {
+            // If we hit a portal, spawn a portal through this portal
             if (hit.collider.tag == "Portal")
             {
                 var inPortal = hit.collider.GetComponent<Portal>();
