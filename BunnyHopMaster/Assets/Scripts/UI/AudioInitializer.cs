@@ -6,11 +6,12 @@ using UnityEngine.Audio;
 public class AudioInitializer : MonoBehaviour
 {
     public AudioMixer audioMixer;
+    private const string musicVolumeParam = "MusicVolume";
 
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
-        Debug.Log("initVol:" + volume);
+        Debug.Log("initializing Volue to: " + volume);
         InitializeVolume(volume);
     }
 
@@ -22,7 +23,7 @@ public class AudioInitializer : MonoBehaviour
     public void SetVolume(float volume)
     {
         float volumeInDecibels = ConvertToDecibel(volume);
-        audioMixer.SetFloat("MusicVolume", volumeInDecibels);
+        audioMixer.SetFloat(musicVolumeParam, volumeInDecibels);
         OptionsPreferencesManager.SetVolume(volumeInDecibels);
     }
 

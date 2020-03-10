@@ -19,6 +19,7 @@ public class PortalPlacement : MonoBehaviour
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
     private const float portalRaycastDistance = 250;
+    private const string portalTag = "Portal";
     private void Awake()
     {
         cameraMove = GetComponent<CameraMove>();
@@ -49,7 +50,7 @@ public class PortalPlacement : MonoBehaviour
         if(hit.collider != null)
         {
             // If we hit a portal, spawn a portal through this portal
-            if (hit.collider.tag == "Portal")
+            if (hit.collider.tag == portalTag)
             {
                 var inPortal = hit.collider.GetComponent<Portal>();
 

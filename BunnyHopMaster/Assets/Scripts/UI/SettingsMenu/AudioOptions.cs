@@ -10,10 +10,11 @@ public class AudioOptions : MonoBehaviour
     public Slider volumeSlider;
     public Text volumeValue;
 
+    private const string musicVolumeParam = "MusicVolume";
+
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
-        Debug.Log("initVol:" + volume);
         InitializeVolume(volume);
     }
 
@@ -27,7 +28,7 @@ public class AudioOptions : MonoBehaviour
         volumeValue.text = (int)(volume * 100) + "%";
 
         float volumeInDecibels = ConvertToDecibel(volume);
-        audioMixer.SetFloat("MusicVolume", volumeInDecibels);
+        audioMixer.SetFloat(musicVolumeParam, volumeInDecibels);
         OptionsPreferencesManager.SetVolume(volumeInDecibels);
     }
 

@@ -37,7 +37,7 @@ public class MiscOptions : MonoBehaviour
         int percentage = Mathf.RoundToInt(sensitivity * 100);
         sensitivityValue.text = percentage + "%";
         sensitivitySlider.value = sensitivity;
-        Debug.Log("setsens: " + sensitivity);
+        Debug.Log("Setting sensitivity to: " + sensitivity);
 
         OptionsPreferencesManager.SetSensitivity(sensitivity);
     }
