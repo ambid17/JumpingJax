@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager _GameManager;
+    public static GameManager Instance;
     public AudioSource musicSource;
+    public LevelDataContainer levelDataContainer;
 
-    public int currentLevel;
-    public float completionTime;
+    public int currentLevelBuildIndex;
+    public float currentCompletionTime;
 
     void Awake()
     {
@@ -18,26 +19,26 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (GameManager._GameManager == null)
+        if (GameManager.Instance == null)
         {
-            GameManager._GameManager = this;
+            GameManager.Instance = this;
         }
-        else if (GameManager._GameManager == this)
+        else if (GameManager.Instance == this)
         {
-            Destroy(GameManager._GameManager.gameObject);
-            GameManager._GameManager = this;
+            Destroy(GameManager.Instance.gameObject);
+            GameManager.Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
     }
 
     private void OnLevelWasLoaded(int level)
     {
-        completionTime = 0;
+        currentCompletionTime = 0;
     }
 
     void Update()
     {
-        completionTime += Time.deltaTime;
+        currentCompletionTime += Time.deltaTime;
     }
 
     private void OnEnable()

@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    private const float moveSpeed = 7.5f;
-    private const float cameraSpeed = 3.0f;
+    public float sensitivityMultiplier;
+    public Camera playerCamera;
 
     public Quaternion TargetRotation { private set; get; }
-    public Camera playerCamera;
-    
-    //private Vector3 moveVector = Vector3.zero;
-    //private float moveY = 0.0f;
 
-    //private new Rigidbody rigidbody;
+    private const float maxCameraXRotation = 75;
+    private const float halfRotation = 180;
+    private const float fullRotation =  360;
+
 
     private void Awake()
     {
-        //rigidbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -25,36 +23,31 @@ public class CameraMove : MonoBehaviour
         playerCamera = Camera.main;
     }
 
-    private void Update()
+    private void Start()
     {
-        // Rotate the camera.
-        var rotation = new Vector2(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"));
-        var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * cameraSpeed;
-        if(targetEuler.x > 180.0f)
-        {
-            targetEuler.x -= 360.0f;
-        }
-        targetEuler.x = Mathf.Clamp(targetEuler.x, -75.0f, 75.0f);
-        TargetRotation = Quaternion.Euler(targetEuler);
-
-        Quaternion rotationToApply = Quaternion.Slerp(playerCamera.transform.rotation, TargetRotation,
-            Time.deltaTime * 15.0f);
-        playerCamera.transform.rotation = rotationToApply;
-        transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
-
-        // Move the camera.
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        //moveVector = new Vector3(x, 0.0f, z) * moveSpeed;
-
-        //moveY = Input.GetAxis("Elevation");
+        sensitivityMultiplier = OptionsPreferencesManager.GetSensitivity();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        //Vector3 newVelocity = transform.TransformDirection(moveVector);
-        //newVelocity.y += moveY * moveSpeed;
-        //rigidbody.velocity = newVelocity;
+        if(Time.timeScale == 0)
+        {
+            return;
+        }
+
+        // Rotate the camera.
+        var rotation = new Vector2(-Input.GetAxis(PlayerConstants.MouseY), Input.GetAxis(PlayerConstants.MouseX));
+        var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * sensitivityMultiplier;
+        if(targetEuler.x > halfRotation)
+        {
+            targetEuler.x -= fullRotation;
+        }
+        targetEuler.x = Mathf.Clamp(targetEuler.x, -maxCameraXRotation, maxCameraXRotation);
+        TargetRotation = Quaternion.Euler(targetEuler);
+
+        playerCamera.transform.rotation = TargetRotation;
+        // The player itself should only rotate on the y-axis to prevent rotating the collider
+        transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
     }
 
     public void ResetTargetRotation()

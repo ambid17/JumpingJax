@@ -10,17 +10,17 @@ public class MainMenuController : MonoBehaviour
     public GameObject levelsPanel;
     public PauseMenu pauseMenu;
 
-    public string[] sceneNames;
-
     private void Start()
     {
         levelsPanel.SetActive(true);
         pauseMenu.gameObject.SetActive(false);
-        for(int i = 1; i <= PlayerStatsManager._PlayerStats.numberOfLevels; i++)
+        Level[] levels = GameManager.Instance.levelDataContainer.levels;
+
+        for (int i = 0; i <= levels.Length - 1; i++)
         {
             GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
             LevelButton levelButton = newLevelButton.GetComponentInChildren<LevelButton>();
-            levelButton.SetupButton(i, PlayerStatsManager._PlayerStats.levels[i-1].isCompleted, sceneNames[i]);
+            levelButton.SetupButton(levels[i]);
         }
     }
 

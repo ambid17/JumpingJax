@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UI;
 
-public class AudioOptions : MonoBehaviour
+public class AudioInitializer : MonoBehaviour
 {
     public AudioMixer audioMixer;
-    public Slider volumeSlider;
-    public Text volumeValue;
-
     private const string musicVolumeParam = "MusicVolume";
 
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
+        Debug.Log("initializing Volue to: " + volume);
         InitializeVolume(volume);
     }
 
@@ -25,8 +22,6 @@ public class AudioOptions : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        volumeValue.text = (int)(volume * 100) + "%";
-
         float volumeInDecibels = ConvertToDecibel(volume);
         audioMixer.SetFloat(musicVolumeParam, volumeInDecibels);
         OptionsPreferencesManager.SetVolume(volumeInDecibels);
@@ -34,8 +29,7 @@ public class AudioOptions : MonoBehaviour
 
     public void InitializeVolume(float volume)
     {
-        volumeSlider.value = ConvertFromDecibel(volume);
-        SetVolume(volumeSlider.value);
+        SetVolume(ConvertFromDecibel(volume));
     }
 
     public float ConvertToDecibel(float value)

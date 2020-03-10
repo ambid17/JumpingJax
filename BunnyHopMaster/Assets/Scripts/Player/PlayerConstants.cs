@@ -60,4 +60,8 @@ public static class PlayerConstants
 
     public static string MouseX = "Mouse X";
     public static string MouseY = "Mouse Y";
+
+    // Game Constants
+    public static int BuildSceneIndex = 0;
+    public static Vector3 PlayerSpawnOffset = new Vector3(0, 2, 0);
 }
