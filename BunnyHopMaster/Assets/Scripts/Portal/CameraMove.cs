@@ -41,20 +41,6 @@ public class CameraMove : MonoBehaviour
             Time.deltaTime * 15.0f);
         playerCamera.transform.rotation = rotationToApply;
         transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
-
-        // Move the camera.
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        //moveVector = new Vector3(x, 0.0f, z) * moveSpeed;
-
-        //moveY = Input.GetAxis("Elevation");
-    }
-
-    private void FixedUpdate()
-    {
-        //Vector3 newVelocity = transform.TransformDirection(moveVector);
-        //newVelocity.y += moveY * moveSpeed;
-        //rigidbody.velocity = newVelocity;
     }
 
     public void ResetTargetRotation()

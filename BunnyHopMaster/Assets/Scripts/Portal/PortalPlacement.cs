@@ -33,11 +33,11 @@ public class PortalPlacement : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            FirePortal(0, transform.position, transform.forward, portalRaycastDistance);
+            FirePortal(0, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }
         else if (Input.GetButtonDown("Fire2"))
         {
-            FirePortal(1, transform.position, transform.forward, portalRaycastDistance);
+            FirePortal(1, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }
     }
 
