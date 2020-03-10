@@ -27,6 +27,11 @@ public class CameraMove : MonoBehaviour
 
     private void Update()
     {
+        if(Time.timeScale == 0)
+        {
+            return;
+        }
+
         // Rotate the camera.
         var rotation = new Vector2(-Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"));
         var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * cameraSpeed;
