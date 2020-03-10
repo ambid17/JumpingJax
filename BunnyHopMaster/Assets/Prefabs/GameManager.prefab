@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7360296815112912553}
   - component: {fileID: 7360296815112912552}
+  - component: {fileID: 7174419794005054913}
   - component: {fileID: 479040169}
   m_Layer: 0
   m_Name: GameManager
@@ -46,8 +47,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 479040169}
   levelDataContainer: {fileID: 11400000, guid: df24c52f07f729e449d80d692421b179, type: 2}
-  currentLevelIndex: 0
+  currentLevelBuildIndex: 0
   currentCompletionTime: 0
+--- !u!114 &7174419794005054913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360296815112912555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bafa551a1840e4b44a0a4f920506fc9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: af3796b8a4d7fdf4d8d3e68696dccf4a, type: 2}
 --- !u!82 &479040169
 AudioSource:
   m_ObjectHideFlags: 0
