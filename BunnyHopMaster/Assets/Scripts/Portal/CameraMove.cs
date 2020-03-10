@@ -41,8 +41,7 @@ public class CameraMove : MonoBehaviour
         targetEuler.x = Mathf.Clamp(targetEuler.x, -75.0f, 75.0f);
         TargetRotation = Quaternion.Euler(targetEuler);
 
-        Quaternion rotationToApply = TargetRotation;
-        playerCamera.transform.rotation = rotationToApply;
+        playerCamera.transform.rotation = TargetRotation;
         transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
     }
 
