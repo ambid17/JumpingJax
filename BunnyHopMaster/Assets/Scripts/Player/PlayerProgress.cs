@@ -12,11 +12,13 @@ public class PlayerProgress : MonoBehaviour
     public float playerFallingBoundsReset = 0;
 
     public PlayerMovement playerMovement;
+    public CameraMove cameraMove;
 
     private void Start()
     {
         didWin = false;
         playerMovement = GetComponent<PlayerMovement>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     void Update()
@@ -92,5 +94,6 @@ public class PlayerProgress : MonoBehaviour
         Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
         playerMovement.newVelocity = Vector3.zero;
+        cameraMove.ResetTargetRotation();
     }
 }

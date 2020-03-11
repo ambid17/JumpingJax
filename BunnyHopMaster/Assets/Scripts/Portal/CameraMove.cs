@@ -47,4 +47,9 @@ public class CameraMove : MonoBehaviour
 
         playerCamera.transform.rotation = TargetRotation;
     }
+
+    public void ResetTargetRotation()
+    {
+        TargetRotation = Quaternion.identity;
+    }
 }
