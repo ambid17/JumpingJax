@@ -46,8 +46,6 @@ public class CameraMove : MonoBehaviour
         TargetRotation = Quaternion.Euler(targetEuler);
 
         playerCamera.transform.rotation = TargetRotation;
-        // The player itself should only rotate on the y-axis to prevent rotating the collider
-        transform.rotation = Quaternion.AngleAxis(TargetRotation.eulerAngles.y, Vector3.up);
     }
 
     public void ResetTargetRotation()
