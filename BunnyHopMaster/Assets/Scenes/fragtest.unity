@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d8bd44b2d2ddcdb5082bca26f0db891e, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -623,24 +623,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0244d2a3c7bfea94db4e2af3e1187fee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerLayer: 12
-  notPlayerLayerMask:
+  layersToIgnore:
     serializedVersion: 2
     m_Bits: 0
-  MoveSpeed: 10
-  MaxVelocity: 100
-  Gravity: 9.8
-  JumpPower: 5
-  GroundAcceleration: 7
-  AirAcceleration: 2.5
-  StopSpeed: 8
-  Friction: 6
-  normalSurfaceFriction: 1
-  AirCap: 3
-  AABB: {fileID: 0}
-  _newVelocity: {x: 0, y: 0, z: 0}
-  _grounded: 0
-  _surfing: 0
+  myCollider: {fileID: 0}
+  newVelocity: {x: 0, y: 0, z: 0}
+  grounded: 0
+  surfing: 0
+  crouching: 0
+  wasCrouching: 0
 --- !u!114 &1012048988
 MonoBehaviour:
   m_ObjectHideFlags: 0
