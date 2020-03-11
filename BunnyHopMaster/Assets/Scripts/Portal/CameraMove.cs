@@ -47,9 +47,4 @@ public class CameraMove : MonoBehaviour
 
         playerCamera.transform.rotation = TargetRotation;
     }
-
-    public void ResetTargetRotation()
-    {
-        TargetRotation = Quaternion.LookRotation(transform.forward, Vector3.up);
-    }
 }
