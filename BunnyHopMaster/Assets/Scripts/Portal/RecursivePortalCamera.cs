@@ -19,6 +19,7 @@ public class RecursivePortalCamera : MonoBehaviour
     private const int renderTextureDepth = 24;
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    private bool isPortalLevel = false;
 
     private void Awake()
     {
@@ -30,12 +31,22 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private void Start()
     {
+        isPortalLevel = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1].isPortalLevel;
+        if (Time.timeScale == 0 || !isPortalLevel)
+        {
+            return;
+        }
         portals[0].SetTexture(tempTexture1);
         portals[1].SetTexture(tempTexture2);
     }
 
     private void OnPreRender()
     {
+        if (Time.timeScale == 0 || !isPortalLevel)
+        {
+            return;
+        }
+
         if (!portals[0].IsPlaced() || !portals[1].IsPlaced())
         {
             return;
