@@ -923,6 +923,7 @@ MonoBehaviour:
   playerUI: {fileID: 1844322298415541209}
   didWin: 0
   playerFallingBoundsReset: 0
+  playerMovement: {fileID: 0}
 --- !u!114 &4259481642829858136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -939,6 +940,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3895
   myCollider: {fileID: 0}
+  cameraMove: {fileID: 0}
   newVelocity: {x: 0, y: 0, z: 0}
   grounded: 0
   surfing: 0
@@ -4936,7 +4938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -6321,7 +6323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -8090,7 +8092,7 @@ GameObject:
   - component: {fileID: 6247849998111623061}
   - component: {fileID: 4882427776789990213}
   m_Layer: 12
-  m_Name: GameObject
+  m_Name: StatsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8940,7 +8942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
