@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public LayerMask layersToIgnore;
     public BoxCollider myCollider;
+    public CameraMove cameraMove;
 
     //The velocity applied at the end of every physics frame
     public Vector3 newVelocity;
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         myCollider = GetComponent<BoxCollider>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     private void FixedUpdate()
@@ -157,8 +159,8 @@ public class PlayerMovement : MonoBehaviour
             inputVelocity *= moveSpeed / inputVelocity.magnitude;
         }
 
-        //Get the velocity vector in world space coordinates
-        return transform.TransformDirection(inputVelocity);
+        //Get the velocity vector in world space coordinates, by rotating around the camera's y-axis
+        return Quaternion.AngleAxis(cameraMove.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
     private Vector3 GetInputVelocity(float moveSpeed)
@@ -235,9 +237,10 @@ public class PlayerMovement : MonoBehaviour
     {
         var speed = newVelocity.magnitude;
 
-        //Don't apply friction if the player isn't moving
-        //Clear speed if it's too low to prevent accidental movement
-        if (speed < 0.1f)
+        // Don't apply friction if the player isn't moving
+        // Clear speed if it's too low to prevent accidental movement
+        // Also makes the player's friction feel more snappy
+        if (speed < PlayerConstants.MinimumSpeedCutoff)
         {
             newVelocity = Vector3.zero;
             return;

@@ -32,7 +32,6 @@ public class PlayerPortalableController : PortalableObject
     public override void Warp()
     {
         WarpPlayer();
-        cameraMove.ResetTargetRotation();
     }
 
     public virtual void WarpPlayer()
@@ -44,11 +43,6 @@ public class PlayerPortalableController : PortalableObject
         Vector3 relativePos = inTransform.InverseTransformPoint(transform.position);
         relativePos = halfTurn * relativePos;
         transform.position = outTransform.TransformPoint(relativePos);
-
-        // Update rotation of object.
-        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * transform.rotation;
-        relativeRot = halfTurn * relativeRot;
-        transform.rotation = outTransform.rotation * relativeRot;
 
         // Update velocity of rigidbody.
         Vector3 relativeVel = inTransform.InverseTransformDirection(playerMovement.newVelocity);
