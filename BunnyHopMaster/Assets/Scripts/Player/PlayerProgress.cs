@@ -55,7 +55,7 @@ public class PlayerProgress : MonoBehaviour
 
         levelToUpdate.isCompleted = true;
 
-        if (levelToUpdate.completionTime < completionTime)
+        if (levelToUpdate.completionTime > completionTime)
         {
             levelToUpdate.completionTime = completionTime;
         }
