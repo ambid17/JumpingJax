@@ -235,9 +235,10 @@ public class PlayerMovement : MonoBehaviour
     {
         var speed = newVelocity.magnitude;
 
-        //Don't apply friction if the player isn't moving
-        //Clear speed if it's too low to prevent accidental movement
-        if (speed < 0.1f)
+        // Don't apply friction if the player isn't moving
+        // Clear speed if it's too low to prevent accidental movement
+        // Also makes the player's friction feel more snappy
+        if (speed < PlayerConstants.MinimumSpeedCutoff)
         {
             newVelocity = Vector3.zero;
             return;
