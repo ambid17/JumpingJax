@@ -7,7 +7,6 @@ public class PlayerProgress : MonoBehaviour
     [SerializeField]
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
-    public bool didWin = false;
     [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
     public float playerFallingBoundsReset = 0;
 
@@ -16,7 +15,6 @@ public class PlayerProgress : MonoBehaviour
 
     private void Start()
     {
-        didWin = false;
         playerMovement = GetComponent<PlayerMovement>();
         cameraMove = GetComponent<CameraMove>();
     }
@@ -38,28 +36,14 @@ public class PlayerProgress : MonoBehaviour
             Respawn();
         }
 
-        if (currentCheckpoint != null && !didWin)
+        if (currentCheckpoint != null && !GameManager.Instance.didWinCurrentLevel)
         {
             if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
-                didWin = true;
-                UpdateLevelStats();
+                GameManager.FinishedLevel();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
             }
-        }
-    }
-
-    private void UpdateLevelStats()
-    {
-        float completionTime = GameManager.Instance.currentCompletionTime;
-        Level levelToUpdate = GameManager.GetCurrentLevel();
-
-        levelToUpdate.isCompleted = true;
-
-        if (levelToUpdate.completionTime > completionTime)
-        {
-            levelToUpdate.completionTime = completionTime;
         }
     }
 
