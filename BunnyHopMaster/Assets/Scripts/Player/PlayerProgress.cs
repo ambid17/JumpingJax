@@ -7,16 +7,16 @@ public class PlayerProgress : MonoBehaviour
     [SerializeField]
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
-    public bool didWin = false;
     [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
     public float playerFallingBoundsReset = 0;
 
     public PlayerMovement playerMovement;
+    public CameraMove cameraMove;
 
     private void Start()
     {
-        didWin = false;
         playerMovement = GetComponent<PlayerMovement>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     void Update()
@@ -36,28 +36,14 @@ public class PlayerProgress : MonoBehaviour
             Respawn();
         }
 
-        if (currentCheckpoint != null && !didWin)
+        if (currentCheckpoint != null && !GameManager.Instance.didWinCurrentLevel)
         {
-            if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
+            if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
-                didWin = true;
-                UpdateLevelStats();
+                GameManager.FinishedLevel();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
             }
-        }
-    }
-
-    private void UpdateLevelStats()
-    {
-        float completionTime = GameManager.Instance.currentCompletionTime;
-        Level levelToUpdate = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1];
-
-        levelToUpdate.isCompleted = true;
-
-        if (levelToUpdate.completionTime < completionTime)
-        {
-            levelToUpdate.completionTime = completionTime;
         }
     }
 
@@ -92,5 +78,6 @@ public class PlayerProgress : MonoBehaviour
         Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
         playerMovement.newVelocity = Vector3.zero;
+        cameraMove.ResetTargetRotation();
     }
 }

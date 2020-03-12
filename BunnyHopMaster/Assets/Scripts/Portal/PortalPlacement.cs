@@ -20,6 +20,8 @@ public class PortalPlacement : MonoBehaviour
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
     private const float portalRaycastDistance = 250;
     private const string portalTag = "Portal";
+    private bool isPortalLevel = false;
+
     private void Awake()
     {
         cameraMove = GetComponent<CameraMove>();
@@ -27,7 +29,8 @@ public class PortalPlacement : MonoBehaviour
 
     private void Update()
     {
-        if (Time.timeScale == 0)
+        isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
+        if (Time.timeScale == 0 || !isPortalLevel)
         {
             return;
         }
