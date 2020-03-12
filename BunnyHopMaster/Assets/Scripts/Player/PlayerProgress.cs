@@ -40,7 +40,7 @@ public class PlayerProgress : MonoBehaviour
 
         if (currentCheckpoint != null && !didWin)
         {
-            if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
+            if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
                 didWin = true;
                 UpdateLevelStats();
@@ -53,7 +53,7 @@ public class PlayerProgress : MonoBehaviour
     private void UpdateLevelStats()
     {
         float completionTime = GameManager.Instance.currentCompletionTime;
-        Level levelToUpdate = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1];
+        Level levelToUpdate = GameManager.GetCurrentLevel();
 
         levelToUpdate.isCompleted = true;
 

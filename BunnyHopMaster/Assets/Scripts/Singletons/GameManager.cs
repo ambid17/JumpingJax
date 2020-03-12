@@ -50,4 +50,9 @@ public class GameManager : MonoBehaviour
     {
         musicSource.Stop();
     }
+
+    public static Level GetCurrentLevel()
+    {
+        return Instance.levelDataContainer.levels[Instance.currentLevelBuildIndex - 1];
+    }
 }

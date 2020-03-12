@@ -29,7 +29,7 @@ public class PortalPlacement : MonoBehaviour
 
     private void Update()
     {
-        isPortalLevel = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1].isPortalLevel;
+        isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
         if (Time.timeScale == 0 || !isPortalLevel)
         {
             return;
