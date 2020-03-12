@@ -33,7 +33,8 @@ public class InGameUI : MonoBehaviour
         }
 
         fpsText.text = "FPS: " + 1 / Time.deltaTime;
-        speedText.text = "Speed: " + Mathf.Round(playerMovement.newVelocity.magnitude * 100) / 100 + "m/s";
+        Vector2 directionalSpeed = new Vector2(playerMovement.newVelocity.x, playerMovement.newVelocity.z);
+        speedText.text = "Speed: " + Mathf.Round(directionalSpeed.magnitude * 100) / 100 + "m/s";
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
