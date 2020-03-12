@@ -5,7 +5,7 @@ using UnityEngine;
 public static class PlayerConstants
 {
     public static float MoveSpeed = 8f;
-    public static float CrouchingMoveSpeed = 2f;
+    public static float CrouchingMoveSpeed = 6f;
     public static float MaxVelocity = 100f;
 
     public static float Gravity = 9.8f;
@@ -13,7 +13,7 @@ public static class PlayerConstants
     public static float CrouchingJumpPower = 3f;
 
     public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 1.5f;
+    public static float AirAcceleration = 2f;
 
     public static float StopSpeed = 8f;
     public static float Friction = 6f;
@@ -65,4 +65,5 @@ public static class PlayerConstants
     // Game Constants
     public static int BuildSceneIndex = 0;
     public static Vector3 PlayerSpawnOffset = new Vector3(0, 2, 0);
+    public static string levelCompletionTimeFormat = "hh':'mm':'ss'.'fff";
 }

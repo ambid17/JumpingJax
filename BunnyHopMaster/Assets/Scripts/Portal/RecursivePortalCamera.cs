@@ -31,7 +31,7 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private void Start()
     {
-        isPortalLevel = GameManager.Instance.levelDataContainer.levels[GameManager.Instance.currentLevelBuildIndex - 1].isPortalLevel;
+        isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
         if (Time.timeScale == 0 || !isPortalLevel)
         {
             return;
