@@ -5,7 +5,7 @@ using UnityEngine;
 public static class PlayerConstants
 {
     public static float MoveSpeed = 8f;
-    public static float CrouchingMoveSpeed = 2f;
+    public static float CrouchingMoveSpeed = 6f;
     public static float MaxVelocity = 100f;
 
     public static float Gravity = 9.8f;
