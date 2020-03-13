@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Tooltip("Red line is current velocity, blue is the new direction")]
+    public bool showDebugGizmos = false;
     public LayerMask layersToIgnore;
     public BoxCollider myCollider;
     public CameraMove cameraMove;
@@ -202,8 +204,6 @@ public class PlayerMovement : MonoBehaviour
     {
         var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
-        Debug.Log("wishDir: " + wishDir + " currSpeed: " + currentSpeed);
-
 
         var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
 
@@ -223,14 +223,23 @@ public class PlayerMovement : MonoBehaviour
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
         var currentSpeed = Vector3.Dot(newVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
-
+        
         if (speedToAdd <= 0)
         {
             return;
         }
 
         var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
-        newVelocity += accelspeed * wishDir;
+        var velocityTransformation = accelspeed * wishDir;
+
+        if (showDebugGizmos)
+        {
+            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
+            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
+            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
+        }
+
+        newVelocity += velocityTransformation;
     }
 
     private void ApplyFriction()
