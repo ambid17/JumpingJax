@@ -9,7 +9,7 @@ public class CameraMove : MonoBehaviour
 
     public Quaternion TargetRotation { private set; get; }
 
-    private const float maxCameraXRotation = 75;
+    private const float maxCameraXRotation = 90;
     private const float halfRotation = 180;
     private const float fullRotation =  360;
 
