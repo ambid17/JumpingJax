@@ -6,8 +6,11 @@ using UnityEngine.UI;
 public class VideoOptions : MonoBehaviour
 {
     public Dropdown resolutionDropdown;
-    public Dropdown fullScreenDropdowne;
+    public Dropdown fullScreenDropdown;
     public Dropdown graphicsQualityDropdown;
+
+    public Slider portalRecursionSlider;
+    public Text portalRecursionText;
 
     Resolution[] resolutions;
 
@@ -16,6 +19,7 @@ public class VideoOptions : MonoBehaviour
         SetupResolutionDropdown();
         SetupGraphicsDropdown();
         SetupFullscreenDropdown();
+        SetupPortalRecursion();
     }
 
     public void SetDefaults()
@@ -62,8 +66,8 @@ public class VideoOptions : MonoBehaviour
 
     void SetupFullscreenDropdown()
     {
-        fullScreenDropdowne.onValueChanged.RemoveAllListeners();
-        fullScreenDropdowne.onValueChanged.AddListener(SetFullScreen);
+        fullScreenDropdown.onValueChanged.RemoveAllListeners();
+        fullScreenDropdown.onValueChanged.AddListener(SetFullScreen);
     }
 
     void SetResolution(int resolutionIndex)
@@ -83,10 +87,24 @@ public class VideoOptions : MonoBehaviour
     public void SetQuality(int qualityIndex)
     {
         QualitySettings.SetQualityLevel(qualityIndex);
-        PlayerPrefs.SetInt("Quality", qualityIndex);
         OptionsPreferencesManager.SetQuality(qualityIndex);
     }
 
+
+    public void SetupPortalRecursion()
+    {
+        portalRecursionSlider.onValueChanged.RemoveAllListeners();
+        //portalRecursionSlider.onValueChanged.AddListener(SetPortalRecursion);
+        SetPortalRecursion(3);
+    }
+
+    public void SetPortalRecursion(int recursionLevel)
+    {
+        portalRecursionSlider.value = recursionLevel;
+        portalRecursionText.text = recursionLevel.ToString();
+        OptionsPreferencesManager.SetPortalRecursion(recursionLevel);
+
+    }
     // Get only the resolutions for the highest framerate
     private Resolution[] GetBestResolutions()
     {
