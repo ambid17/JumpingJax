@@ -14,6 +14,8 @@ public class VideoOptions : MonoBehaviour
 
     Resolution[] resolutions;
 
+    public RecursivePortalCamera recursivePortalCamera;
+
     void Start()
     {
         SetupResolutionDropdown();
@@ -94,16 +96,27 @@ public class VideoOptions : MonoBehaviour
     public void SetupPortalRecursion()
     {
         portalRecursionSlider.onValueChanged.RemoveAllListeners();
-        //portalRecursionSlider.onValueChanged.AddListener(SetPortalRecursion);
-        SetPortalRecursion(3);
+        portalRecursionSlider.onValueChanged.AddListener(delegate { SetPortalRecursion(); }) ;
+        portalRecursionSlider.value = OptionsPreferencesManager.GetPortalRecursion();
+
+        CameraMove cameraMove = GetComponentInParent<CameraMove>();
+        if(cameraMove != null)
+        {
+            recursivePortalCamera = cameraMove.GetComponentInChildren<RecursivePortalCamera>();
+        }
     }
 
-    public void SetPortalRecursion(int recursionLevel)
+    public void SetPortalRecursion()
     {
-        portalRecursionSlider.value = recursionLevel;
-        portalRecursionText.text = recursionLevel.ToString();
-        OptionsPreferencesManager.SetPortalRecursion(recursionLevel);
+        int newValue = Mathf.FloorToInt(portalRecursionSlider.value);
+        portalRecursionText.text = newValue.ToString();
+        OptionsPreferencesManager.SetPortalRecursion(newValue);
 
+        // This won't exist in the menu
+        if(recursivePortalCamera != null)
+        {
+            recursivePortalCamera.UpdatePortalRecursion(newValue);
+        }
     }
     // Get only the resolutions for the highest framerate
     private Resolution[] GetBestResolutions()

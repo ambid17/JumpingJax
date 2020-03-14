@@ -23,7 +23,7 @@ public class OptionsPreferencesManager
     private const float defaultSensitivity = 0.5f;
 
     private const string portalRecursionKey = "PortalRecursion";
-    private const int defaultPortalRecursion = 3;
+    private const int defaultPortalRecursion = 5;
 
     public static int GetResolutionWidth()
     {
@@ -82,9 +82,9 @@ public class OptionsPreferencesManager
         PlayerPrefs.SetFloat(sensitivityKey, sensitivity);
     }
 
-    public static float GetPortalRecursion()
+    public static int GetPortalRecursion()
     {
-        return PlayerPrefs.GetFloat(portalRecursionKey, defaultPortalRecursion);
+        return PlayerPrefs.GetInt(portalRecursionKey, defaultPortalRecursion);
     }
 
     public static void SetPortalRecursion(int recursionLevel)
