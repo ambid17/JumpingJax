@@ -44,6 +44,11 @@ public class PlayerPortalableController : PortalableObject
         relativePos = halfTurn * relativePos;
         transform.position = outTransform.TransformPoint(relativePos);
 
+        // Update rotation of object.
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * cameraMove.TargetRotation;
+        relativeRot = halfTurn * relativeRot;
+        cameraMove.SetTargetRotation(outTransform.rotation * relativeRot);
+
         // Update velocity of rigidbody.
         Vector3 relativeVel = inTransform.InverseTransformDirection(playerMovement.newVelocity);
         relativeVel = halfTurn * relativeVel;

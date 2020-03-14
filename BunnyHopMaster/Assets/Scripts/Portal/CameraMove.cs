@@ -52,4 +52,9 @@ public class CameraMove : MonoBehaviour
     {
         TargetRotation = Quaternion.identity;
     }
+
+    public void SetTargetRotation(Quaternion newRotation)
+    {
+        TargetRotation = newRotation;
+    }
 }
