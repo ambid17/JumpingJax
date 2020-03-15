@@ -74,6 +74,11 @@ public class HotKeyManager : MonoBehaviour {
     public void SetDefaults()
     {
         keys = new Dictionary<string, KeyCode>(defaults);
+
+        foreach(KeyValuePair<String, KeyCode> entry in keys)
+        {
+            PlayerPrefs.SetString(entry.Key, entry.Value.ToString());
+        }
     }
 
     public void InitDefaults()
