@@ -20,7 +20,7 @@ public class AudioOptions : MonoBehaviour
 
     public void SetDefaults()
     {
-
+        //OptionsPreferencesManager.SetVolume(OptionsPreferencesManager.de);
     }
 
     public void SetVolume(float volume)

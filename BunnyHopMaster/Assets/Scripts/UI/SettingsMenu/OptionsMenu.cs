@@ -90,6 +90,8 @@ public class OptionsMenu : MonoBehaviour {
     {
         ClearTabs();
 
+        currentTab = tabToSet;
+
         ColorBlock selectedColors = new ColorBlock();
         selectedColors.normalColor = new Color(1, 0, 0);
         selectedColors.highlightedColor = new Color(0.9f, 0, 0);

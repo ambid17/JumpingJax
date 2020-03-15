@@ -23,7 +23,7 @@ public class OptionsPreferencesManager
     private const float defaultSensitivity = 0.5f;
 
     private const string portalRecursionKey = "PortalRecursion";
-    private const int defaultPortalRecursion = 5;
+    public const int defaultPortalRecursion = 5;
 
     public static int GetResolutionWidth()
     {

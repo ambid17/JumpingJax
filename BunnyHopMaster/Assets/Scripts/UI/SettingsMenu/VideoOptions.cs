@@ -26,7 +26,10 @@ public class VideoOptions : MonoBehaviour
 
     public void SetDefaults()
     {
-
+        SetDefaultResolution();
+        SetDefaultGraphics();
+        SetDefaultFullscreen();
+        SetDefaultPortalRecursion();
     }
 
     void SetupResolutionDropdown()
@@ -34,27 +37,47 @@ public class VideoOptions : MonoBehaviour
         resolutions = GetBestResolutions();
         resolutionDropdown.ClearOptions();
 
-        List<string> options = new List<string>();
-
-        int currentResolutionIndex = 0;
-        for (int i = 0; i < resolutions.Length; i++)
-        {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
-            options.Add(option);
-
-            if (resolutions[i].width == Screen.currentResolution.width
-                && resolutions[i].height == Screen.currentResolution.height)
-            {
-                currentResolutionIndex = i;
-            }
-        }
-
-        resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.AddOptions(GetResolutionCapabilities());
+        resolutionDropdown.value = GetStartingResolution();
         resolutionDropdown.RefreshShownValue();
 
         resolutionDropdown.onValueChanged.RemoveAllListeners();
         resolutionDropdown.onValueChanged.AddListener(SetResolution);
+    }
+
+    private List<string> GetResolutionCapabilities()
+    {
+        List<string> options = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height;
+            options.Add(option);
+        }
+
+        return options;
+    }
+
+    private int GetStartingResolution()
+    {
+        int savedHeight = OptionsPreferencesManager.GetResolutionHeight();
+        int savedWidth = OptionsPreferencesManager.GetResolutionWidth();
+        int resolutionIndex = -1;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            if (resolutions[i].width == savedWidth
+                && resolutions[i].height == savedHeight)
+            {
+                resolutionIndex = i;
+            }
+        }
+
+        // The default (1920 X 1080) wasnt found, return the highest available
+        if(resolutionIndex == -1)
+        {
+            resolutionIndex = resolutions.Length - 1;
+        }
+
+        return resolutionIndex;
     }
 
     void SetupGraphicsDropdown()
@@ -92,7 +115,6 @@ public class VideoOptions : MonoBehaviour
         OptionsPreferencesManager.SetQuality(qualityIndex);
     }
 
-
     public void SetupPortalRecursion()
     {
         portalRecursionSlider.onValueChanged.RemoveAllListeners();
@@ -118,6 +140,7 @@ public class VideoOptions : MonoBehaviour
             recursivePortalCamera.UpdatePortalRecursion(newValue);
         }
     }
+
     // Get only the resolutions for the highest framerate
     private Resolution[] GetBestResolutions()
     {
@@ -142,5 +165,28 @@ public class VideoOptions : MonoBehaviour
         }
 
         return bestResolutions.ToArray();
+    }
+
+    private void SetDefaultResolution()
+    {
+        // Set resolution to the highest supported
+        resolutionDropdown.value = resolutions.Length - 1;
+    }
+
+    private void SetDefaultGraphics()
+    {
+        // Set graphics to the lowest supported to prevent hardware issues
+        graphicsQualityDropdown.value = 0;
+    }
+
+    private void SetDefaultFullscreen()
+    {
+        fullScreenDropdown.value = 1;
+    }
+
+    private void SetDefaultPortalRecursion()
+    {
+        Debug.Log(OptionsPreferencesManager.defaultPortalRecursion);
+        portalRecursionSlider.value = OptionsPreferencesManager.defaultPortalRecursion;
     }
 }
