@@ -16,7 +16,7 @@ public class PortalableObject : MonoBehaviour
     protected new Collider collider;
 
     protected static readonly Quaternion halfTurn = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-    private static Vector3 cloneSpawnPosition = new Vector3(-1000.0f, 1000.0f, -1000.0f); // Somewhere far off the map until needed
+    protected static Vector3 cloneSpawnPosition = new Vector3(-1000.0f, 1000.0f, -1000.0f); // Somewhere far off the map until needed
 
     protected virtual void Awake()
     {
@@ -33,7 +33,7 @@ public class PortalableObject : MonoBehaviour
         collider = GetComponent<Collider>();
     }
 
-    private void LateUpdate()
+    protected virtual void LateUpdate()
     {
         if(inPortal == null || outPortal == null)
         {

@@ -965,6 +965,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensitivityMultiplier: 0
   playerCamera: {fileID: 441310430673922142}
+  playerModel: {fileID: 1844322297176508576}
 --- !u!114 &441310430289080764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3117,7 +3118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1844322297176508576}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.85, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 441310430289080761}
@@ -9653,7 +9654,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 826296621778580111}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13699,7 +13700,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5968149788584626390}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
