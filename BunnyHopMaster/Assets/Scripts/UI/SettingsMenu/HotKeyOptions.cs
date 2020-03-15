@@ -79,6 +79,7 @@ public class HotKeyOptions : MonoBehaviour
 
     public void SetDefaults()
     {
+        Debug.Log("set hotkey defaults");
         HotKeyManager.Instance.SetDefaults();
         ReloadUI();
     }

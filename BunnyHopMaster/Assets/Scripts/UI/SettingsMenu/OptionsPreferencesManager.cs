@@ -11,7 +11,7 @@ public class OptionsPreferencesManager
     private const int defaultResolutionHeight = 1080;
 
     private const string volumeKey = "Volume";
-    private const int defaultVolume = -40;
+    public const int defaultVolume = -40;
 
     private const string qualityKey = "Quality";
     private const int defaultQuality = 0;
@@ -20,7 +20,10 @@ public class OptionsPreferencesManager
     private const int defaultIsFullScreen = 0;
 
     private const string sensitivityKey = "Sensitivity";
-    private const float defaultSensitivity = 0.5f;
+    public const float defaultSensitivity = 0.5f;
+
+    private const string portalRecursionKey = "PortalRecursion";
+    public const int defaultPortalRecursion = 5;
 
     public static int GetResolutionWidth()
     {
@@ -77,5 +80,15 @@ public class OptionsPreferencesManager
     public static void SetSensitivity(float sensitivity)
     {
         PlayerPrefs.SetFloat(sensitivityKey, sensitivity);
+    }
+
+    public static int GetPortalRecursion()
+    {
+        return PlayerPrefs.GetInt(portalRecursionKey, defaultPortalRecursion);
+    }
+
+    public static void SetPortalRecursion(int recursionLevel)
+    {
+        PlayerPrefs.SetInt(portalRecursionKey, recursionLevel);
     }
 }

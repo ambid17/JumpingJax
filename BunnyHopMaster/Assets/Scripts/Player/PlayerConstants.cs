@@ -9,18 +9,18 @@ public static class PlayerConstants
     public static float MaxVelocity = 100f;
 
     public static float Gravity = 9.8f;
-    public static float JumpPower = 5f;
+    public static float JumpPower = 4.5f;
     public static float CrouchingJumpPower = 3f;
 
     public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 2f;
+    public static float AirAcceleration = 5f;
 
     public static float StopSpeed = 8f;
     public static float Friction = 6f;
     public static float MinimumSpeedCutoff = 0.5f; // This is the speed after which the player is immediately stopped due to friction
     public static float NormalSurfaceFriction = 1f;
 
-    public static float AirAccelerationCap = 1f;
+    public static float AirAccelerationCap = 0.8f;
 
     public static Vector3 BoxCastExtents = new Vector3(0.3f, 0.9f, 0.3f);
     public static Vector3 CrouchingBoxCastExtents = new Vector3(0.3f, 0.5f, 0.3f);
@@ -66,4 +66,5 @@ public static class PlayerConstants
     public static int BuildSceneIndex = 0;
     public static Vector3 PlayerSpawnOffset = new Vector3(0, 2, 0);
     public static string levelCompletionTimeFormat = "hh':'mm':'ss'.'fff";
+    public static int PlayerLayer = 12;
 }

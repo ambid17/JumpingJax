@@ -14,13 +14,12 @@ public class AudioOptions : MonoBehaviour
 
     void Start()
     {
-        float volume = OptionsPreferencesManager.GetVolume();
-        InitializeVolume(volume);
+        InitializeVolume();
     }
 
     public void SetDefaults()
     {
-
+        volumeSlider.value = ConvertFromDecibel(OptionsPreferencesManager.defaultVolume);
     }
 
     public void SetVolume(float volume)
@@ -32,10 +31,12 @@ public class AudioOptions : MonoBehaviour
         OptionsPreferencesManager.SetVolume(volumeInDecibels);
     }
 
-    public void InitializeVolume(float volume)
+    public void InitializeVolume()
     {
+        float volume = OptionsPreferencesManager.GetVolume();
+        volumeSlider.onValueChanged.RemoveAllListeners();
+        volumeSlider.onValueChanged.AddListener(SetVolume);
         volumeSlider.value = ConvertFromDecibel(volume);
-        SetVolume(volumeSlider.value);
     }
 
     public float ConvertToDecibel(float value)

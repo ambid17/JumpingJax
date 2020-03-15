@@ -26,7 +26,8 @@ public class WinMenu : MonoBehaviour
         if(GameManager.Instance.currentLevelBuildIndex >= GameManager.Instance.levelDataContainer.levels.Length)
         {
             Cursor.visible = true;
-            SceneManager.LoadScene(0);
+            // Load credits scene
+            SceneManager.LoadScene(GameManager.Instance.currentLevelBuildIndex + 1);
         }
         else
         {
