@@ -12,6 +12,7 @@ public class CameraMove : MonoBehaviour
     private const float maxCameraXRotation = 90;
     private const float halfRotation = 180;
     private const float fullRotation =  360;
+    private const float baseSensitivityMultiplier = 10;
 
 
     private void Awake()
@@ -37,7 +38,7 @@ public class CameraMove : MonoBehaviour
 
         // Rotate the camera.
         var rotation = new Vector2(-Input.GetAxis(PlayerConstants.MouseY), Input.GetAxis(PlayerConstants.MouseX));
-        var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * sensitivityMultiplier;
+        var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * sensitivityMultiplier * baseSensitivityMultiplier;
         if(targetEuler.x > halfRotation)
         {
             targetEuler.x -= fullRotation;

@@ -20,7 +20,7 @@ public class OptionsPreferencesManager
     private const int defaultIsFullScreen = 0;
 
     private const string sensitivityKey = "Sensitivity";
-    private const float defaultSensitivity = 0.5f;
+    public const float defaultSensitivity = 0.5f;
 
     private const string portalRecursionKey = "PortalRecursion";
     public const int defaultPortalRecursion = 5;
