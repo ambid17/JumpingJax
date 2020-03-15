@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public AudioSource musicSource;
     public LevelDataContainer levelDataContainer;
 
     public int currentLevelBuildIndex;
@@ -46,12 +45,10 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        musicSource.Stop();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        musicSource.Play();
         currentLevelBuildIndex = scene.buildIndex;
         currentCompletionTime = 0;
         didWinCurrentLevel = false;
