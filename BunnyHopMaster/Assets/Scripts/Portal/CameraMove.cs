@@ -6,6 +6,7 @@ public class CameraMove : MonoBehaviour
 {
     public float sensitivityMultiplier;
     public Camera playerCamera;
+    public GameObject playerModel;
 
     public Quaternion TargetRotation { private set; get; }
 
@@ -47,6 +48,10 @@ public class CameraMove : MonoBehaviour
         TargetRotation = Quaternion.Euler(targetEuler);
 
         playerCamera.transform.rotation = TargetRotation;
+
+        Quaternion newRotation = TargetRotation;
+        newRotation.eulerAngles = new Vector3(0, newRotation.eulerAngles.y, 0);
+        playerModel.transform.rotation = newRotation;
     }
 
     public void ResetTargetRotation()
@@ -56,6 +61,7 @@ public class CameraMove : MonoBehaviour
 
     public void SetTargetRotation(Quaternion newRotation)
     {
+        newRotation.eulerAngles = new Vector3(newRotation.eulerAngles.x, newRotation.eulerAngles.y, 0);
         TargetRotation = newRotation;
     }
 }
