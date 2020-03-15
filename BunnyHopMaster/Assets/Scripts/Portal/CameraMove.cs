@@ -55,6 +55,7 @@ public class CameraMove : MonoBehaviour
 
     public void SetTargetRotation(Quaternion newRotation)
     {
+        newRotation.eulerAngles = new Vector3(newRotation.eulerAngles.x, newRotation.eulerAngles.y, 0);
         TargetRotation = newRotation;
     }
 }
