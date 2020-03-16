@@ -97,7 +97,8 @@ public class PlayerMovement : MonoBehaviour
             extents = PlayerConstants.CrouchingBoxCastExtents;
         }
 
-        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
+        var hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
             halfExtents: extents,
             direction: -transform.up,
             orientation: Quaternion.identity,
