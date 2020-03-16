@@ -13,6 +13,8 @@ public class UntouchableObject : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerProgress playerProgress = other.GetComponent<PlayerProgress>();
-        playerProgress.Respawn();
+        if(playerProgress != null) {
+            playerProgress.Respawn();
+        }
     }
 }
