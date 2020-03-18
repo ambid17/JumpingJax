@@ -73,7 +73,7 @@ public class PlayerProgress : MonoBehaviour
         }
     }
 
-    void Respawn()
+    public void Respawn()
     {
         Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
