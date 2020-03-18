@@ -32,7 +32,7 @@ public class InGameUI : MonoBehaviour
             completionTimeText.text = "Time: " + time.ToString("hh':'mm':'ss");
         }
 
-        fpsText.text = "FPS: " + 1 / Time.deltaTime;
+        fpsText.text = "FPS: " + Mathf.Round(1 / Time.deltaTime);
         Vector2 directionalSpeed = new Vector2(playerMovement.newVelocity.x, playerMovement.newVelocity.z);
         speedText.text = "Speed: " + Mathf.Round(directionalSpeed.magnitude * 100) / 100 + "m/s";
 

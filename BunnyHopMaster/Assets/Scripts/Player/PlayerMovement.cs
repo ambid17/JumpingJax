@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
         ClampVelocity(PlayerConstants.MaxVelocity);
 
-        transform.position += newVelocity * Time.deltaTime;
+        transform.position += newVelocity * Time.fixedDeltaTime;
 
         ResolveCollisions();
     }
@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded)
         {
-            newVelocity.y -= PlayerConstants.Gravity * Time.deltaTime;
+            newVelocity.y -= PlayerConstants.Gravity * Time.fixedDeltaTime;
         }
     }
 
@@ -97,7 +97,8 @@ public class PlayerMovement : MonoBehaviour
             extents = PlayerConstants.CrouchingBoxCastExtents;
         }
 
-        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
+        var hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
             halfExtents: extents,
             direction: -transform.up,
             orientation: Quaternion.identity,
@@ -205,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
         var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
 
-        var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+        var acceleration = PlayerConstants.GroundAcceleration * Time.fixedDeltaTime; //acceleration to apply in the newest direction
 
         if (speedToAdd <= 0)
         {
@@ -229,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
 
         if (showDebugGizmos)
@@ -256,7 +257,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         var control = (speed < PlayerConstants.StopSpeed) ? PlayerConstants.StopSpeed : speed;
-        var lossInSpeed = control * PlayerConstants.Friction * Time.deltaTime;
+        var lossInSpeed = control * PlayerConstants.Friction * Time.fixedDeltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)
