@@ -34,7 +34,6 @@ public class Portal : MonoBehaviour
 
     private float sphereCastSize = 0.02f;
     private float bigSphereCastSize = 0.04f;
-    private Vector3 portalExtents = new Vector3(2, 4, 0.5f);
 
     private void Awake()
     {
@@ -174,6 +173,7 @@ public class Portal : MonoBehaviour
 
     private void FixPortalOverlaps()
     {
+        // TODO: create a method of depenetrating overlapping portals
         //if(MathUtil.DoBoxesIntersect(collider, otherPortal.collider))
         //{
         //    Vector3 depenetration = MathUtil.GetBoxDepenetration(collider, otherPortal.collider);
