@@ -34,7 +34,10 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        currentCompletionTime += Time.deltaTime;
+        if (!didWinCurrentLevel)
+        {
+            currentCompletionTime += Time.deltaTime;
+        }
     }
 
     private void OnEnable()
