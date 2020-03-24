@@ -302,8 +302,12 @@ MonoBehaviour:
   portalColour: {r: 1, g: 0.4, b: 0, a: 0}
   placementMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3073
+  overhangMask:
+    serializedVersion: 2
+    m_Bits: 1024
   wallCollider: {fileID: 0}
+  isDebug: 1
 --- !u!65 &495230965053229194
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -496,8 +500,12 @@ MonoBehaviour:
   portalColour: {r: 0, g: 0.58431375, b: 1, a: 0}
   placementMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3073
+  overhangMask:
+    serializedVersion: 2
+    m_Bits: 1024
   wallCollider: {fileID: 0}
+  isDebug: 1
 --- !u!65 &495230965673489024
 BoxCollider:
   m_ObjectHideFlags: 0

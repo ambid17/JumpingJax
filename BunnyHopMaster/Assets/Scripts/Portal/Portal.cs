@@ -17,9 +17,14 @@ public class Portal : MonoBehaviour
     [SerializeField]
     private LayerMask placementMask;
 
+    [SerializeField]
+    private LayerMask overhangMask;
+
     private bool isPlaced = true;
     [SerializeField]
     private Collider wallCollider;
+
+    public bool isDebug = true;
 
     private List<PortalableObject> portalObjects = new List<PortalableObject>();
 
@@ -27,8 +32,8 @@ public class Portal : MonoBehaviour
     private new Renderer renderer;
     private new BoxCollider collider;
 
-    private float sphereCastSize = 0.05f;
-    private float overhangCheckDistance = 2.1f;
+    private float sphereCastSize = 0.02f;
+    private float bigSphereCastSize = 0.04f;
 
     private void Awake()
     {
@@ -117,85 +122,63 @@ public class Portal : MonoBehaviour
         transform.position -= transform.forward * 0.001f;
 
         FixOverhangs();
-        FixIntersects();
+        FixPortalOverlaps();
     }
 
-    // Ensure the portal cannot extend past the edge of a surface.
+    // Ensure the portal cannot extend past the edge of a surface, or intersect a corner
     private void FixOverhangs()
     {
         var testPoints = new List<Vector3>
         {
-            new Vector3(-1.1f,  0.0f, 0.1f),
-            new Vector3( 1.1f,  0.0f, 0.1f),
-            new Vector3( 0.0f, -2.1f, 0.1f),
-            new Vector3( 0.0f,  2.1f, 0.1f)
-        };
-
-        var testDirs = new List<Vector3>
-        {
-             Vector3.right,
-            -Vector3.right,
-             Vector3.up,
-            -Vector3.up
+            new Vector3(-1.1f,  0, 0),
+            new Vector3( 1.1f,  0, 0),
+            new Vector3( 0, -2.1f, 0),
+            new Vector3( 0,  2.1f, 0)
         };
 
         for(int i = 0; i < 4; ++i)
         {
-            RaycastHit hit;
-            Vector3 raycastPos = transform.TransformPoint(testPoints[i]);
-            Vector3 raycastDir = transform.TransformDirection(testDirs[i]);
+            Vector3 overhangTestPosition = transform.TransformPoint(testPoints[i]);
 
-            // If the point is already in a wall, it's not overhanging
-            if(Physics.CheckSphere(raycastPos, sphereCastSize, placementMask))
+            // If the point isn't touching anything, it overhangs
+            if (!Physics.CheckSphere(overhangTestPosition, sphereCastSize, overhangMask))
             {
-                break;
-            }
-            else if(Physics.Raycast(raycastPos, raycastDir, out hit, overhangCheckDistance, placementMask))
-            {
-                var offset = hit.point - raycastPos;
-                transform.Translate(offset, Space.World);
+                Vector3 portalOverhangOffset = FindOverhangOffset(testPoints[i]);
+                transform.Translate(portalOverhangOffset, Space.Self);
             }
         }
     }
 
-    // Ensure the portal cannot intersect a section of wall.
-    private void FixIntersects()
+    // This method finds the closest point where the object is no longer overhanging
+    private Vector3 FindOverhangOffset(Vector3 testPoint)
     {
-        var testDirs = new List<Vector3>
+        Vector3 overhangOffset = -testPoint;
+
+        int steps = Mathf.FloorToInt(testPoint.magnitude / sphereCastSize);
+
+        for (int i = 0; i < steps; i++)
         {
-             Vector3.right,
-            -Vector3.right,
-             Vector3.up,
-            -Vector3.up
-        };
+            float interpolationFactor = (float) i / (float) steps;
+            Vector3 stepPosition = Vector3.Lerp(testPoint, Vector3.zero, interpolationFactor);
+            Vector3 worldSpaceStepPosition = transform.TransformPoint(stepPosition);
 
-        var testDists = new List<float> { 1.1f, 1.1f, 2.1f, 2.1f };
-
-        for (int i = 0; i < 4; ++i)
-        {
-            RaycastHit hit;
-            Vector3 raycastPos = transform.TransformPoint(0.0f, 0.0f, -0.1f);
-            Vector3 raycastDir = transform.TransformDirection(testDirs[i]);
-
-            if (Physics.Raycast(raycastPos, raycastDir, out hit, testDists[i], placementMask))
+            if (Physics.CheckSphere(worldSpaceStepPosition, bigSphereCastSize, overhangMask))
             {
-                var offset = (hit.point - raycastPos);
-                var newOffset = -raycastDir * (testDists[i] - offset.magnitude);
-                transform.Translate(newOffset, Space.World);
+                return stepPosition - testPoint;
             }
         }
+
+        return overhangOffset;
     }
 
-    // Once positioning has taken place, ensure the portal isn't intersecting anything.
-    private bool CheckOverlap()
+    private void FixPortalOverlaps()
     {
-        var checkPosition = transform.position - new Vector3(0.0f, 0.0f, 0.1f);
-        var checkExtents = new Vector3(0.9f, 1.9f, 0.05f);
-        if (Physics.CheckBox(checkPosition, checkExtents, transform.rotation, placementMask))
-        {
-            return false;
-        }
-        return true;
+        // TODO: create a method of depenetrating overlapping portals
+        //if(MathUtil.DoBoxesIntersect(collider, otherPortal.collider))
+        //{
+        //    Vector3 depenetration = MathUtil.GetBoxDepenetration(collider, otherPortal.collider);
+        //    transform.Translate(depenetration);
+        //}
     }
 
     public void RemovePortal()
