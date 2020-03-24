@@ -68,4 +68,5 @@ public static class PlayerConstants
     public static string levelCompletionTimeFormat = "hh':'mm':'ss'.'fff";
     public static int PlayerLayer = 12;
     public static int PortalMaterialLayer = 10;
+    public static int PortalLayer = 11;
 }

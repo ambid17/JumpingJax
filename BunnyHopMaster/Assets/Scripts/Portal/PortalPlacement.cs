@@ -53,7 +53,7 @@ public class PortalPlacement : MonoBehaviour
         if(hit.collider != null)
         {
             // If we hit a portal, spawn a portal through this portal
-            if (hit.collider.tag == portalTag)
+            if (hit.collider.gameObject.layer == PlayerConstants.PortalLayer)
             {
                 var inPortal = hit.collider.GetComponent<Portal>();
 

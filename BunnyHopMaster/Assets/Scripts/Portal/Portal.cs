@@ -34,7 +34,7 @@ public class Portal : MonoBehaviour
 
     private float sphereCastSize = 0.02f;
     private float bigSphereCastSize = 0.04f;
-    private float overhangCheckDistance = 2.1f;
+    private Vector3 portalExtents = new Vector3(2, 4, 0.5f);
 
     private void Awake()
     {
@@ -123,6 +123,7 @@ public class Portal : MonoBehaviour
         transform.position -= transform.forward * 0.001f;
 
         FixOverhangs();
+        FixPortalOverlaps();
     }
 
     // Ensure the portal cannot extend past the edge of a surface, or intersect a corner
@@ -145,7 +146,6 @@ public class Portal : MonoBehaviour
             {
                 Vector3 portalOverhangOffset = FindOverhangOffset(testPoints[i]);
                 transform.Translate(portalOverhangOffset, Space.Self);
-
             }
         }
     }
@@ -170,6 +170,15 @@ public class Portal : MonoBehaviour
         }
 
         return overhangOffset;
+    }
+
+    private void FixPortalOverlaps()
+    {
+        //if(MathUtil.DoBoxesIntersect(collider, otherPortal.collider))
+        //{
+        //    Vector3 depenetration = MathUtil.GetBoxDepenetration(collider, otherPortal.collider);
+        //    transform.Translate(depenetration);
+        //}
     }
 
     public void RemovePortal()
