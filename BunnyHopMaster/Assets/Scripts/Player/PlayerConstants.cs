@@ -67,4 +67,5 @@ public static class PlayerConstants
     public static Vector3 PlayerSpawnOffset = new Vector3(0, 2, 0);
     public static string levelCompletionTimeFormat = "hh':'mm':'ss'.'fff";
     public static int PlayerLayer = 12;
+    public static int PortalMaterialLayer = 10;
 }
