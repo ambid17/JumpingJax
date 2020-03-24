@@ -77,7 +77,15 @@ public class PlayerProgress : MonoBehaviour
     {
         Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
+
         playerMovement.newVelocity = Vector3.zero;
+
         cameraMove.ResetTargetRotation();
+
+        // If the player is restarting at the beginning, reset timer
+        if(currentCheckpoint.level == 1)
+        {
+            GameManager.Instance.currentCompletionTime = 0;
+        }
     }
 }
