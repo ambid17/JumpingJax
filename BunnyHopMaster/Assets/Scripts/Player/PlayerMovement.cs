@@ -57,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         ResolveCollisions();
     }
 
+<<<<<<< HEAD
     private void CheckCrouch()
     {
         wasCrouching = crouching;
@@ -77,6 +78,28 @@ public class PlayerMovement : MonoBehaviour
 
             myCollider.size = PlayerConstants.BoxColliderSize;
         }
+=======
+    private void CheckCrouch()
+    {
+        wasCrouching = crouching;
+
+        if (Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Crouch)))
+        {
+            crouching = true;
+            myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
+        }
+        else
+        {
+            crouching = false;
+
+            if (grounded && wasCrouching)
+            {
+                transform.position += new Vector3(0, 1, 0);
+            }
+
+            myCollider.size = PlayerConstants.BoxColliderSize;
+        }
+>>>>>>> 5f7eea4... Initial commit
     }
 
     private void ApplyGravity()
@@ -92,9 +115,15 @@ public class PlayerMovement : MonoBehaviour
         surfing = false;
 
         Vector3 extents = PlayerConstants.BoxCastExtents;
+<<<<<<< HEAD
         if (crouching)
         {
             extents = PlayerConstants.CrouchingBoxCastExtents;
+=======
+        if (crouching)
+        {
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+>>>>>>> 5f7eea4... Initial commit
         }
 
         var hits = Physics.BoxCastAll(
@@ -166,12 +195,18 @@ public class PlayerMovement : MonoBehaviour
         return Quaternion.AngleAxis(cameraMove.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
+<<<<<<< HEAD
     private Vector3 GetInputVelocity(float moveSpeed)
     {
+=======
+    private Vector3 GetInputVelocity(float moveSpeed)
+    {
+>>>>>>> 5f7eea4... Initial commit
         KeyCode left = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Left);
         KeyCode right = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Right);
         KeyCode forward = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Forward);
         KeyCode back = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Back);
+<<<<<<< HEAD
 
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
@@ -197,6 +232,33 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return new Vector3(horizontalSpeed, 0, verticalSpeed);
+=======
+
+        float horizontalSpeed = 0;
+        float verticalSpeed = 0;
+
+        if (Input.GetKey(left))
+        {
+            horizontalSpeed = -moveSpeed;
+        }
+
+        if (Input.GetKey(right))
+        {
+            horizontalSpeed = moveSpeed;
+        }
+
+        if (Input.GetKey(back))
+        {
+            verticalSpeed = -moveSpeed;
+        }
+
+        if (Input.GetKey(forward))
+        {
+            verticalSpeed = moveSpeed;
+        }
+
+        return new Vector3(horizontalSpeed, 0, verticalSpeed);
+>>>>>>> 5f7eea4... Initial commit
     }
 
     //wishDir: the direction the player wishes to go in the newest frame
@@ -222,7 +284,11 @@ public class PlayerMovement : MonoBehaviour
     private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
     {
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
+<<<<<<< HEAD
         var currentSpeed = Vector3.Dot(newVelocity, wishDir);
+=======
+        var currentSpeed = Vector3.Dot(newVelocity, wishDir);
+>>>>>>> 5f7eea4... Initial commit
         var speedToAdd = wishSpd - currentSpeed;
         
         if (speedToAdd <= 0)
@@ -233,11 +299,19 @@ public class PlayerMovement : MonoBehaviour
         var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
 
+<<<<<<< HEAD
         if (showDebugGizmos)
         {
             Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
             Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
             Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
+=======
+        if (showDebugGizmos)
+        {
+            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
+            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
+            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
+>>>>>>> 5f7eea4... Initial commit
         }
 
         newVelocity += velocityTransformation;
@@ -296,9 +370,15 @@ public class PlayerMovement : MonoBehaviour
         var center = transform.position + myCollider.center; // get center of bounding box in world space
 
         Vector3 extents = PlayerConstants.BoxCastExtents;
+<<<<<<< HEAD
         if (crouching)
         {
             extents = PlayerConstants.CrouchingBoxCastExtents;
+=======
+        if (crouching)
+        {
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+>>>>>>> 5f7eea4... Initial commit
         }
 
         var overlaps = Physics.OverlapBox(center, extents, Quaternion.identity);

@@ -77,6 +77,7 @@ public class PlayerProgress : MonoBehaviour
     {
         Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
+<<<<<<< HEAD
 
         playerMovement.newVelocity = Vector3.zero;
 
@@ -87,5 +88,9 @@ public class PlayerProgress : MonoBehaviour
         {
             GameManager.Instance.currentCompletionTime = 0;
         }
+=======
+        playerMovement.newVelocity = Vector3.zero;
+        cameraMove.ResetTargetRotation();
+>>>>>>> 5f7eea4... Initial commit
     }
 }

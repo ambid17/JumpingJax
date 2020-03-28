@@ -12,6 +12,7 @@ public static class MathUtil
 
     public static Vector3 ZeroV3 = new Vector3(0.0f, 0.0f, 0.0f);
     public static Vector3 OneV3 = new Vector3(1.0f, 1.0f, 1.0f);
+<<<<<<< HEAD
 
     public static bool DoBoxesIntersect(Collider a, Collider b)
     {
@@ -31,4 +32,6 @@ public static class MathUtil
 
         return false;
     }
+=======
+>>>>>>> 5f7eea4... Initial commit
 }
