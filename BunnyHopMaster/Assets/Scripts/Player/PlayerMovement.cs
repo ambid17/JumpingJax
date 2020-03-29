@@ -295,7 +295,7 @@ public class PlayerMovement : MonoBehaviour
     {
         var center = transform.position + myCollider.center; // get center of bounding box in world space
 
-        Vector3 extents = PlayerConstants.BoxCastExtents;
+        Vector3 extents = myCollider.bounds.extents;
         if (crouching)
         {
             extents = PlayerConstants.CrouchingBoxCastExtents;
