@@ -10,13 +10,13 @@ public class OptionsMenu : MonoBehaviour {
         controls, video, audio, misc
     }
 
-    [Header("set at runtime")]
+    [Header("Set at runtime")]
     public HotKeyOptions controlsPanel;
     public VideoOptions videoPanel;
     public AudioOptions audioPanel;
     public MiscOptions miscPanel;
 
-    [Header("set in editor")]
+    [Header("Set in editor")]
     public Button controlsTabButton;
     public Button videoTabButton;
     public Button audioTabButton;
@@ -89,6 +89,8 @@ public class OptionsMenu : MonoBehaviour {
     public void SetCurrentTab(SettingsTabs tabToSet)
     {
         ClearTabs();
+
+        currentTab = tabToSet;
 
         ColorBlock selectedColors = new ColorBlock();
         selectedColors.normalColor = new Color(1, 0, 0);

@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager _GameManager;
-    public AudioSource musicSource;
+    public static GameManager Instance { get; private set; }
 
-    public int currentLevel;
-    public float completionTime;
+    public LevelDataContainer levelDataContainer;
+
+    public int currentLevelBuildIndex;
+    public float currentCompletionTime;
+    public bool didWinCurrentLevel;
 
     void Awake()
     {
@@ -18,35 +20,59 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (GameManager._GameManager == null)
+        if (GameManager.Instance == null)
         {
-            GameManager._GameManager = this;
+            GameManager.Instance = this;
         }
-        else if (GameManager._GameManager == this)
+        else if (GameManager.Instance == this)
         {
-            Destroy(GameManager._GameManager.gameObject);
-            GameManager._GameManager = this;
+            Destroy(GameManager.Instance.gameObject);
+            GameManager.Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void OnLevelWasLoaded(int level)
-    {
-        completionTime = 0;
-    }
-
     void Update()
     {
-        completionTime += Time.deltaTime;
+        if (!didWinCurrentLevel)
+        {
+            currentCompletionTime += Time.deltaTime;
+        }
     }
 
     private void OnEnable()
     {
-        musicSource.Play();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
-        musicSource.Stop();
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentLevelBuildIndex = scene.buildIndex;
+        currentCompletionTime = 0;
+        didWinCurrentLevel = false;
+    }
+
+    public static Level GetCurrentLevel()
+    {
+        return Instance.levelDataContainer.levels[Instance.currentLevelBuildIndex - 1];
+    }
+
+    public static void FinishedLevel()
+    {
+        Instance.didWinCurrentLevel = true;
+        float completionTime = Instance.currentCompletionTime;
+        Level levelToUpdate = GetCurrentLevel();
+
+        levelToUpdate.isCompleted = true;
+
+        if (completionTime < levelToUpdate.completionTime || levelToUpdate.completionTime == 0)
+        {
+            levelToUpdate.completionTime = completionTime;
+        }
     }
 }

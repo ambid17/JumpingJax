@@ -7,22 +7,22 @@ public class LevelButton : MonoBehaviour
 {
     public Text buttonText;
 
-    public void SetupButton(int level, bool isLevelCompleted, string levelName)
+    public void SetupButton(Level level)
     {
         Button button = gameObject.GetComponentInChildren<Button>();
-        button.name = levelName;
+        button.name = level.levelName;
         Image backgroundImage = GetComponentInChildren<Image>();
-        backgroundImage.color = isLevelCompleted ? Color.green : Color.red;
+        backgroundImage.color = level.isCompleted ? Color.green : Color.red;
 
-        TimeSpan time = TimeSpan.FromSeconds(PlayerStatsManager.GetLevelCompletion(level));
-
-        buttonText.text = levelName + "\n" + time.ToString("hh':'mm':'ss");
-        button.onClick.AddListener(() => OnClickLevel(level));
+        TimeSpan time = TimeSpan.FromSeconds(level.completionTime);
+        String timeString = time.ToString(PlayerConstants.levelCompletionTimeFormat);
+        buttonText.text = level.levelName + "\n" + timeString;
+        button.onClick.AddListener(() => OnClickLevel(level.levelBuildIndex));
     }
 
-    public void OnClickLevel(int level)
+    public void OnClickLevel(int sceneIndex)
     {
-        GameManager._GameManager.currentLevel = level;
-        SceneManager.LoadScene(level);
+        GameManager.Instance.currentLevelBuildIndex = sceneIndex;
+        SceneManager.LoadScene(sceneIndex);
     }
 }

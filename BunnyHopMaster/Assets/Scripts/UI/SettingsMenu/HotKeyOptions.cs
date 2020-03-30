@@ -28,7 +28,7 @@ public class HotKeyOptions : MonoBehaviour
                 {
                     if (Input.GetKeyDown(keyCode))
                     {
-                        HotKeyManager.instance.SetButtonForKey(keyToRebind, keyCode);
+                        HotKeyManager.Instance.SetButtonForKey(keyToRebind, keyCode);
                         buttonKeyCodeTexts[keyToRebind].text = keyCode.ToString();
                         keyToRebind = null;
                         break;
@@ -61,7 +61,7 @@ public class HotKeyOptions : MonoBehaviour
 
     private void PopulateHotkeys()
     {
-        Dictionary<string, KeyCode> keys = HotKeyManager.instance.GetHotKeys();
+        Dictionary<string, KeyCode> keys = HotKeyManager.Instance.GetHotKeys();
         buttonKeyCodeTexts = new Dictionary<string, Text>();
         foreach(string hotkey in keys.Keys)
         {
@@ -79,7 +79,8 @@ public class HotKeyOptions : MonoBehaviour
 
     public void SetDefaults()
     {
-        HotKeyManager.instance.SetDefaults();
+        Debug.Log("set hotkey defaults");
+        HotKeyManager.Instance.SetDefaults();
         ReloadUI();
     }
 }

@@ -7,41 +7,44 @@ public class PlayerProgress : MonoBehaviour
     [SerializeField]
     public Checkpoint currentCheckpoint;
     public PlayerUI playerUI;
-    public bool didWin = false;
-    public float minimumY = 0;
+    [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
+    public float playerFallingBoundsReset = 0;
+
+    public PlayerMovement playerMovement;
+    public CameraMove cameraMove;
 
     private void Start()
     {
-        didWin = false;
+        playerMovement = GetComponent<PlayerMovement>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             Respawn();
         }
 
-        if(gameObject.transform.position.y < minimumY) 
+        if (gameObject.transform.position.y < playerFallingBoundsReset)
         {
             Respawn();
         }
 
-        if(currentCheckpoint != null && !didWin)
+        if (currentCheckpoint != null && !GameManager.Instance.didWinCurrentLevel)
         {
-            if (currentCheckpoint.level == LevelData.LD.numberOfCheckpoints)
+            if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
-                didWin = true;
-                UpdatePlayerStats();
+                GameManager.FinishedLevel();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
             }
         }
-    }
-
-    private void UpdatePlayerStats()
-    {
-        PlayerStatsManager.SetLevelCompletion(GameManager._GameManager.currentLevel, GameManager._GameManager.completionTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -70,15 +73,19 @@ public class PlayerProgress : MonoBehaviour
         }
     }
 
-    void Respawn()
+    public void Respawn()
     {
-        Vector3 newPos = GetCurrentCheckpointPosition();
-        transform.position = newPos;
-    }
+        Vector3 respawnPosition = currentCheckpoint.gameObject.transform.position + PlayerConstants.PlayerSpawnOffset;
+        transform.position = respawnPosition;
 
-    public Vector3 GetCurrentCheckpointPosition()
-    {
-        // Add 2 in the "y" direction on respawn to prevent spawning inside of the ground
-        return currentCheckpoint.gameObject.transform.position + new Vector3(0,2,0);
+        playerMovement.newVelocity = Vector3.zero;
+
+        cameraMove.ResetTargetRotation();
+
+        // If the player is restarting at the beginning, reset timer
+        if(currentCheckpoint.level == 1)
+        {
+            GameManager.Instance.currentCompletionTime = 0;
+        }
     }
 }

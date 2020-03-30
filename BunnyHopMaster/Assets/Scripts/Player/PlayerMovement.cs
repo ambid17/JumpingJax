@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Tooltip("Red line is current velocity, blue is the new direction")]
+    public bool showDebugGizmos = false;
     public LayerMask layersToIgnore;
     public BoxCollider myCollider;
+    public CameraMove cameraMove;
 
     //The velocity applied at the end of every physics frame
     public Vector3 newVelocity;
@@ -22,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         myCollider = GetComponent<BoxCollider>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     private void FixedUpdate()
@@ -37,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         {
-            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.normalSurfaceFriction);
+            ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.NormalSurfaceFriction);
             ClampVelocity(PlayerConstants.MoveSpeed);
             ApplyFriction();
         }
@@ -48,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
         ClampVelocity(PlayerConstants.MaxVelocity);
 
-        transform.position += newVelocity * Time.deltaTime;
+        transform.position += newVelocity * Time.fixedDeltaTime;
 
         ResolveCollisions();
     }
@@ -57,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
     {
         wasCrouching = crouching;
 
-        if (Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Crouch)))
+        if (Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Crouch)))
         {
             crouching = true;
             myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
@@ -79,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded)
         {
-            newVelocity.y -= PlayerConstants.Gravity * Time.deltaTime;
+            newVelocity.y -= PlayerConstants.Gravity * Time.fixedDeltaTime;
         }
     }
 
@@ -93,7 +97,8 @@ public class PlayerMovement : MonoBehaviour
             extents = PlayerConstants.CrouchingBoxCastExtents;
         }
 
-        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
+        var hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
             halfExtents: extents,
             direction: -transform.up,
             orientation: Quaternion.identity,
@@ -106,10 +111,12 @@ public class PlayerMovement : MonoBehaviour
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
             .OrderBy(hit => hit.distance)
-            .Where(hit => !hit.collider.isTrigger);
+            .Where(hit => !hit.collider.isTrigger)
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
+            .Where(hit => hit.point.y < transform.position.y);
 
-        grounded = validHits.Count() > 0;
-
+        grounded = ConfirmGrounded(validHits);
+        
         if (grounded)
         {
             var closestHit = validHits.First();
@@ -137,9 +144,39 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
+    {
+        if(hits.Count() > 0)
+        {
+            Vector3 extents = PlayerConstants.BoxCastExtents;
+            if (crouching)
+            {
+                extents = PlayerConstants.CrouchingBoxCastExtents;
+            }
+
+            // We have to manually check if there is a collision, because boxcastall 
+            // doesn't return the correct information when already colliding
+            var overlappingColliders = Physics.OverlapBox(
+                center: myCollider.bounds.center,
+                halfExtents: extents,
+                orientation: Quaternion.identity,
+                layerMask: layersToIgnore);
+
+            foreach (Collider collider in overlappingColliders)
+            {
+                if(collider.transform.position.y < transform.position.y)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void CheckJump()
     {
-        if (grounded && Input.GetKey(HotKeyManager.instance.GetKeyFor(PlayerConstants.Jump)))
+        if (grounded && Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Jump)))
         {
             newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
             grounded = false;
@@ -156,16 +193,16 @@ public class PlayerMovement : MonoBehaviour
             inputVelocity *= moveSpeed / inputVelocity.magnitude;
         }
 
-        //Get the velocity vector in world space coordinates
-        return transform.TransformDirection(inputVelocity);
+        //Get the velocity vector in world space coordinates, by rotating around the camera's y-axis
+        return Quaternion.AngleAxis(cameraMove.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
     private Vector3 GetInputVelocity(float moveSpeed)
     {
-        KeyCode left = HotKeyManager.instance.GetKeyFor(PlayerConstants.Left);
-        KeyCode right = HotKeyManager.instance.GetKeyFor(PlayerConstants.Right);
-        KeyCode forward = HotKeyManager.instance.GetKeyFor(PlayerConstants.Forward);
-        KeyCode back = HotKeyManager.instance.GetKeyFor(PlayerConstants.Back);
+        KeyCode left = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Left);
+        KeyCode right = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Right);
+        KeyCode forward = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Forward);
+        KeyCode back = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Back);
 
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
@@ -200,7 +237,7 @@ public class PlayerMovement : MonoBehaviour
         var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
 
-        var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+        var acceleration = PlayerConstants.GroundAcceleration * Time.fixedDeltaTime; //acceleration to apply in the newest direction
 
         if (speedToAdd <= 0)
         {
@@ -218,29 +255,40 @@ public class PlayerMovement : MonoBehaviour
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
         var currentSpeed = Vector3.Dot(newVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
-
+        
         if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
-        newVelocity += accelspeed * wishDir;
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var velocityTransformation = accelspeed * wishDir;
+
+        if (showDebugGizmos)
+        {
+            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
+            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
+            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
+        }
+
+        newVelocity += velocityTransformation;
     }
 
     private void ApplyFriction()
     {
         var speed = newVelocity.magnitude;
 
-        //Don't apply friction if the player isn't moving
-        //Clear speed if it's too low to prevent accidental movement
-        if (speed < 0.01f)
+        // Don't apply friction if the player isn't moving
+        // Clear speed if it's too low to prevent accidental movement
+        // Also makes the player's friction feel more snappy
+        if (speed < PlayerConstants.MinimumSpeedCutoff)
         {
             newVelocity = Vector3.zero;
             return;
         }
 
-        var lossInSpeed = speed * PlayerConstants.Friction * Time.deltaTime;
+        var control = (speed < PlayerConstants.StopSpeed) ? PlayerConstants.StopSpeed : speed;
+        var lossInSpeed = control * PlayerConstants.Friction * Time.fixedDeltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)
@@ -278,7 +326,7 @@ public class PlayerMovement : MonoBehaviour
     {
         var center = transform.position + myCollider.center; // get center of bounding box in world space
 
-        Vector3 extents = PlayerConstants.BoxCastExtents;
+        Vector3 extents = myCollider.bounds.extents;
         if (crouching)
         {
             extents = PlayerConstants.CrouchingBoxCastExtents;
@@ -298,7 +346,8 @@ public class PlayerMovement : MonoBehaviour
                 other, other.transform.position, other.transform.rotation,
                 out Vector3 dir, out float dist))
             {
-                if (Vector3.Dot(dir, newVelocity.normalized) > 0)
+                if (Vector3.Dot(dir, newVelocity.normalized) > 0 ||
+                    Physics.GetIgnoreCollision(myCollider, other))
                 {
                     continue;
                 }
