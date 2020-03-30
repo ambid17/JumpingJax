@@ -112,10 +112,11 @@ public class PlayerMovement : MonoBehaviour
             .FindAll(hit => hit.normal.y >= 0.7f)
             .OrderBy(hit => hit.distance)
             .Where(hit => !hit.collider.isTrigger)
-            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider));
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
+            .Where(hit => hit.point.y < transform.position.y);
 
-        grounded = validHits.Count() > 0;
-
+        grounded = ConfirmGrounded(validHits);
+        
         if (grounded)
         {
             var closestHit = validHits.First();
@@ -141,6 +142,36 @@ public class PlayerMovement : MonoBehaviour
                 surfing = true;
             }
         }
+    }
+
+    private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
+    {
+        if(hits.Count() > 0)
+        {
+            Vector3 extents = PlayerConstants.BoxCastExtents;
+            if (crouching)
+            {
+                extents = PlayerConstants.CrouchingBoxCastExtents;
+            }
+
+            // We have to manually check if there is a collision, because boxcastall 
+            // doesn't return the correct information when already colliding
+            var overlappingColliders = Physics.OverlapBox(
+                center: myCollider.bounds.center,
+                halfExtents: extents,
+                orientation: Quaternion.identity,
+                layerMask: layersToIgnore);
+
+            foreach (Collider collider in overlappingColliders)
+            {
+                if(collider.transform.position.y < transform.position.y)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void CheckJump()
