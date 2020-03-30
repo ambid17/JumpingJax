@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Tooltip("Red line is current velocity, blue is the new direction")]
+    public bool showDebugGizmos = false;
     public LayerMask layersToIgnore;
     public BoxCollider myCollider;
+    public CameraMove cameraMove;
 
     //The velocity applied at the end of every physics frame
     public Vector3 newVelocity;
@@ -22,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         myCollider = GetComponent<BoxCollider>();
+        cameraMove = GetComponent<CameraMove>();
     }
 
     private void FixedUpdate()
@@ -48,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
 
         ClampVelocity(PlayerConstants.MaxVelocity);
 
-        transform.position += newVelocity * Time.deltaTime;
+        transform.position += newVelocity * Time.fixedDeltaTime;
 
         ResolveCollisions();
     }
@@ -79,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded)
         {
-            newVelocity.y -= PlayerConstants.Gravity * Time.deltaTime;
+            newVelocity.y -= PlayerConstants.Gravity * Time.fixedDeltaTime;
         }
     }
 
@@ -93,7 +97,8 @@ public class PlayerMovement : MonoBehaviour
             extents = PlayerConstants.CrouchingBoxCastExtents;
         }
 
-        var hits = Physics.BoxCastAll(center: myCollider.bounds.center,
+        var hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
             halfExtents: extents,
             direction: -transform.up,
             orientation: Quaternion.identity,
@@ -157,8 +162,8 @@ public class PlayerMovement : MonoBehaviour
             inputVelocity *= moveSpeed / inputVelocity.magnitude;
         }
 
-        //Get the velocity vector in world space coordinates
-        return transform.TransformDirection(inputVelocity);
+        //Get the velocity vector in world space coordinates, by rotating around the camera's y-axis
+        return Quaternion.AngleAxis(cameraMove.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
     private Vector3 GetInputVelocity(float moveSpeed)
@@ -200,10 +205,8 @@ public class PlayerMovement : MonoBehaviour
     {
         var currentSpeed = Vector3.Dot(newVelocity, wishDir); //Vector projection of the current velocity onto the new direction
         var speedToAdd = wishSpeed - currentSpeed;
-        Debug.Log("wishDir: " + wishDir + " currSpeed: " + currentSpeed);
 
-
-        var acceleration = PlayerConstants.GroundAcceleration * Time.deltaTime; //acceleration to apply in the newest direction
+        var acceleration = PlayerConstants.GroundAcceleration * Time.fixedDeltaTime; //acceleration to apply in the newest direction
 
         if (speedToAdd <= 0)
         {
@@ -221,30 +224,40 @@ public class PlayerMovement : MonoBehaviour
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
         var currentSpeed = Vector3.Dot(newVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
-
+        
         if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.deltaTime);
-        newVelocity += accelspeed * wishDir;
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var velocityTransformation = accelspeed * wishDir;
+
+        if (showDebugGizmos)
+        {
+            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
+            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
+            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
+        }
+
+        newVelocity += velocityTransformation;
     }
 
     private void ApplyFriction()
     {
         var speed = newVelocity.magnitude;
 
-        //Don't apply friction if the player isn't moving
-        //Clear speed if it's too low to prevent accidental movement
-        if (speed < 0.1f)
+        // Don't apply friction if the player isn't moving
+        // Clear speed if it's too low to prevent accidental movement
+        // Also makes the player's friction feel more snappy
+        if (speed < PlayerConstants.MinimumSpeedCutoff)
         {
             newVelocity = Vector3.zero;
             return;
         }
 
         var control = (speed < PlayerConstants.StopSpeed) ? PlayerConstants.StopSpeed : speed;
-        var lossInSpeed = control * PlayerConstants.Friction * Time.deltaTime;
+        var lossInSpeed = control * PlayerConstants.Friction * Time.fixedDeltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
         if (newSpeed != speed)

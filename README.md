@@ -19,7 +19,7 @@ Portals are a custom implementation that will:
 # <Project Name>
 ## oneleif Active Project
 
-![](https://github.com/oneleif/olWebsite/raw/master/Public/images/oneleif.png)
+![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)
 
 This project is a oneleif active project.
 

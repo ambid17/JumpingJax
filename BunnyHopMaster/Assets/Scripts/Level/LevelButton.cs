@@ -15,7 +15,7 @@ public class LevelButton : MonoBehaviour
         backgroundImage.color = level.isCompleted ? Color.green : Color.red;
 
         TimeSpan time = TimeSpan.FromSeconds(level.completionTime);
-        String timeString = time.ToString("hh':'mm':'ss");
+        String timeString = time.ToString(PlayerConstants.levelCompletionTimeFormat);
         buttonText.text = level.levelName + "\n" + timeString;
         button.onClick.AddListener(() => OnClickLevel(level.levelBuildIndex));
     }

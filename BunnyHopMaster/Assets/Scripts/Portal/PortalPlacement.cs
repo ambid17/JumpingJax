@@ -20,6 +20,8 @@ public class PortalPlacement : MonoBehaviour
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
     private const float portalRaycastDistance = 250;
     private const string portalTag = "Portal";
+    private bool isPortalLevel = false;
+
     private void Awake()
     {
         cameraMove = GetComponent<CameraMove>();
@@ -27,16 +29,17 @@ public class PortalPlacement : MonoBehaviour
 
     private void Update()
     {
-        if (Time.timeScale == 0)
+        isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
+        if (Time.timeScale == 0 || !isPortalLevel)
         {
             return;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Portal1)))
         {
             FirePortal(0, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }
-        else if (Input.GetButtonDown("Fire2"))
+        else if (Input.GetKeyDown(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Portal2)))
         {
             FirePortal(1, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }

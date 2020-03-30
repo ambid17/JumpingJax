@@ -15,27 +15,44 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private Camera mainCamera;
 
-    private const int portalRecursions = 7;
+    private int portalRecursions = 7;
     private const int renderTextureDepth = 24;
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+    private bool isPortalLevel = false;
 
     private void Awake()
     {
+        portalRecursions = OptionsPreferencesManager.GetPortalRecursion();
         mainCamera = Camera.main;
 
         tempTexture1 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
         tempTexture2 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
     }
 
+    public void UpdatePortalRecursion(int recursionLevel)
+    {
+        portalRecursions = recursionLevel;
+    }
+
     private void Start()
     {
+        isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
+        if (Time.timeScale == 0 || !isPortalLevel)
+        {
+            return;
+        }
         portals[0].SetTexture(tempTexture1);
         portals[1].SetTexture(tempTexture2);
     }
 
     private void OnPreRender()
     {
+        if (Time.timeScale == 0 || !isPortalLevel)
+        {
+            return;
+        }
+
         if (!portals[0].IsPlaced() || !portals[1].IsPlaced())
         {
             return;

@@ -18,13 +18,20 @@ public class MiscOptions : MonoBehaviour
             playerAiming = playerCharacter.GetComponentInChildren<CameraMove>();
         }
 
-        float sensitivity = OptionsPreferencesManager.GetSensitivity();
-        SetSensitivity(sensitivity);
+        InitializeSensitivity();
     }
 
     public void SetDefaults()
     {
+        sensitivitySlider.value = OptionsPreferencesManager.defaultSensitivity;
+    }
 
+    private void InitializeSensitivity()
+    {
+        sensitivitySlider.onValueChanged.RemoveAllListeners();
+        sensitivitySlider.onValueChanged.AddListener(SetSensitivity);
+
+        sensitivitySlider.value = OptionsPreferencesManager.GetSensitivity();
     }
 
     public void SetSensitivity(float sensitivity)
