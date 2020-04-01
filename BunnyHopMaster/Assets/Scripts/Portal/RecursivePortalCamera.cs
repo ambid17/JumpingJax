@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class RecursivePortalCamera : MonoBehaviour
-    {
+{
     [SerializeField]
     private Portal[] portals = new Portal[2];
 
@@ -22,63 +22,63 @@ public class RecursivePortalCamera : MonoBehaviour
     private bool isPortalLevel = false;
 
     private void Awake()
-        {
+    {
         portalRecursions = OptionsPreferencesManager.GetPortalRecursion();
         mainCamera = Camera.main;
 
         tempTexture1 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
         tempTexture2 = new RenderTexture(Screen.width, Screen.height, renderTextureDepth, RenderTextureFormat.ARGB32);
-        }
+    }
 
     public void UpdatePortalRecursion(int recursionLevel)
-        {
+    {
         portalRecursions = recursionLevel;
-        }
+    }
 
     private void Start()
-        {
+    {
         isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
         if (Time.timeScale == 0 || !isPortalLevel)
-            {
+        {
             return;
-            }
+        }
         portals[0].SetTexture(tempTexture1);
         portals[1].SetTexture(tempTexture2);
-        }
+    }
 
     private void OnPreRender()
-        {
+    {
         if (Time.timeScale == 0 || !isPortalLevel)
-            {
+        {
             return;
-            }
+        }
 
         if (!portals[0].IsPlaced() || !portals[1].IsPlaced())
-            {
+        {
             return;
-            }
+        }
 
         if (portals[0].IsRendererVisible())
-            {
+        {
             portalCamera.targetTexture = tempTexture1;
             for (int i = portalRecursions - 1; i >= 0; --i)
-                {
-                RenderCamera(portals[0], portals[1], i);
-                }
-            }
-
-        if (portals[1].IsRendererVisible())
             {
-            portalCamera.targetTexture = tempTexture2;
-            for (int i = portalRecursions - 1; i >= 0; --i)
-                {
-                RenderCamera(portals[1], portals[0], i);
-                }
+                RenderCamera(portals[0], portals[1], i);
             }
         }
 
-    private void RenderCamera(Portal inPortal, Portal outPortal, int recursionId)
+        if (portals[1].IsRendererVisible())
         {
+            portalCamera.targetTexture = tempTexture2;
+            for (int i = portalRecursions - 1; i >= 0; --i)
+            {
+                RenderCamera(portals[1], portals[0], i);
+            }
+        }
+    }
+
+    private void RenderCamera(Portal inPortal, Portal outPortal, int recursionId)
+    {
         Transform inTransform = inPortal.transform;
         Transform outTransform = outPortal.transform;
 
@@ -87,7 +87,7 @@ public class RecursivePortalCamera : MonoBehaviour
         cameraTransform.rotation = transform.rotation;
 
         for (int i = 0; i <= recursionId; ++i)
-            {
+        {
             // Position the camera behind the other portal.
             Vector3 relativePos = inTransform.InverseTransformPoint(cameraTransform.position);
             relativePos = flippedYRotation * relativePos;
@@ -97,7 +97,7 @@ public class RecursivePortalCamera : MonoBehaviour
             Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * cameraTransform.rotation;
             relativeRot = flippedYRotation * relativeRot;
             cameraTransform.rotation = outTransform.rotation * relativeRot;
-            }
+        }
 
         // Set the camera's oblique view frustum.
         Plane p = new Plane(-outTransform.forward, outTransform.position);
@@ -110,5 +110,5 @@ public class RecursivePortalCamera : MonoBehaviour
 
         // Render the camera to its render target.
         portalCamera.Render();
-        }
     }
+}
