@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class Portal : MonoBehaviour
 {
+    private const string portalName = "Portal1";
+
     [SerializeField]
     private Portal otherPortal;
 
@@ -222,7 +224,7 @@ public class Portal : MonoBehaviour
     }
     private void SetPortalRendererMaterial()
     {
-        if (name == "Portal1")
+        if (name == portalName)
         {
             renderer.material = meshMaterialBlue;
         }
