@@ -20,7 +20,7 @@ public class Portal : MonoBehaviour
     [SerializeField]
     private LayerMask overhangMask;
 
-    private bool isPlaced = true;
+    private bool isPlaced = false;
 
     [SerializeField]
     private Collider wallCollider;
@@ -31,22 +31,24 @@ public class Portal : MonoBehaviour
 
     private Material meshMaterialBlue;
     private Material meshMaterialOrange;
+
     private string pathToPortalMaterials = "Materials/portal/";
 
     private Material meshMaterialMain;
     private new Renderer renderer;
-    //private new BoxCollider collider;
+    private BoxCollider boxCollider;
 
     private float sphereCastSize = 0.02f;
     private float bigSphereCastSize = 0.04f;
 
     private void Awake()
         {
-        //collider = GetComponent<BoxCollider>();
+        boxCollider = GetComponent<BoxCollider>();
         renderer = GetComponent<Renderer>();
         meshMaterialMain = renderer.material;
         meshMaterialBlue = Resources.Load<Material>(pathToPortalMaterials + "PortalOutline");
         meshMaterialOrange = Resources.Load<Material>(pathToPortalMaterials + "PortalOutline 1");
+
         RemovePortal();
         }
 
@@ -126,24 +128,27 @@ public class Portal : MonoBehaviour
         {
         if (isPlaced && !otherPortal.isPlaced)
             {
+            boxCollider.enabled = false;
             if (name == "Portal1")
                 {
                 renderer.material = meshMaterialBlue;
-                this.wallCollider = null;
                 }
             else
                 {
                 renderer.material = meshMaterialOrange;
-                this.wallCollider = null;
                 }
             }
         else
             {
-            //todo try with wallcolliders to disable warping
             renderer.material = meshMaterialMain;
-            otherPortal.renderer.material = meshMaterialMain;
-            this.wallCollider = wallCollider;
+            otherPortal.renderer.material = otherPortal.meshMaterialMain;
+            if (!boxCollider.enabled || !otherPortal.boxCollider.enabled)
+                {
+                boxCollider.enabled = true;
+                otherPortal.boxCollider.enabled = true;
+                }
             }
+        this.wallCollider = wallCollider;
         transform.position = pos;
         transform.rotation = rot;
         transform.position -= transform.forward * 0.001f;
@@ -214,6 +219,7 @@ public class Portal : MonoBehaviour
         {
         gameObject.SetActive(false);
         isPlaced = false;
+        boxCollider.enabled = false;
         }
 
     public bool IsPlaced()
