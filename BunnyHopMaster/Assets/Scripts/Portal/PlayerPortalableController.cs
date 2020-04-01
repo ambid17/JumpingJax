@@ -7,6 +7,9 @@ public class PlayerPortalableController : PortalableObject
     private CameraMove cameraMove;
     private PlayerMovement playerMovement;
 
+    private const float playerMinPortalSpeed = 2;
+    private const float playerPortalSpeedMultiplier = 2;
+
     protected override void Awake()
     {
         CreateClone();
@@ -84,6 +87,11 @@ public class PlayerPortalableController : PortalableObject
         Vector3 relativeVel = inTransform.InverseTransformDirection(playerMovement.newVelocity);
         relativeVel = halfTurn * relativeVel;
         playerMovement.newVelocity = outTransform.TransformDirection(relativeVel);
+
+        if(playerMovement.newVelocity.magnitude < playerMinPortalSpeed)
+        {
+            playerMovement.newVelocity *= playerPortalSpeedMultiplier;
+        }
 
         // Swap portal references.
         var tmp = inPortal;

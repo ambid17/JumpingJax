@@ -67,7 +67,7 @@ public class RecursivePortalCamera : MonoBehaviour
             }
         }
 
-        if(portals[1].IsRendererVisible())
+        if (portals[1].IsRendererVisible())
         {
             portalCamera.targetTexture = tempTexture2;
             for (int i = portalRecursions - 1; i >= 0; --i)
@@ -86,7 +86,7 @@ public class RecursivePortalCamera : MonoBehaviour
         cameraTransform.position = transform.position;
         cameraTransform.rotation = transform.rotation;
 
-        for(int i = 0; i <= recursionId; ++i)
+        for (int i = 0; i <= recursionId; ++i)
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inTransform.InverseTransformPoint(cameraTransform.position);

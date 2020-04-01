@@ -22,8 +22,8 @@ public static class PlayerConstants
 
     public static float AirAccelerationCap = 0.8f;
 
-    public static Vector3 BoxCastExtents = new Vector3(0.29f, 0.8f, 0.29f);
-    public static Vector3 CrouchingBoxCastExtents = new Vector3(0.29f, 0.5f, 0.29f);
+    public static Vector3 BoxCastExtents = new Vector3(0.27f, 0.8f, 0.27f);
+    public static Vector3 CrouchingBoxCastExtents = new Vector3(0.27f, 0.5f, 0.27f);
 
     public static Vector3 BoxColliderSize = new Vector3(0.6f, 1.6f, 0.6f);
     public static Vector3 CrouchingBoxColliderSize = new Vector3(0.6f, 1f, 0.6f);
@@ -67,4 +67,6 @@ public static class PlayerConstants
     public static Vector3 PlayerSpawnOffset = new Vector3(0, 2, 0);
     public static string levelCompletionTimeFormat = "hh':'mm':'ss'.'fff";
     public static int PlayerLayer = 12;
+    public static int PortalMaterialLayer = 10;
+    public static int PortalLayer = 11;
 }

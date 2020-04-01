@@ -12,4 +12,23 @@ public static class MathUtil
 
     public static Vector3 ZeroV3 = new Vector3(0.0f, 0.0f, 0.0f);
     public static Vector3 OneV3 = new Vector3(1.0f, 1.0f, 1.0f);
+
+    public static bool DoBoxesIntersect(Collider a, Collider b)
+    {
+        Vector3 aMin = a.bounds.min;
+        Vector3 aMax = a.bounds.max;
+        Vector3 bMin = a.bounds.min;
+        Vector3 bMax = b.bounds.max;
+
+        bool xIntersect = aMin.x < bMax.x && aMax.x < bMin.x;
+        bool yIntersect = aMin.y < bMax.y && aMax.y < bMin.y;
+        bool zIntersect = aMin.z < bMax.z && aMax.z < bMin.z;
+
+        if (xIntersect && yIntersect && zIntersect)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
