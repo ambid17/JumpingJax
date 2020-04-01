@@ -6,20 +6,28 @@ public class PlayerProgress : MonoBehaviour
 {
     [SerializeField]
     public Checkpoint currentCheckpoint;
+
     public PlayerUI playerUI;
+
     [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
     public float playerFallingBoundsReset = 0;
 
     public PlayerMovement playerMovement;
     public CameraMove cameraMove;
 
+    private PortalPair portals;
+
     private void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         cameraMove = GetComponent<CameraMove>();
+        if (GameManager.GetCurrentLevel().isPortalLevel)
+        {
+            portals = GameObject.FindGameObjectWithTag("Portal").GetComponent<PortalPair>();
+        }
     }
 
-    void Update()
+    private void Update()
     {
         if (Time.timeScale == 0)
         {
@@ -83,8 +91,13 @@ public class PlayerProgress : MonoBehaviour
         cameraMove.ResetTargetRotation();
 
         // If the player is restarting at the beginning, reset timer
-        if(currentCheckpoint.level == 1)
+        if (currentCheckpoint.level == 1)
         {
+            if (GameManager.GetCurrentLevel().isPortalLevel)
+            {
+                portals.Portals[0].ResetPortal();
+                portals.Portals[1].ResetPortal();
+            }
             GameManager.Instance.currentCompletionTime = 0;
         }
     }

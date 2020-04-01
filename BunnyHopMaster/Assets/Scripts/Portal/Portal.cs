@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class Portal : MonoBehaviour
 {
+    private const string portalName = "Portal1";
+
     [SerializeField]
     private Portal otherPortal;
 
@@ -20,7 +22,8 @@ public class Portal : MonoBehaviour
     [SerializeField]
     private LayerMask overhangMask;
 
-    private bool isPlaced = true;
+    private bool isPlaced = false;
+
     [SerializeField]
     private Collider wallCollider;
 
@@ -28,23 +31,31 @@ public class Portal : MonoBehaviour
 
     private List<PortalableObject> portalObjects = new List<PortalableObject>();
 
-    private Material material;
+    private Material meshMaterialBlue;
+    private Material meshMaterialOrange;
+
+    private string pathToPortalMaterials = "Materials/portal/";
+
+    private Material meshMaterialMain;
     private new Renderer renderer;
-    private new BoxCollider collider;
+    private BoxCollider boxCollider;
 
     private float sphereCastSize = 0.02f;
     private float bigSphereCastSize = 0.04f;
 
     private void Awake()
     {
-        collider = GetComponent<BoxCollider>();
+        boxCollider = GetComponent<BoxCollider>();
         renderer = GetComponent<Renderer>();
-        material = renderer.material;
+        meshMaterialMain = renderer.material;
+        meshMaterialBlue = Resources.Load<Material>(pathToPortalMaterials + "PortalOutline");
+        meshMaterialOrange = Resources.Load<Material>(pathToPortalMaterials + "PortalOutline 1");
+
+        ResetPortal();
     }
 
     private void Start()
     {
-        PlacePortal(wallCollider, transform.position, transform.rotation);
         SetColour(portalColour);
     }
 
@@ -73,18 +84,18 @@ public class Portal : MonoBehaviour
 
     public void SetColour(Color colour)
     {
-        material.SetColor("_Colour", colour);
+        meshMaterialMain.SetColor("_Colour", colour);
         outlineRenderer.material.SetColor("_OutlineColour", colour);
     }
 
     public void SetMaskID(int id)
     {
-        material.SetInt("_MaskID", id);
+        meshMaterialMain.SetInt("_MaskID", id);
     }
 
     public void SetTexture(RenderTexture tex)
     {
-        material.mainTexture = tex;
+        meshMaterialMain.mainTexture = tex;
     }
 
     public bool IsRendererVisible()
@@ -107,7 +118,7 @@ public class Portal : MonoBehaviour
     {
         var obj = other.GetComponent<PortalableObject>();
 
-        if(portalObjects.Contains(obj))
+        if (portalObjects.Contains(obj))
         {
             portalObjects.Remove(obj);
             obj.ExitPortal(wallCollider);
@@ -116,10 +127,27 @@ public class Portal : MonoBehaviour
 
     public void PlacePortal(Collider wallCollider, Vector3 pos, Quaternion rot)
     {
+        isPlaced = true;
+        if (isPlaced && !otherPortal.isPlaced)
+        {
+            boxCollider.enabled = false;
+            SetPortalRendererMaterial();
+        }
+        else
+        {
+            renderer.material = meshMaterialMain;
+            otherPortal.renderer.material = otherPortal.meshMaterialMain;
+            if (!boxCollider.enabled || !otherPortal.boxCollider.enabled)
+            {
+                boxCollider.enabled = true;
+                otherPortal.boxCollider.enabled = true;
+            }
+        }
         this.wallCollider = wallCollider;
         transform.position = pos;
         transform.rotation = rot;
         transform.position -= transform.forward * 0.001f;
+        gameObject.SetActive(true);
 
         FixOverhangs();
         FixPortalOverlaps();
@@ -136,7 +164,7 @@ public class Portal : MonoBehaviour
             new Vector3( 0,  2.1f, 0)
         };
 
-        for(int i = 0; i < 4; ++i)
+        for (int i = 0; i < 4; ++i)
         {
             Vector3 overhangTestPosition = transform.TransformPoint(testPoints[i]);
 
@@ -181,14 +209,28 @@ public class Portal : MonoBehaviour
         //}
     }
 
-    public void RemovePortal()
+    public void ResetPortal()
     {
         gameObject.SetActive(false);
         isPlaced = false;
+        boxCollider.enabled = false;
+        transform.position = new Vector3(100, 100, 100);
+        SetPortalRendererMaterial();
     }
 
     public bool IsPlaced()
     {
         return isPlaced;
+    }
+    private void SetPortalRendererMaterial()
+    {
+        if (name == portalName)
+        {
+            renderer.material = meshMaterialBlue;
+        }
+        else
+        {
+            renderer.material = meshMaterialOrange;
+        }
     }
 }

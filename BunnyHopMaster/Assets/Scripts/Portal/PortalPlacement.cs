@@ -50,14 +50,14 @@ public class PortalPlacement : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(pos, dir, out hit, distance, layerMask, QueryTriggerInteraction.Collide);
 
-        if(hit.collider != null)
+        if (hit.collider != null)
         {
             // If we hit a portal, spawn a portal through this portal
             if (hit.collider.gameObject.layer == PlayerConstants.PortalLayer)
             {
                 var inPortal = hit.collider.GetComponent<Portal>();
 
-                if (inPortal == null)
+                if (inPortal == null || !inPortal.IsPlaced())
                 {
                     return;
                 }
@@ -80,7 +80,7 @@ public class PortalPlacement : MonoBehaviour
 
                 return;
             }
-            else if(hit.collider.gameObject.layer == PlayerConstants.PortalMaterialLayer)
+            else if (hit.collider.gameObject.layer == PlayerConstants.PortalMaterialLayer)
             {
                 var cameraRotation = cameraMove.TargetRotation;
 
