@@ -5,53 +5,49 @@ using UnityEngine;
 
 namespace Consolation
 {
-    /// <summary>
-    /// A console to display Unity's debug logs in-game.
-    ///
-    /// Version: 1.1.0
-    /// </summary>
-    class Console : MonoBehaviour
+    public class Console : MonoBehaviour
     {
+        #region Singleton
+
+        public static Console Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (FindObjectsOfType(GetType()).Length > 1)
+            {
+                Destroy(gameObject);
+            }
+
+            if (Console.Instance == null)
+            {
+                Console.Instance = this;
+            }
+            else if (Console.Instance == this)
+            {
+                Destroy(Console.Instance.gameObject);
+                Console.Instance = this;
+            }
+            DontDestroyOnLoad(this.gameObject);
+        }
+
+        #endregion Singleton
+
         #region Inspector Settings
 
-        /// <summary>
-        /// The hotkey to show and hide the console window.
-        /// </summary>
         public KeyCode toggleKey = KeyCode.BackQuote;
 
-        /// <summary>
-        /// Whether to open as soon as the game starts.
-        /// </summary>
         public bool openOnStart = false;
 
-        /// <summary>
-        /// Whether to open the window by shaking the device (mobile-only).
-        /// </summary>
         public bool shakeToOpen = true;
 
-        /// <summary>
-        /// The (squared) acceleration above which the window should open.
-        /// </summary>
         public float shakeAcceleration = 3f;
 
-        /// <summary>
-        /// Whether to only keep a certain number of logs, useful if memory usage is a concern.
-        /// </summary>
         public bool restrictLogCount = false;
 
-        /// <summary>
-        /// Number of logs to keep before removing old ones.
-        /// </summary>
         public int maxLogCount = 1000;
 
-        /// <summary>
-        /// Font size to display log entries with.
-        /// </summary>
         public int logFontSize = 12;
 
-        /// <summary>
-        /// Amount to scale UI by.
-        /// </summary>
         public float scaleFactor = 1f;
 
         #endregion Inspector Settings

@@ -8,9 +8,7 @@ public class PortalPair : MonoBehaviour
 
     private void Awake()
     {
-        Portals = GetComponentsInChildren<Portal>();
-
-        Debug.Log(Portals.Length);
+        Portals = gameObject.GetComponentsInChildren<Portal>(true);
 
         if (Portals.Length != 2)
         {

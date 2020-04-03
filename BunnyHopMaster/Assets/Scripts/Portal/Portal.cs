@@ -151,7 +151,6 @@ public class Portal : MonoBehaviour
 
         FixOverhangs();
         FixPortalOverlaps();
-        Debug.Log("Portal class placeportal()");
     }
 
     // Ensure the portal cannot extend past the edge of a surface, or intersect a corner
