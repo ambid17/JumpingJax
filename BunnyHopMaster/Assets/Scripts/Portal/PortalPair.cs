@@ -10,7 +10,9 @@ public class PortalPair : MonoBehaviour
     {
         Portals = GetComponentsInChildren<Portal>();
 
-        if(Portals.Length != 2)
+        Debug.Log(Portals.Length);
+
+        if (Portals.Length != 2)
         {
             Debug.LogError("PortalPair children must contain exactly two Portal components in total.");
         }
