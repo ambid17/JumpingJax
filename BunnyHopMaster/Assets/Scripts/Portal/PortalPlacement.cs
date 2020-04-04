@@ -48,16 +48,16 @@ public class PortalPlacement : MonoBehaviour
     private void FirePortal(int portalID, Vector3 pos, Vector3 dir, float distance)
     {
         RaycastHit hit;
-        Physics.Raycast(pos, dir, out hit, distance, layerMask);
+        Physics.Raycast(pos, dir, out hit, distance, layerMask, QueryTriggerInteraction.Collide);
 
-        if(hit.collider != null)
+        if (hit.collider != null)
         {
             // If we hit a portal, spawn a portal through this portal
-            if (hit.collider.tag == portalTag)
+            if (hit.collider.gameObject.layer == PlayerConstants.PortalLayer)
             {
                 var inPortal = hit.collider.GetComponent<Portal>();
 
-                if(inPortal == null)
+                if (inPortal == null || !inPortal.IsPlaced())
                 {
                     return;
                 }
@@ -80,29 +80,31 @@ public class PortalPlacement : MonoBehaviour
 
                 return;
             }
-
-            var cameraRotation = cameraMove.TargetRotation;
-
-            var portalRight = cameraRotation * Vector3.right;
-            
-            if(Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
+            else if (hit.collider.gameObject.layer == PlayerConstants.PortalMaterialLayer)
             {
-                portalRight = Vector3.right * ((portalRight.x >= 0) ? 1 : -1);
+                var cameraRotation = cameraMove.TargetRotation;
+
+                var portalRight = cameraRotation * Vector3.right;
+
+                if (Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
+                {
+                    portalRight = Vector3.right * ((portalRight.x >= 0) ? 1 : -1);
+                }
+                else
+                {
+                    portalRight = Vector3.forward * ((portalRight.z >= 0) ? 1 : -1);
+                }
+
+                var portalForward = -hit.normal;
+                var portalUp = -Vector3.Cross(portalRight, portalForward);
+
+                var portalRotation = Quaternion.LookRotation(portalForward, portalUp);
+
+                portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
+
+                // leaving this in until i figure out how i want to handle the crosshair
+                //crosshair.SetPortalPlaced(portalID, true);
             }
-            else
-            {
-                portalRight = Vector3.forward * ((portalRight.z >= 0) ? 1 : -1);
-            }
-
-            var portalForward = -hit.normal;
-            var portalUp = -Vector3.Cross(portalRight, portalForward);
-
-            var portalRotation = Quaternion.LookRotation(portalForward, portalUp);
-            
-            portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
-
-            // leaving this in until i figure out how i want to handle the crosshair
-            //crosshair.SetPortalPlaced(portalID, true);
         }
     }
 }
