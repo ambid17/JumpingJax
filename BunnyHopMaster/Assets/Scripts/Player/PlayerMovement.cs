@@ -119,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
         
         if (grounded)
         {
+            Debug.Log("grounded");
             var closestHit = validHits.First();
 
             //If the ground is NOT perfectly flat, slide across it
@@ -133,6 +134,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            Debug.Log("NOT grounded");
             //Find the closest collision where the slope is at least 45 degrees
             var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
             if (surfHits.Count() > 0)
@@ -158,12 +160,17 @@ public class PlayerMovement : MonoBehaviour
             // doesn't return the correct information when already colliding
             var overlappingColliders = Physics.OverlapBox(
                 center: myCollider.bounds.center,
-                halfExtents: extents,
+                halfExtents: extents + new Vector3(0.1f, 0.1f, 0.1f),
                 orientation: Quaternion.identity,
                 layerMask: layersToIgnore);
 
             foreach (Collider collider in overlappingColliders)
             {
+                if (collider.isTrigger)
+                {
+                    continue;
+                }
+
                 if(collider.transform.position.y < transform.position.y)
                 {
                     return true;
