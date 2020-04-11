@@ -14,6 +14,7 @@ public static class PlayerConstants
 
     public static float GroundAcceleration = 9f;
     public static float AirAcceleration = 5f;
+    public static float SurfAirAcceleration = 800f;
 
     public static float StopSpeed = 8f;
     public static float Friction = 6f;

@@ -12,6 +12,8 @@ public class Level : ScriptableObject
     [SerializeField]
     public bool isPortalLevel;
     [SerializeField]
+    public bool isSurfLevel;
+    [SerializeField]
     public string[] tutorialTexts;
     [SerializeField]
     public int numberOfCheckpoints;
