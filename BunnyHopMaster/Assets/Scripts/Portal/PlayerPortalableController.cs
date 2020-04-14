@@ -98,4 +98,9 @@ public class PlayerPortalableController : PortalableObject
         inPortal = outPortal;
         outPortal = tmp;
     }
+
+    public bool IsInPortal()
+    {
+        return inPortalCount > 0;
+    }
 }

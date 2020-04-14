@@ -16,21 +16,24 @@ public class PortalPlacement : MonoBehaviour
     //private Crosshair crosshair;
 
     private CameraMove cameraMove;
+    private PlayerPortalableController playerPortalable;
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
     private const float portalRaycastDistance = 250;
     private const string portalTag = "Portal";
     private bool isPortalLevel = false;
 
+
     private void Awake()
     {
         cameraMove = GetComponent<CameraMove>();
+        playerPortalable = GetComponent<PlayerPortalableController>();
     }
 
     private void Update()
     {
         isPortalLevel = GameManager.GetCurrentLevel().isPortalLevel;
-        if (Time.timeScale == 0 || !isPortalLevel)
+        if (Time.timeScale == 0 || !isPortalLevel || playerPortalable.IsInPortal())
         {
             return;
         }
