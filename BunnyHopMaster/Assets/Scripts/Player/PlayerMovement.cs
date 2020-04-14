@@ -14,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 newVelocity;
 
     [SerializeField]
+    private float airAcceleration = PlayerConstants.AirAcceleration;
+
+    [SerializeField]
     private bool grounded;
     [SerializeField]
     private bool surfing;
@@ -26,6 +29,15 @@ public class PlayerMovement : MonoBehaviour
     {
         myCollider = GetComponent<BoxCollider>();
         cameraMove = GetComponent<CameraMove>();
+
+        if (GameManager.GetCurrentLevel().isSurfLevel)
+        {
+            airAcceleration = PlayerConstants.SurfAirAcceleration;
+        }
+        else
+        {
+            airAcceleration = PlayerConstants.AirAcceleration;
+        }
     }
 
     private void FixedUpdate()
@@ -105,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
             maxDistance: PlayerConstants.BoxCastDistance,
             layerMask: layersToIgnore
             );
-
+        
         var wasGrounded = grounded;
         var validHits = hits
             .ToList()
@@ -268,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, airAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
 
         if (showDebugGizmos)
