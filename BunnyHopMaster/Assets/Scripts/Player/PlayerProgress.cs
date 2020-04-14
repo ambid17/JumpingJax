@@ -34,7 +34,7 @@ public class PlayerProgress : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (InputManager.GetKeyDown(PlayerConstants.ResetLevel))
         {
             Respawn();
         }

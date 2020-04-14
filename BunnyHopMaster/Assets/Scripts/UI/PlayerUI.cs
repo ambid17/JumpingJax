@@ -32,7 +32,7 @@ public class PlayerUI : MonoBehaviour {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(PlayerConstants.PauseMenu)) {
             if (isPaused)
             {
                 UnPause();

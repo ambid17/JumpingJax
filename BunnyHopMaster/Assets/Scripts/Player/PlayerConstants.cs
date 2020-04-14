@@ -59,8 +59,15 @@ public static class PlayerConstants
     public static string Portal2 = "Portal2";
     public static string Portal2Default = "Mouse1";
 
+
+    // Non-changeable hotkeys
     public static string MouseX = "Mouse X";
     public static string MouseY = "Mouse Y";
+    public static KeyCode PauseMenu = KeyCode.Escape;
+    public static KeyCode DebugMenu = KeyCode.BackQuote;
+    public static KeyCode NextTutorial = KeyCode.Tab;
+
+
 
     // Game Constants
     public static int BuildSceneIndex = 0;
