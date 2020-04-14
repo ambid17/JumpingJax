@@ -41,6 +41,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         {
+            if (IsPlayerWalkingBackwards())
+            {
+                wishSpeed *= PlayerConstants.BackWardsMoveSpeedScale;
+            }
             ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.NormalSurfaceFriction);
             ClampVelocity(PlayerConstants.MoveSpeed);
             ApplyFriction();
@@ -235,6 +239,13 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return new Vector3(horizontalSpeed, 0, verticalSpeed);
+    }
+
+    private bool IsPlayerWalkingBackwards()
+    {
+        Vector3 inputDirection = GetInputVelocity(PlayerConstants.MoveSpeed);
+
+        return inputDirection.z < 0;
     }
 
     //wishDir: the direction the player wishes to go in the newest frame
