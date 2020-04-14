@@ -61,7 +61,7 @@ public class PortalableObject : MonoBehaviour
         }
     }
 
-    public void SetIsInPortal(Portal inPortal, Portal outPortal, Collider wallCollider)
+    public virtual void SetIsInPortal(Portal inPortal, Portal outPortal, Collider wallCollider)
     {
         this.inPortal = inPortal;
         this.outPortal = outPortal;
@@ -100,7 +100,7 @@ public class PortalableObject : MonoBehaviour
         outPortal = tmp;
     }
 
-    public void ExitPortal(Collider wallCollider)
+    public virtual void ExitPortal(Collider wallCollider)
     {
         Physics.IgnoreCollision(collider, wallCollider, false);
 
