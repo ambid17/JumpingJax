@@ -117,10 +117,6 @@ public class PlayerMovement : MonoBehaviour
             maxDistance: PlayerConstants.BoxCastDistance,
             layerMask: layersToIgnore
             );
-        foreach(RaycastHit hit in hits)
-        {
-            Debug.Log(hit.collider.gameObject.name + " " + hit.normal);
-        }
         
         var wasGrounded = grounded;
         var validHits = hits
