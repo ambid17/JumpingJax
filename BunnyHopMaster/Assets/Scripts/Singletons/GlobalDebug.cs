@@ -43,7 +43,7 @@ public class GlobalDebug
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(PlayerConstants.DebugMenu))
         {
             debugScrollView.SetActive(!debugScrollView.activeInHierarchy);
         }

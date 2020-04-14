@@ -38,11 +38,11 @@ public class PortalPlacement : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Portal1)))
+        if (InputManager.GetKeyDown(PlayerConstants.Portal1))
         {
             FirePortal(0, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }
-        else if (Input.GetKeyDown(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Portal2)))
+        else if (InputManager.GetKeyDown(PlayerConstants.Portal2))
         {
             FirePortal(1, cameraMove.playerCamera.transform.position, cameraMove.playerCamera.transform.forward, portalRaycastDistance);
         }

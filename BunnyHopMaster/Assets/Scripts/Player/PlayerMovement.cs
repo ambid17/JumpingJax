@@ -77,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
     {
         wasCrouching = crouching;
 
-        if (Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Crouch)))
+        if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
             myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
@@ -199,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
-        if (grounded && Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Jump)))
+        if (grounded && InputManager.GetKey(PlayerConstants.Jump))
         {
             newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
             grounded = false;
@@ -222,30 +222,25 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetInputVelocity(float moveSpeed)
     {
-        KeyCode left = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Left);
-        KeyCode right = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Right);
-        KeyCode forward = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Forward);
-        KeyCode back = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Back);
-
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
-        if (Input.GetKey(left))
+        if (InputManager.GetKey(PlayerConstants.Left))
         {
             horizontalSpeed = -moveSpeed;
         }
 
-        if (Input.GetKey(right))
+        if (InputManager.GetKey(PlayerConstants.Right))
         {
             horizontalSpeed = moveSpeed;
         }
 
-        if (Input.GetKey(back))
+        if (InputManager.GetKey(PlayerConstants.Back))
         {
             verticalSpeed = -moveSpeed;
         }
 
-        if (Input.GetKey(forward))
+        if (InputManager.GetKey(PlayerConstants.Forward))
         {
             verticalSpeed = moveSpeed;
         }

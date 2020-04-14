@@ -36,7 +36,7 @@ public class InGameUI : MonoBehaviour
         Vector2 directionalSpeed = new Vector2(playerMovement.newVelocity.x, playerMovement.newVelocity.z);
         speedText.text = "Speed: " + Mathf.Round(directionalSpeed.magnitude * 100) / 100 + "m/s";
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(PlayerConstants.NextTutorial))
         {
             LoadNextTutorial();
         }
