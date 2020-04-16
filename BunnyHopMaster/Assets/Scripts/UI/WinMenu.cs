@@ -10,6 +10,21 @@ public class WinMenu : MonoBehaviour
     public Text completionTimeText;
     public Text bestTimeText;
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(PlayerConstants.WinMenu_MainMenu)){
+            GoToMainMenu();
+        }
+
+        if (Input.GetKeyDown(PlayerConstants.WinMenu_NextLevel)){
+            NextLevel();
+        }
+
+        if (Input.GetKeyDown(PlayerConstants.WinMenu_RetryLevel)){
+            Retry();
+        }
+    }
+
     public void Retry()
     {
         Cursor.visible = false;
