@@ -947,6 +947,7 @@ MonoBehaviour:
   myCollider: {fileID: 0}
   cameraMove: {fileID: 0}
   newVelocity: {x: 0, y: 0, z: 0}
+  airAcceleration: 5
   grounded: 0
   surfing: 0
   crouching: 0
@@ -3080,7 +3081,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Main Menu
+  m_Text: Main Menu (Q)
 --- !u!1 &1844322297176508576
 GameObject:
   m_ObjectHideFlags: 0
@@ -4060,7 +4061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1844322298070809563
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4399,7 +4400,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Next Level
+  m_Text: Next Level (E)
 --- !u!1 &1844322298304401695
 GameObject:
   m_ObjectHideFlags: 0
@@ -4923,7 +4924,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Retry
+  m_Text: Retry (R)
 --- !u!1 &1844322298610455931
 GameObject:
   m_ObjectHideFlags: 0
@@ -9642,7 +9643,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1380641414466587092}
   m_HandleRect: {fileID: 826296621778580111}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -13688,7 +13689,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6162627233717351478}
   m_HandleRect: {fileID: 5968149788584626390}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
