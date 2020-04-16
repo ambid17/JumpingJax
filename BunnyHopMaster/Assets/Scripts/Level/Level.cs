@@ -30,7 +30,7 @@ public class Level : ScriptableObject
     [SerializeField]
     public float completionTime;
 
-    private void OnEnable()
+    private void ResetLevelData()
     {
         isCompleted = false;
         completionTime = 0f;
