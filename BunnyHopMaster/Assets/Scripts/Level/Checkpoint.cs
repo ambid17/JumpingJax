@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
     [SerializeField]
     public int level;
-    
+
     public Material completedMaterial;
     public MeshRenderer myRenderer;
 
