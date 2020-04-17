@@ -27,7 +27,7 @@ public class CheckpointsList : MonoBehaviour
     {
         if (scriptableObjectLevel.numberOfCheckpoints != checkpointsInScene.Length)
         {
-            Debug.Log("Number of checkpoints in scene does not equal number of checkpoints in SO");
+            Debug.LogError("Number of checkpoints in scene does not equal number of checkpoints in SO");
         }
     }
 
@@ -40,7 +40,7 @@ public class CheckpointsList : MonoBehaviour
             checkpointNumbersToCompare[i] = numberToFill;
             if (checkpointNumbersToCompare[i] != checkpointsInScene[i].level)
             {
-                Debug.Log("Wrong property level set in checkpoint");
+                Debug.LogError("Wrong property level set in checkpoint");
             }
             numberToFill++;
         }

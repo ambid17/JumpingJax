@@ -4,6 +4,6 @@ public class CheckpointComparer : IComparer
 {
     public int Compare(object x, object y)
     {
-        return (new CaseInsensitiveComparer()).Compare(((Checkpoint) x).level, ((Checkpoint) y).level);
+        return ((Checkpoint) x).level.CompareTo(((Checkpoint) y).level);
     }
 }
