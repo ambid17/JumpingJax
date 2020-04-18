@@ -1,21 +1,8 @@
-name: Unity
-
-on: [push]
-
-jobs:- name: Unity - Test runner
+name: Unity - Test runner
   uses: webbertakken/unity-test-runner@v1.6
   with:
     # Version of unity to use for testing the project.
     unityVersion: # optional, default is 2019.2.11f1
-  build:
 
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Unity - Test runner
-      uses: webbertakken/unity-test-runner@v1.6
-      with:
-      # Version of unity to use for testing the project.
-      unityVersion: # optional, default is 2019.2.11f1
+on: [push]
 
