@@ -1,0 +1,25 @@
+name: 🧪 Unity CI
+
+on: [push]
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  readmeWorkflow:
+    name: Test Workflow 🚧
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      # Test
+      - name: Run tests
+        uses: webbertakken/unity-test-runner@v1.3
+        with:
+          projectPath: BunnyHopMaster
+          unityVersion: 2019.3.9f1
+
