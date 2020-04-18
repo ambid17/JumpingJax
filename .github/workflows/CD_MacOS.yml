@@ -1,9 +1,8 @@
 name: 📦 MacOS CD
 
-# on:
-#   pull_request: {}
-#   push: { branches: [master, development] }
-on: [push]
+on:
+  pull_request: {}
+  push: { branches: [master, development] }
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -11,7 +10,7 @@ env:
 jobs:
   readmeWorkflow:
     name: Build Workflow 🍎🛠
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       # Checkout
       - name: Checkout repository
