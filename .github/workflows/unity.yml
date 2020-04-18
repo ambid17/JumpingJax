@@ -1,8 +1,46 @@
-name: Unity - Test runner
-  uses: webbertakken/unity-test-runner@v1.6
-  with:
-    # Version of unity to use for testing the project.
-    unityVersion: # optional, default is 2019.2.11f1
+name: Actions 😎
+
+# on:
+#   pull_request: {}
+#   push: { branches: [master] }
 
 on: [push]
+
+jobs:
+  readmeWorkflow:
+    name: Unity Test Workflow ✨
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          
+#      # Cache
+#      - uses: actions/cache@v1.1.0
+#        with:
+#          path: test-project/Library
+#          key: Library-test-project-WebGL
+
+      # Test
+      - name: Run tests
+        uses: webbertakken/unity-test-runner@v1.3
+        with:
+          projectPath: test-project
+          unityVersion: 2019.2.11f1
+
+#      # Build
+#      - name: Build project
+#        uses: webbertakken/unity-builder@v0.10
+#        with:
+#          projectPath: test-project
+#          unityVersion: 2019.2.11f1
+#          targetPlatform: WebGL
+
+#      # Output
+#      - uses: actions/upload-artifact@v1
+#        with:
+#          name: Build
+#          path: build
 
