@@ -1,8 +1,8 @@
 name: 📦 MacOS
 
 on:
-  pull_request: {}
-  push: { branches: [master, development] }
+  pull_request: { branches: [master] }
+  push: { branches: [development] }
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
