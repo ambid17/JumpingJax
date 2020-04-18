@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 62500546}
   m_Layer: 0
   m_Name: Checkpoint1
-  m_TagString: Untagged
+  m_TagString: Checkpoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -490,6 +490,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 329596126}
+  - component: {fileID: 329596127}
   m_Layer: 0
   m_Name: Checkpoints
   m_TagString: Untagged
@@ -513,8 +514,46 @@ Transform:
   m_Father: {fileID: 1413890581}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+
+--- !u!114 &329596127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329596125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f634dbf59684fa47ab940307b940fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scriptableObjectLevel: {fileID: 11400000, guid: 0b109f3ae687f4448b3adf097e33847b,
+    type: 2}
+--- !u!1 &399877531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 399877535}
+  - component: {fileID: 399877534}
+  - component: {fileID: 399877533}
+  - component: {fileID: 399877532}
+  m_Layer: 0
+  m_Name: Plane (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &399877532
+MeshCollider:
+
 --- !u!1001 &358589399
 PrefabInstance:
+
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -988,6 +1027,11 @@ PrefabInstance:
     - target: {fileID: 2306592867206120170, guid: ec3d4c1042aa3a942bd5f8b67ee84bb9,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2306592867206120170, guid: ec3d4c1042aa3a942bd5f8b67ee84bb9,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2394590191608060554, guid: ec3d4c1042aa3a942bd5f8b67ee84bb9,
@@ -2687,7 +2731,7 @@ GameObject:
   - component: {fileID: 8336752265032870054}
   m_Layer: 0
   m_Name: Checkpoint2
-  m_TagString: Untagged
+  m_TagString: Checkpoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
