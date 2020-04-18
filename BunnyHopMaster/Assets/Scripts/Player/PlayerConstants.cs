@@ -69,6 +69,10 @@ public static class PlayerConstants
     public static KeyCode DebugMenu = KeyCode.BackQuote;
     public static KeyCode NextTutorial = KeyCode.Tab;
 
+    public static KeyCode WinMenu_NextLevel = KeyCode.E;
+    public static KeyCode WinMenu_RetryLevel = KeyCode.R;
+    public static KeyCode WinMenu_MainMenu = KeyCode.Q;
+
 
 
     // Game Constants
