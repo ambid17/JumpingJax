@@ -2,7 +2,7 @@ name: Unity CI
 
 # on:
 #   pull_request: {}
-#   push: { branches: [master] }
+#   push: { branches: [master, development] }
 
 on: [push]
 
@@ -39,7 +39,6 @@ jobs:
         with:
           projectPath: BunnyHopMaster
           unityVersion: 2019.2.11f1
-          targetPlatform: WebGL
 
       # Output
       - uses: actions/upload-artifact@v1
