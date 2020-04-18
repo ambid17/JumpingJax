@@ -1,17 +1,15 @@
-name: 📦 Unity CD Linux
+name: 📦 Linux CD
 
-# on:
-#   pull_request: {}
-#   push: { branches: [master, development] }
-
-on: [push]
+on:
+  pull_request: {}
+  push: { branches: [master, development] }
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
   readmeWorkflow:
-    name: Unity Build Workflow ✨
+    name: Build Workflow 🐧🛠
     runs-on: ubuntu-latest
     steps:
       # Checkout
@@ -38,6 +36,6 @@ jobs:
       # Output
       - uses: actions/upload-artifact@v1
         with:
-          name: Build
+          name: LinuxBuild
           path: build
 

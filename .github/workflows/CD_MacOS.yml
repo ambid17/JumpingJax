@@ -1,9 +1,8 @@
-name: 📦 Unity CD MacOS
+name: 📦 MacOS CD
 
 # on:
 #   pull_request: {}
 #   push: { branches: [master, development] }
-
 on: [push]
 
 env:
@@ -11,8 +10,8 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Unity Build Workflow ✨
-    runs-on: ubuntu-latest
+    name: Build Workflow 🍎🛠
+    runs-on: macos-latest
     steps:
       # Checkout
       - name: Checkout repository
@@ -38,6 +37,6 @@ jobs:
       # Output
       - uses: actions/upload-artifact@v1
         with:
-          name: Build
+          name: MacOSBuild
           path: build
 
