@@ -19,12 +19,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
-          
-#      # Cache
-#      - uses: actions/cache@v1.1.0
-#        with:
-#          path: test-project/Library
-#          key: Library-test-project-WebGL
 
       # Test
       - name: Run tests
@@ -39,6 +33,10 @@ jobs:
         with:
           projectPath: BunnyHopMaster
           unityVersion: 2019.3.9f1
+        targetPlatform:
+          - StandaloneOSX # Build a macOS standalone (Intel 64-bit).
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+          - StandaloneLinux64 # Build a Linux 64-bit standalone.
 
       # Output
       - uses: actions/upload-artifact@v1
