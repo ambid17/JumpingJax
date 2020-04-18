@@ -1,4 +1,4 @@
-name: Actions 😎
+name: Windows Unity CI
 
 # on:
 #   pull_request: {}
@@ -11,8 +11,8 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Unity Test Workflow ✨
-    runs-on: ubuntu-latest
+    name: Windows Unity Test Workflow ✨
+    runs-on: windows-latest
     steps:
       # Checkout
       - name: Checkout repository
