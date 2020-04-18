@@ -31,14 +31,14 @@ jobs:
         uses: webbertakken/unity-test-runner@v1.3
         with:
           projectPath: BunnyHopMaster
-          unityVersion: 2019.2.11f1
+          unityVersion: 2019.3.0f3 
 
       # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
           projectPath: BunnyHopMaster
-          unityVersion: 2019.2.11f1
+          unityVersion: 2019.3.0f3
 
       # Output
       - uses: actions/upload-artifact@v1
