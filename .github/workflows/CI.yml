@@ -1,4 +1,4 @@
-name: 🧪 Unity CI
+name: 🧪 Unity
 
 on: [push]
 
@@ -7,7 +7,7 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Test Workflow 🚧
+    name: Test Workflow
     runs-on: ubuntu-latest
     steps:
       # Checkout

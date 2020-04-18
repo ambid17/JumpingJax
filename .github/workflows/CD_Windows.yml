@@ -1,4 +1,4 @@
-name: 📦 Windows CD
+name: 📦 Windows
 
 on:
   pull_request: {}
@@ -9,7 +9,7 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Build Workflow 🎮🛠
+    name: Build Windows
     runs-on: ubuntu-latest
     steps:
       # Checkout

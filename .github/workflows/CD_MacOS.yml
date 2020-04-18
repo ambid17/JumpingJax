@@ -1,4 +1,4 @@
-name: 📦 MacOS CD
+name: 📦 MacOS
 
 on:
   pull_request: {}
@@ -9,7 +9,7 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Build Workflow 🍎🛠
+    name: Build MacOS
     runs-on: ubuntu-latest
     steps:
       # Checkout

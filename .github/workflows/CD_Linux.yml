@@ -1,4 +1,4 @@
-name: 📦 Linux CD
+name: 📦 Linux
 
 on:
   pull_request: {}
@@ -9,7 +9,7 @@ env:
 
 jobs:
   readmeWorkflow:
-    name: Build Workflow 🐧🛠
+    name: Build Linux
     runs-on: ubuntu-latest
     steps:
       # Checkout
