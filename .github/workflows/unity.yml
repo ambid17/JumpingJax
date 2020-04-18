@@ -12,7 +12,7 @@ env:
 jobs:
   readmeWorkflow:
     name: Windows Unity Test Workflow ✨
-    runs-on: windows-latest
+    runs-on: windows
     steps:
       # Checkout
       - name: Checkout repository
