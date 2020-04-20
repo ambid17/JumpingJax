@@ -43,6 +43,14 @@ public class Portal : MonoBehaviour
     private float sphereCastSize = 0.02f;
     private float bigSphereCastSize = 0.04f;
 
+    private List<Vector3> overHangTestPoints = new List<Vector3>
+        {
+            new Vector3(-1.1f,  0, 0),
+            new Vector3( 1.1f,  0, 0),
+            new Vector3( 0, -2.1f, 0),
+            new Vector3( 0,  2.1f, 0)
+        };
+
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -105,9 +113,8 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("triggerEntered: " + other.gameObject.name);
         var obj = other.GetComponent<PortalableObject>();
-        if (obj != null)
+        if (obj != null && otherPortal.IsPlaced())
         {
             portalObjects.Add(obj);
             obj.SetIsInPortal(this, otherPortal, wallCollider);
@@ -143,6 +150,7 @@ public class Portal : MonoBehaviour
                 otherPortal.boxCollider.enabled = true;
             }
         }
+
         this.wallCollider = wallCollider;
         transform.position = pos;
         transform.rotation = rot;
@@ -156,22 +164,14 @@ public class Portal : MonoBehaviour
     // Ensure the portal cannot extend past the edge of a surface, or intersect a corner
     private void FixOverhangs()
     {
-        var testPoints = new List<Vector3>
-        {
-            new Vector3(-1.1f,  0, 0),
-            new Vector3( 1.1f,  0, 0),
-            new Vector3( 0, -2.1f, 0),
-            new Vector3( 0,  2.1f, 0)
-        };
-
         for (int i = 0; i < 4; ++i)
         {
-            Vector3 overhangTestPosition = transform.TransformPoint(testPoints[i]);
+            Vector3 overhangTestPosition = transform.TransformPoint(overHangTestPoints[i]);
 
             // If the point isn't touching anything, it overhangs
             if (!Physics.CheckSphere(overhangTestPosition, sphereCastSize, overhangMask))
             {
-                Vector3 portalOverhangOffset = FindOverhangOffset(testPoints[i]);
+                Vector3 portalOverhangOffset = FindOverhangOffset(overHangTestPoints[i]);
                 transform.Translate(portalOverhangOffset, Space.Self);
             }
         }
@@ -199,14 +199,44 @@ public class Portal : MonoBehaviour
         return overhangOffset;
     }
 
+    private bool GetIsOverhanging()
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            Vector3 overhangTestPosition = transform.TransformPoint(overHangTestPoints[i]);
+
+            // If the point isn't touching anything, it overhangs
+            if (!Physics.CheckSphere(overhangTestPosition, sphereCastSize, overhangMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // If the new portal overlaps an already placed one
+    // try to fix the overlap, or delete it
     private void FixPortalOverlaps()
     {
-        // TODO: create a method of depenetrating overlapping portals
-        //if(MathUtil.DoBoxesIntersect(collider, otherPortal.collider))
-        //{
-        //    Vector3 depenetration = MathUtil.GetBoxDepenetration(collider, otherPortal.collider);
-        //    transform.Translate(depenetration);
-        //}
+        Vector3 worldSpaceCenter = transform.TransformPoint(boxCollider.center);
+        Collider[] overlappingBoxes = Physics.OverlapBox(worldSpaceCenter, boxCollider.bounds.extents);
+
+        foreach(Collider other in overlappingBoxes)
+        {
+            if (other.gameObject.GetComponent<Portal>() && other.gameObject != gameObject)
+            {
+                Vector3 depenetration = transform.position - other.transform.position;
+                transform.position += depenetration * 0.2f;
+                //FixPortalOverlaps();
+            }
+        }
+
+        if (GetIsOverhanging())
+        {
+            ResetPortal();
+            ResetOtherPortal();
+        }
     }
 
     public void ResetPortal()
@@ -218,11 +248,17 @@ public class Portal : MonoBehaviour
         SetPortalRendererMaterial();
     }
 
+    public void ResetOtherPortal()
+    {
+        otherPortal.SetPortalRendererMaterial();
+    }
+
     public bool IsPlaced()
     {
         return isPlaced;
     }
-    private void SetPortalRendererMaterial()
+
+    public void SetPortalRendererMaterial()
     {
         if (name == portalName)
         {
