@@ -206,7 +206,7 @@ public class Portal : MonoBehaviour
             Vector3 overhangTestPosition = transform.TransformPoint(overHangTestPoints[i]);
 
             // If the point isn't touching anything, it overhangs
-            if (!Physics.CheckSphere(overhangTestPosition, sphereCastSize, overhangMask))
+            if (!Physics.CheckSphere(overhangTestPosition, bigSphereCastSize, overhangMask))
             {
                 return true;
             }
@@ -222,13 +222,11 @@ public class Portal : MonoBehaviour
         Vector3 worldSpaceCenter = transform.TransformPoint(boxCollider.center);
         Collider[] overlappingBoxes = Physics.OverlapBox(worldSpaceCenter, boxCollider.bounds.extents);
 
-        foreach(Collider other in overlappingBoxes)
+        foreach(Collider otherCollider in overlappingBoxes)
         {
-            if (other.gameObject.GetComponent<Portal>() && other.gameObject != gameObject)
+            if (otherCollider.gameObject == otherPortal.gameObject)
             {
-                Vector3 depenetration = transform.position - other.transform.position;
-                transform.position += depenetration * 0.2f;
-                //FixPortalOverlaps();
+                GetClosestOverlapFix();
             }
         }
 
@@ -237,6 +235,63 @@ public class Portal : MonoBehaviour
             ResetPortal();
             ResetOtherPortal();
         }
+    }
+
+    private void GetClosestOverlapFix()
+    {
+        Vector3 overlapFix = Vector3.zero;
+
+        Vector3 localOffset = transform.InverseTransformPoint(otherPortal.transform.position);
+
+        bool isInsideX = localOffset.x < PlayerConstants.portalWidth;
+        bool isInsideY = localOffset.y < PlayerConstants.portalHeight;
+
+
+        float offsetX = PlayerConstants.portalWidth - Mathf.Abs(localOffset.x);
+        float offsetY = PlayerConstants.portalHeight - Mathf.Abs(localOffset.y);
+
+        Vector3 offsetFixX = Vector3.zero;
+        Vector3 offsetFixY = Vector3.zero;
+
+        if (localOffset.x < 0)
+        {
+            offsetFixX = new Vector3(offsetX, 0, 0);
+        }
+        else {
+            offsetFixX = new Vector3(-offsetX, 0, 0);
+        }
+
+        if (localOffset.y < 0)
+        {
+            offsetFixY = new Vector3(0, offsetY, 0);
+        }
+        else
+        {
+            offsetFixY = new Vector3(0, -offsetY, 0);
+        }
+
+        if (isInsideX && isInsideY)
+        {
+            if(offsetX < offsetY)
+            {
+                overlapFix = offsetFixX;
+            }
+            else
+            {
+                overlapFix = offsetFixY;
+
+            }
+        }
+        else if (isInsideX)
+        {
+            overlapFix = offsetFixX;
+        }
+        else if (isInsideY)
+        {
+            overlapFix = offsetFixY;
+        }
+
+        transform.Translate(overlapFix, Space.Self);
     }
 
     public void ResetPortal()
