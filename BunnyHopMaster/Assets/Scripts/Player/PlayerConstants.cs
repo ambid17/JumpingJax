@@ -33,6 +33,10 @@ public static class PlayerConstants
     public static float BoxCastDistance = 0.11f;
     public static float CrouchingBoxCastDistance = 0.11f;
 
+    public static float portalWidth = 2.1f;
+    public static float portalHeight = 4.2f;
+
+
     //HotKeys
     public static string Forward = "Forward";
     public static string ForwardDefault = "W";

@@ -131,26 +131,19 @@ public class PlayerMovement : MonoBehaviour
             .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
             .Where(hit => hit.point.y < transform.position.y);
 
-        grounded = ConfirmGrounded(validHits);
-        
+        grounded = validHits.Count() > 0;
+
+        if (!grounded)
+        {
+            grounded = ConfirmGrounded(validHits);
+        }
+
         if (grounded)
         {
-            Debug.Log("grounded");
-            var closestHit = validHits.First();
-
-            //If the ground is NOT perfectly flat, slide across it
-            if (closestHit.normal.y < 1)
-            {
-                ClipVelocity(closestHit.normal);
-            }
-            else
-            {
-                newVelocity.y = 0;
-            }
+            newVelocity.y = 0;
         }
         else
         {
-            Debug.Log("NOT grounded");
             //Find the closest collision where the slope is at least 45 degrees
             var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
             if (surfHits.Count() > 0)
@@ -164,33 +157,32 @@ public class PlayerMovement : MonoBehaviour
 
     private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
     {
-        if(hits.Count() > 0)
+        Vector3 extents = PlayerConstants.BoxCastExtents;
+        if (crouching)
         {
-            Vector3 extents = PlayerConstants.BoxCastExtents;
-            if (crouching)
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+        }
+
+        // We have to manually check if there is a collision, because boxcastall 
+        // doesn't return the correct information when already colliding
+        var overlappingColliders = Physics.OverlapBox(
+            center: myCollider.bounds.center,
+            halfExtents: extents,// + new Vector3(0.1f, 0.1f, 0.1f),
+            orientation: Quaternion.identity,
+            layerMask: layersToIgnore);
+
+        
+
+        foreach (Collider collider in overlappingColliders)
+        {
+            if (collider.isTrigger)
             {
-                extents = PlayerConstants.CrouchingBoxCastExtents;
+                continue;
             }
 
-            // We have to manually check if there is a collision, because boxcastall 
-            // doesn't return the correct information when already colliding
-            var overlappingColliders = Physics.OverlapBox(
-                center: myCollider.bounds.center,
-                halfExtents: extents + new Vector3(0.1f, 0.1f, 0.1f),
-                orientation: Quaternion.identity,
-                layerMask: layersToIgnore);
-
-            foreach (Collider collider in overlappingColliders)
+            if(collider.transform.position.y < transform.position.y && !Physics.GetIgnoreCollision(collider, myCollider))
             {
-                if (collider.isTrigger)
-                {
-                    continue;
-                }
-
-                if(collider.transform.position.y < transform.position.y)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
