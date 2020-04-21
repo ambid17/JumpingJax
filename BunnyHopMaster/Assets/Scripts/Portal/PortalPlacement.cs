@@ -103,7 +103,7 @@ public class PortalPlacement : MonoBehaviour
 
                 var portalRotation = Quaternion.LookRotation(portalForward, portalUp);
 
-                portals.Portals[portalID].PlacePortal(hit.collider, hit.point, portalRotation);
+                portals.Portals[portalID].PlacePortal(hit.point, portalRotation);
 
                 // leaving this in until i figure out how i want to handle the crosshair
                 //crosshair.SetPortalPlaced(portalID, true);
