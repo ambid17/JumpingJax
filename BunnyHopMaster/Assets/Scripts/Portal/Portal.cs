@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +21,15 @@ public class Portal : MonoBehaviour
     private LayerMask placementMask;
 
     [SerializeField]
+    private LayerMask nonPortalMask;
+
+    [SerializeField]
     private LayerMask overhangMask;
 
     private bool isPlaced = false;
 
     [SerializeField]
-    private Collider wallCollider;
+    private List<Collider> wallColliders;
 
     public bool isDebug = true;
 
@@ -117,22 +121,27 @@ public class Portal : MonoBehaviour
         if (obj != null && otherPortal.IsPlaced())
         {
             portalObjects.Add(obj);
-            obj.SetIsInPortal(this, otherPortal, wallCollider);
+            obj.SetIsInPortal(this, otherPortal, wallColliders);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        var obj = other.GetComponent<PortalableObject>();
+        var portalable = other.GetComponent<PortalableObject>();
 
-        if (portalObjects.Contains(obj))
+        ResetObjectInPortal(portalable);
+    }
+
+    public void ResetObjectInPortal(PortalableObject portalable)
+    {
+        if (portalObjects.Contains(portalable))
         {
-            portalObjects.Remove(obj);
-            obj.ExitPortal(wallCollider);
+            portalObjects.Remove(portalable);
+            portalable.ExitPortal(wallColliders);
         }
     }
 
-    public void PlacePortal(Collider wallCollider, Vector3 pos, Quaternion rot)
+    public void PlacePortal(Vector3 pos, Quaternion rot)
     {
         isPlaced = true;
         if (isPlaced && !otherPortal.isPlaced)
@@ -151,7 +160,6 @@ public class Portal : MonoBehaviour
             }
         }
 
-        this.wallCollider = wallCollider;
         transform.position = pos;
         transform.rotation = rot;
         transform.position -= transform.forward * 0.001f;
@@ -159,6 +167,7 @@ public class Portal : MonoBehaviour
 
         FixOverhangs();
         FixPortalOverlaps();
+        GetWallColliders();
     }
 
     // Ensure the portal cannot extend past the edge of a surface, or intersect a corner
@@ -294,6 +303,13 @@ public class Portal : MonoBehaviour
         transform.Translate(overlapFix, Space.Self);
     }
 
+    private void GetWallColliders()
+    {
+        Vector3 worldSpaceCenter = transform.TransformPoint(boxCollider.center);
+        Collider[] overlappingBoxes = Physics.OverlapBox(worldSpaceCenter, PlayerConstants.PortalColliderExtents, transform.rotation, nonPortalMask);
+        wallColliders = new List<Collider>(overlappingBoxes);
+    }
+
     public void ResetPortal()
     {
         gameObject.SetActive(false);
@@ -301,6 +317,11 @@ public class Portal : MonoBehaviour
         boxCollider.enabled = false;
         transform.position = new Vector3(100, 100, 100);
         SetPortalRendererMaterial();
+
+        foreach(PortalableObject portalable in portalObjects)
+        {
+            ResetObjectInPortal(portalable);
+        }
     }
 
     public void ResetOtherPortal()
