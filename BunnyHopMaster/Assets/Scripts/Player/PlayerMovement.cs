@@ -29,15 +29,6 @@ public class PlayerMovement : MonoBehaviour
     {
         myCollider = GetComponent<BoxCollider>();
         cameraMove = GetComponent<CameraMove>();
-
-        if (GameManager.GetCurrentLevel().isSurfLevel)
-        {
-            airAcceleration = PlayerConstants.SurfAirAcceleration;
-        }
-        else
-        {
-            airAcceleration = PlayerConstants.AirAcceleration;
-        }
     }
 
     private void FixedUpdate()
