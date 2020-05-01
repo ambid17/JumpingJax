@@ -86,27 +86,29 @@ public class PortalPlacement : MonoBehaviour
             else if (hit.collider.gameObject.layer == PlayerConstants.PortalMaterialLayer)
             {
                 var cameraRotation = cameraMove.TargetRotation;
-
                 var portalRight = cameraRotation * Vector3.right;
 
-                if (Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
+                if(Mathf.Abs(portalRight.x) >= 0)
                 {
-                    portalRight = Vector3.right * ((portalRight.x >= 0) ? 1 : -1);
+                    portalRight = (portalRight.x >= 0) ? Vector3.right : -Vector3.right;
                 }
                 else
                 {
-                    portalRight = Vector3.forward * ((portalRight.z >= 0) ? 1 : -1);
+                    portalRight = (portalRight.z >= 0) ? Vector3.forward : -Vector3.forward;
                 }
 
                 var portalForward = -hit.normal;
+
                 var portalUp = -Vector3.Cross(portalRight, portalForward);
 
+                if (portalForward.x != 0 || portalForward.z != 0)
+                {
+                    portalUp = Vector3.up;
+                }
+
+
                 var portalRotation = Quaternion.LookRotation(portalForward, portalUp);
-
                 portals.Portals[portalID].PlacePortal(hit.point, portalRotation);
-
-                // leaving this in until i figure out how i want to handle the crosshair
-                //crosshair.SetPortalPlaced(portalID, true);
             }
         }
     }
