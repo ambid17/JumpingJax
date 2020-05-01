@@ -314,9 +314,9 @@ public class Portal : MonoBehaviour
         transform.position = new Vector3(100, 100, 100);
         SetPortalRendererMaterial();
 
-        foreach(PortalableObject portalable in portalObjects)
+        for(int i = 0; i < portalObjects.Count; i++)
         {
-            ResetObjectInPortal(portalable);
+            ResetObjectInPortal(portalObjects[i]);
         }
     }
 
