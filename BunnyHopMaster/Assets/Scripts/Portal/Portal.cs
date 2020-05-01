@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -19,9 +17,6 @@ public class Portal : MonoBehaviour
 
     [SerializeField]
     private LayerMask placementMask;
-
-    [SerializeField]
-    private LayerMask nonPortalMask;
 
     [SerializeField]
     private LayerMask overhangMask;
@@ -306,7 +301,8 @@ public class Portal : MonoBehaviour
     private void GetWallColliders()
     {
         Vector3 worldSpaceCenter = transform.TransformPoint(boxCollider.center);
-        Collider[] overlappingBoxes = Physics.OverlapBox(worldSpaceCenter, PlayerConstants.PortalColliderExtents, transform.rotation, nonPortalMask);
+        Collider[] overlappingBoxes = Physics.OverlapBox(worldSpaceCenter, PlayerConstants.PortalColliderExtents, transform.rotation, overhangMask);
+
         wallColliders = new List<Collider>(overlappingBoxes);
     }
 
