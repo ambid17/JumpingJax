@@ -925,7 +925,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentCheckpoint: {fileID: 0}
   playerUI: {fileID: 1844322298415541209}
-  playerFallingBoundsReset: 0
   playerMovement: {fileID: 0}
   cameraMove: {fileID: 0}
 --- !u!114 &4259481642829858136
@@ -982,7 +981,7 @@ MonoBehaviour:
   portals: {fileID: 0}
   layerMask:
     serializedVersion: 2
-    m_Bits: 3072
+    m_Bits: 3073
 --- !u!114 &441310430289080767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1075,7 +1074,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3895
+    m_Bits: 12087
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1825,7 +1824,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1955461106287155216}
   m_HandleRect: {fileID: 3408615153686297378}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6469,7 +6468,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7331764855439802876}
   m_HandleRect: {fileID: 2306592867206120170}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -9643,8 +9642,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1380641414466587092}
   m_HandleRect: {fileID: 826296621778580111}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13689,8 +13688,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6162627233717351478}
   m_HandleRect: {fileID: 5968149788584626390}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
