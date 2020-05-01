@@ -61,13 +61,15 @@ public class PortalableObject : MonoBehaviour
         }
     }
 
-    public virtual void SetIsInPortal(Portal inPortal, Portal outPortal, Collider wallCollider)
+    public virtual void SetIsInPortal(Portal inPortal, Portal outPortal, List<Collider> wallColliders)
     {
         this.inPortal = inPortal;
         this.outPortal = outPortal;
-        Debug.Log("SetIsInPortal: " + wallCollider.gameObject.name);
 
-        Physics.IgnoreCollision(collider, wallCollider);
+        foreach(Collider wallCollider in wallColliders)
+        {
+            Physics.IgnoreCollision(collider, wallCollider);
+        }
 
         cloneObject.SetActive(true);
 
@@ -100,9 +102,13 @@ public class PortalableObject : MonoBehaviour
         outPortal = tmp;
     }
 
-    public virtual void ExitPortal(Collider wallCollider)
+    public virtual void ExitPortal(List<Collider> wallColliders)
     {
-        Physics.IgnoreCollision(collider, wallCollider, false);
+        foreach (Collider wallCollider in wallColliders)
+        {
+            Physics.IgnoreCollision(collider, wallCollider, false);
+
+        }
 
         if (--inPortalCount == 0)
         {

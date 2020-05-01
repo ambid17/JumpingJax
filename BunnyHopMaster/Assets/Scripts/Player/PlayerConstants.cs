@@ -35,6 +35,7 @@ public static class PlayerConstants
 
     public static float portalWidth = 2.1f;
     public static float portalHeight = 4.2f;
+    public static Vector3 PortalColliderExtents = new Vector3(1.05f, 2.05f, 0.5f);
 
 
     //HotKeys
