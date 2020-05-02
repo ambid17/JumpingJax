@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SurfRampEasyMeshGen : MonoBehaviour
+public class SurfRampMeshGenerator : MonoBehaviour
 {
     public Material material;
     public int rampLeftWidth = 8;
@@ -21,17 +21,14 @@ public class SurfRampEasyMeshGen : MonoBehaviour
 
     private MeshFilter myFilter;
     private MeshRenderer myRenderer;
+    private MeshCollider myCollider;
+
 
     public void BuildObject()
     {
-        if (builtRamp == null)
+        if (builtRamp == null || myFilter == null || myRenderer == null || myCollider == null)
         {
             InitializeRampObject();
-        }
-
-        if (material != null)
-        {
-            myRenderer.material = material;
         }
 
         Vector3[] vertices = GenerateVertices();
@@ -51,6 +48,8 @@ public class SurfRampEasyMeshGen : MonoBehaviour
         //newMesh.RecalculateNormals();
 
         myFilter.sharedMesh = newMesh;
+        myCollider.sharedMesh = newMesh;
+        myRenderer.sharedMaterial = material;
     }
 
     private void InitializeRampObject()
@@ -60,6 +59,7 @@ public class SurfRampEasyMeshGen : MonoBehaviour
         builtRamp.AddComponent<MeshRenderer>();
         builtRamp.AddComponent<MeshFilter>();
         builtRamp.AddComponent<MeshCollider>();
+        myCollider = builtRamp.GetComponent<MeshCollider>();
         myFilter = builtRamp.GetComponent<MeshFilter>();
         myRenderer = builtRamp.GetComponent<MeshRenderer>();
     }

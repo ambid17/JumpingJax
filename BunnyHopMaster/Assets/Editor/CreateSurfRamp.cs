@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(SurfRampMeshGen))]
+[CustomEditor(typeof(SurfRampMeshGenerator))]
 public class CreateSurfRamp : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        //SceneView sceneView = SceneView.sceneViews[0] as SceneView;
-        //sceneView.in2DMode = true;
-
-        SurfRampMeshGen myScript = (SurfRampMeshGen)target;
-
-        if (GUILayout.Button("Add ramp point"))
-        {
-            myScript.AddRampPoint();
-        }
-
+        SurfRampMeshGenerator myScript = (SurfRampMeshGenerator)target;
+        
         if (GUILayout.Button("Build Object"))
         {
             myScript.BuildObject();
