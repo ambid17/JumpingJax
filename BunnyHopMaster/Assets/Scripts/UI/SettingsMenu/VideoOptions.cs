@@ -154,6 +154,7 @@ public class VideoOptions : MonoBehaviour
         cameraFOVSlider.onValueChanged.RemoveAllListeners();
         cameraFOVSlider.onValueChanged.AddListener(delegate
         { SetCameraFOV(); });
+
         cameraFOVSlider.value = OptionsPreferencesManager.GetCameraFOV();
 
         CameraMove cameraMove = GetComponentInParent<CameraMove>();
