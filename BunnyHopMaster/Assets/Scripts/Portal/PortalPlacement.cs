@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(CameraMove))]
 public class PortalPlacement : MonoBehaviour
 {
+    public bool showDebugGizmos = false;
+
     [SerializeField]
     private PortalPair portals;
 
@@ -20,7 +22,6 @@ public class PortalPlacement : MonoBehaviour
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
     private const float portalRaycastDistance = 250;
-    private const string portalTag = "Portal";
     private bool isPortalLevel = false;
 
 
@@ -53,6 +54,12 @@ public class PortalPlacement : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(pos, dir, out hit, distance, layerMask, QueryTriggerInteraction.Collide);
 
+        if (showDebugGizmos)
+        {
+            Debug.DrawRay(pos, dir * distance, Color.red, 5);
+            Debug.Log("FirePortal() id: " + portalID + " pos " + pos + " dir " + dir + " distance " + distance);
+        }
+
         if (hit.collider != null)
         {
             // If we hit a portal, spawn a portal through this portal
@@ -67,16 +74,15 @@ public class PortalPlacement : MonoBehaviour
 
                 var outPortal = inPortal.GetOtherPortal();
 
-                // Update position of raycast origin with small offset.
-                Vector3 relativePos = inPortal.transform.InverseTransformPoint(hit.point + dir);
-                relativePos = flippedYRotation * relativePos;
-                pos = outPortal.transform.TransformPoint(relativePos);
+                // Update position of raycast
+                pos = outPortal.transform.position;
 
                 // Update direction of raycast.
                 Vector3 relativeDir = inPortal.transform.InverseTransformDirection(dir);
                 relativeDir = flippedYRotation * relativeDir;
                 dir = outPortal.transform.TransformDirection(relativeDir);
 
+                // Subtract from the distance so the ray doesn't go on forever
                 distance -= Vector3.Distance(pos, hit.point);
 
                 FirePortal(portalID, pos, dir, distance);
@@ -86,27 +92,29 @@ public class PortalPlacement : MonoBehaviour
             else if (hit.collider.gameObject.layer == PlayerConstants.PortalMaterialLayer)
             {
                 var cameraRotation = cameraMove.TargetRotation;
-
                 var portalRight = cameraRotation * Vector3.right;
 
-                if (Mathf.Abs(portalRight.x) >= Mathf.Abs(portalRight.z))
+                if(Mathf.Abs(portalRight.x) >= 0)
                 {
-                    portalRight = Vector3.right * ((portalRight.x >= 0) ? 1 : -1);
+                    portalRight = (portalRight.x >= 0) ? Vector3.right : -Vector3.right;
                 }
                 else
                 {
-                    portalRight = Vector3.forward * ((portalRight.z >= 0) ? 1 : -1);
+                    portalRight = (portalRight.z >= 0) ? Vector3.forward : -Vector3.forward;
                 }
 
                 var portalForward = -hit.normal;
+
                 var portalUp = -Vector3.Cross(portalRight, portalForward);
 
+                if (portalForward.x != 0 || portalForward.z != 0)
+                {
+                    portalUp = Vector3.up;
+                }
+
+
                 var portalRotation = Quaternion.LookRotation(portalForward, portalUp);
-
                 portals.Portals[portalID].PlacePortal(hit.point, portalRotation);
-
-                // leaving this in until i figure out how i want to handle the crosshair
-                //crosshair.SetPortalPlaced(portalID, true);
             }
         }
     }
