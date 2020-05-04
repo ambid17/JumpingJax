@@ -34,7 +34,7 @@ public class SurfRampMeshGenerator : MonoBehaviour
         Vector3[] vertices = GenerateVertices();
         int[] indices = GenerateIndices();
         Color[] colors = GenerateColors(vertices.Length);
-        Vector2[] uvs = GenerateUVs(vertices.Length);
+        Vector2[] uvs = UvCalculator.CalculateUVs(vertices, 1);
         Vector3[] normals = GenerateNormals();
 
 
