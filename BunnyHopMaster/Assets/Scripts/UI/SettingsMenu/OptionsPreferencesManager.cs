@@ -6,7 +6,7 @@ public class OptionsPreferencesManager
 {
     private const string resolutionWidthKey = "ResolutionWidth";
     private const int defaultResolutionWidth = 1920;
-    
+
     private const string resolutionHeightKey = "ResolutionHeight";
     private const int defaultResolutionHeight = 1080;
 
@@ -24,6 +24,9 @@ public class OptionsPreferencesManager
 
     private const string portalRecursionKey = "PortalRecursion";
     public const int defaultPortalRecursion = 5;
+
+    private const string cameraFOVKey = "CameraFOV";
+    public const int defaultCameraFOV = 90;
 
     public static int GetResolutionWidth()
     {
@@ -90,5 +93,15 @@ public class OptionsPreferencesManager
     public static void SetPortalRecursion(int recursionLevel)
     {
         PlayerPrefs.SetInt(portalRecursionKey, recursionLevel);
+    }
+
+    public static int GetCameraFOV()
+    {
+        return PlayerPrefs.GetInt(cameraFOVKey, defaultCameraFOV);
+    }
+
+    public static void SetCameraFOV(int fieldOfViewLevel)
+    {
+        PlayerPrefs.SetInt(cameraFOVKey, fieldOfViewLevel);
     }
 }
