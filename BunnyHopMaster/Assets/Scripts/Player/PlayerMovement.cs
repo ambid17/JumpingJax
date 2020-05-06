@@ -14,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 newVelocity;
 
     [SerializeField]
+    private float airAcceleration = PlayerConstants.AirAcceleration;
+
+    [SerializeField]
     private bool grounded;
     [SerializeField]
     private bool surfing;
@@ -41,6 +44,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         {
+            if (IsPlayerWalkingBackwards())
+            {
+                wishSpeed *= PlayerConstants.BackWardsMoveSpeedScale;
+            }
             ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.NormalSurfaceFriction);
             ClampVelocity(PlayerConstants.MoveSpeed);
             ApplyFriction();
@@ -61,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
     {
         wasCrouching = crouching;
 
-        if (Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Crouch)))
+        if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
             myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
@@ -105,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
             maxDistance: PlayerConstants.BoxCastDistance,
             layerMask: layersToIgnore
             );
-
+        
         var wasGrounded = grounded;
         var validHits = hits
             .ToList()
@@ -113,23 +120,18 @@ public class PlayerMovement : MonoBehaviour
             .OrderBy(hit => hit.distance)
             .Where(hit => !hit.collider.isTrigger)
             .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
-            .Where(hit => hit.point.y < transform.position.y);
+            .Where(hit => hit.point.y < transform.position.y && hit.point != Vector3.zero);
 
-        grounded = ConfirmGrounded(validHits);
-        
+        grounded = validHits.Count() > 0;
+
+        if (!grounded)
+        {
+            grounded = ConfirmGrounded(validHits);
+        }
+
         if (grounded)
         {
-            var closestHit = validHits.First();
-
-            //If the ground is NOT perfectly flat, slide across it
-            if (closestHit.normal.y < 1)
-            {
-                ClipVelocity(closestHit.normal);
-            }
-            else
-            {
-                newVelocity.y = 0;
-            }
+            newVelocity.y = 0;
         }
         else
         {
@@ -146,28 +148,32 @@ public class PlayerMovement : MonoBehaviour
 
     private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
     {
-        if(hits.Count() > 0)
+        Vector3 extents = PlayerConstants.BoxCastExtents;
+        if (crouching)
         {
-            Vector3 extents = PlayerConstants.BoxCastExtents;
-            if (crouching)
+            extents = PlayerConstants.CrouchingBoxCastExtents;
+        }
+
+        // We have to manually check if there is a collision, because boxcastall 
+        // doesn't return the correct information when already colliding
+        var overlappingColliders = Physics.OverlapBox(
+            center: myCollider.bounds.center,
+            halfExtents: extents,// + new Vector3(0.1f, 0.1f, 0.1f),
+            orientation: Quaternion.identity,
+            layerMask: layersToIgnore);
+
+        
+
+        foreach (Collider collider in overlappingColliders)
+        {
+            if (collider.isTrigger)
             {
-                extents = PlayerConstants.CrouchingBoxCastExtents;
+                continue;
             }
 
-            // We have to manually check if there is a collision, because boxcastall 
-            // doesn't return the correct information when already colliding
-            var overlappingColliders = Physics.OverlapBox(
-                center: myCollider.bounds.center,
-                halfExtents: extents,
-                orientation: Quaternion.identity,
-                layerMask: layersToIgnore);
-
-            foreach (Collider collider in overlappingColliders)
+            if(collider.transform.position.y < transform.position.y && !Physics.GetIgnoreCollision(collider, myCollider))
             {
-                if(collider.transform.position.y < transform.position.y)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -176,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
-        if (grounded && Input.GetKey(HotKeyManager.Instance.GetKeyFor(PlayerConstants.Jump)))
+        if (grounded && InputManager.GetKey(PlayerConstants.Jump))
         {
             newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
             grounded = false;
@@ -199,35 +205,37 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetInputVelocity(float moveSpeed)
     {
-        KeyCode left = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Left);
-        KeyCode right = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Right);
-        KeyCode forward = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Forward);
-        KeyCode back = HotKeyManager.Instance.GetKeyFor(PlayerConstants.Back);
-
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
-        if (Input.GetKey(left))
+        if (InputManager.GetKey(PlayerConstants.Left))
         {
             horizontalSpeed = -moveSpeed;
         }
 
-        if (Input.GetKey(right))
+        if (InputManager.GetKey(PlayerConstants.Right))
         {
             horizontalSpeed = moveSpeed;
         }
 
-        if (Input.GetKey(back))
+        if (InputManager.GetKey(PlayerConstants.Back))
         {
             verticalSpeed = -moveSpeed;
         }
 
-        if (Input.GetKey(forward))
+        if (InputManager.GetKey(PlayerConstants.Forward))
         {
             verticalSpeed = moveSpeed;
         }
 
         return new Vector3(horizontalSpeed, 0, verticalSpeed);
+    }
+
+    private bool IsPlayerWalkingBackwards()
+    {
+        Vector3 inputDirection = GetInputVelocity(PlayerConstants.MoveSpeed);
+
+        return inputDirection.z < 0;
     }
 
     //wishDir: the direction the player wishes to go in the newest frame
@@ -261,7 +269,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, airAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
 
         if (showDebugGizmos)
@@ -354,7 +362,7 @@ public class PlayerMovement : MonoBehaviour
 
                 Vector3 depenetrationVector = dir * dist; // The vector needed to get outside of the collision
 
-                Debug.Log("depen: " + depenetrationVector.ToString("F5") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                Debug.Log("depen: " + depenetrationVector.ToString("F8") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
 
                 if (!surfing)
                 {
