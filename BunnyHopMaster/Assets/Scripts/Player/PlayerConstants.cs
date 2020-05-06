@@ -5,6 +5,7 @@ using UnityEngine;
 public static class PlayerConstants
 {
     public static float MoveSpeed = 8f;
+    public static float BackWardsMoveSpeedScale = 0.8f;
     public static float CrouchingMoveSpeed = 6f;
     public static float MaxVelocity = 100f;
 
@@ -13,7 +14,7 @@ public static class PlayerConstants
     public static float CrouchingJumpPower = 3f;
 
     public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 5f;
+    public static float AirAcceleration = 800f;
 
     public static float StopSpeed = 8f;
     public static float Friction = 6f;
@@ -30,6 +31,11 @@ public static class PlayerConstants
 
     public static float BoxCastDistance = 0.11f;
     public static float CrouchingBoxCastDistance = 0.11f;
+
+    public static float portalWidth = 2.1f;
+    public static float portalHeight = 4.2f;
+    public static Vector3 PortalColliderExtents = new Vector3(1.05f, 2.05f, 0.5f);
+
 
     //HotKeys
     public static string Forward = "Forward";
@@ -59,8 +65,19 @@ public static class PlayerConstants
     public static string Portal2 = "Portal2";
     public static string Portal2Default = "Mouse1";
 
+
+    // Non-changeable hotkeys
     public static string MouseX = "Mouse X";
     public static string MouseY = "Mouse Y";
+    public static KeyCode PauseMenu = KeyCode.Escape;
+    public static KeyCode DebugMenu = KeyCode.BackQuote;
+    public static KeyCode NextTutorial = KeyCode.Tab;
+
+    public static KeyCode WinMenu_NextLevel = KeyCode.E;
+    public static KeyCode WinMenu_RetryLevel = KeyCode.R;
+    public static KeyCode WinMenu_MainMenu = KeyCode.Q;
+
+
 
     // Game Constants
     public static int BuildSceneIndex = 0;

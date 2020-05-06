@@ -9,9 +9,6 @@ public class PlayerProgress : MonoBehaviour
 
     public PlayerUI playerUI;
 
-    [Tooltip("This is the minimum Y value the player can fall to before they are respawned to the last checkpoint")]
-    public float playerFallingBoundsReset = 0;
-
     public PlayerMovement playerMovement;
     public CameraMove cameraMove;
 
@@ -34,12 +31,7 @@ public class PlayerProgress : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Respawn();
-        }
-
-        if (gameObject.transform.position.y < playerFallingBoundsReset)
+        if (InputManager.GetKeyDown(PlayerConstants.ResetLevel))
         {
             Respawn();
         }

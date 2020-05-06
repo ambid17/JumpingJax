@@ -1,0 +1,41 @@
+name: 📦 Linux
+
+on:
+  pull_request: { branches: [master] }
+  push: { branches: [development] }
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  readmeWorkflow:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      # Test
+      - name: Run tests
+        uses: webbertakken/unity-test-runner@v1.3
+        with:
+          projectPath: BunnyHopMaster
+          unityVersion: 2019.3.9f1
+
+      # Build
+      - name: Build project
+        uses: webbertakken/unity-builder@v0.10
+        with:
+          projectPath: BunnyHopMaster
+          unityVersion: 2019.3.9f1
+          targetPlatform: StandaloneLinux64
+        
+      # Output
+      - uses: actions/upload-artifact@v1
+        with:
+          name: LinuxBuild
+          path: build
+
