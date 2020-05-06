@@ -12,9 +12,14 @@ public class VideoOptions : MonoBehaviour
     public Slider portalRecursionSlider;
     public Text portalRecursionText;
 
+    public Slider cameraFOVSlider;
+    public Text cameraFOVText;
+
     Resolution[] resolutions;
 
     public RecursivePortalCamera recursivePortalCamera;
+    public GameObject mainCamera;
+    public Camera playerCamera;
 
     void Start()
     {
@@ -22,6 +27,7 @@ public class VideoOptions : MonoBehaviour
         SetupGraphicsDropdown();
         SetupFullscreenDropdown();
         SetupPortalRecursion();
+        SetupCameraFOV();
     }
 
     public void SetDefaults()
@@ -30,6 +36,7 @@ public class VideoOptions : MonoBehaviour
         SetDefaultGraphics();
         SetDefaultFullscreen();
         SetDefaultPortalRecursion();
+        SetDefaultCameraFOV();
     }
 
     void SetupResolutionDropdown()
@@ -72,7 +79,7 @@ public class VideoOptions : MonoBehaviour
         }
 
         // The default (1920 X 1080) wasnt found, return the highest available
-        if(resolutionIndex == -1)
+        if (resolutionIndex == -1)
         {
             resolutionIndex = resolutions.Length - 1;
         }
@@ -118,11 +125,12 @@ public class VideoOptions : MonoBehaviour
     public void SetupPortalRecursion()
     {
         portalRecursionSlider.onValueChanged.RemoveAllListeners();
-        portalRecursionSlider.onValueChanged.AddListener(delegate { SetPortalRecursion(); }) ;
+        portalRecursionSlider.onValueChanged.AddListener(delegate
+        { SetPortalRecursion(); });
         portalRecursionSlider.value = OptionsPreferencesManager.GetPortalRecursion();
 
         CameraMove cameraMove = GetComponentInParent<CameraMove>();
-        if(cameraMove != null)
+        if (cameraMove != null)
         {
             recursivePortalCamera = cameraMove.GetComponentInChildren<RecursivePortalCamera>();
         }
@@ -135,12 +143,39 @@ public class VideoOptions : MonoBehaviour
         OptionsPreferencesManager.SetPortalRecursion(newValue);
 
         // This won't exist in the menu
-        if(recursivePortalCamera != null)
+        if (recursivePortalCamera != null)
         {
             recursivePortalCamera.UpdatePortalRecursion(newValue);
         }
     }
 
+    public void SetupCameraFOV()
+    {
+        cameraFOVSlider.onValueChanged.RemoveAllListeners();
+        cameraFOVSlider.onValueChanged.AddListener(delegate
+        { SetCameraFOV(); });
+
+        cameraFOVSlider.value = OptionsPreferencesManager.GetCameraFOV();
+        cameraFOVText.text = OptionsPreferencesManager.GetCameraFOV().ToString();
+
+        CameraMove cameraMove = GetComponentInParent<CameraMove>();
+        if (cameraMove != null)
+        {
+            playerCamera = cameraMove.GetComponentInChildren<Camera>();
+        }
+    }
+
+    public void SetCameraFOV()
+    {
+        int newValue = Mathf.FloorToInt(cameraFOVSlider.value);
+        cameraFOVText.text = newValue.ToString();
+        OptionsPreferencesManager.SetCameraFOV(newValue);
+
+        if (playerCamera != null)
+        {
+            playerCamera.fieldOfView = newValue;
+        }
+    }
     // Get only the resolutions for the highest framerate
     private Resolution[] GetBestResolutions()
     {
@@ -188,5 +223,10 @@ public class VideoOptions : MonoBehaviour
     {
         Debug.Log(OptionsPreferencesManager.defaultPortalRecursion);
         portalRecursionSlider.value = OptionsPreferencesManager.defaultPortalRecursion;
+    }
+    private void SetDefaultCameraFOV()
+    {
+        Debug.Log(OptionsPreferencesManager.defaultCameraFOV);
+        cameraFOVSlider.value = OptionsPreferencesManager.defaultCameraFOV;
     }
 }
