@@ -13,7 +13,7 @@ To learn more about the project, or start contributing, [see the wiki](https://g
 ## oneleif project
 This means that the project is sponsored by the oneleif community, and the collaborators are team members from oneleif.
 
-![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)(https://oneleif.com)
+![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)
 
 
 
