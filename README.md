@@ -13,7 +13,7 @@ To learn more about the project, or start contributing, [see the wiki](https://g
 ## oneleif project
 This means that the project is sponsored by the oneleif community, and the collaborators are team members from oneleif.
 
-![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)
+![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)(https://oneleif.com)
 
 
 
@@ -22,7 +22,7 @@ This means that the project is sponsored by the oneleif community, and the colla
 [![](https://img.shields.io/badge/oneleif-YouTube-red.svg)](https://www.youtube.com/channel/UC3HN0jID38K0Vb_WChvgQmA)
 
 ## What is oneleif?
-oneleif is a nonprofit community that supports tech minded individuals. We do this by offering a fun loving community that works on Open Sourced projects together. 
+oneleif is a nonprofit community that supports tech minded individuals. We offer a fun loving community that works on open-source projects together. 
 We love to give back through free resources and guidance.
 
 Find out more about oneleif on [our website](https://www.oneleif.com)
@@ -38,4 +38,3 @@ Feel free to email us at: oneleifdev@gmail.com
 -OR-
 
 Ask questions in the discord
-
