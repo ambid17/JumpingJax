@@ -3,7 +3,7 @@ JumpingJax is a 3d platformer video game make using the Unity game engine.
 
 The core idea of the game is that the player has tools such as portals and anti-friction boots to find their lost dog.
 
-![Game Preview](https://github.com/ambid17/BunnyHopMaster/blob/development/MarketingAssets/jumpingjax.gif)
+![Game Preview](https://github.com/ambid17/BunnyHopMaster/blob/development/MarketingAssets/jumpingjax.mp4)
 
 ## Getting started
 To learn more about the project, or start contributing, [see the wiki](https://github.com/oneleif/JumpingJax/wiki)
