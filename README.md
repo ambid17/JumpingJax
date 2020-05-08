@@ -1,42 +1,41 @@
 # BunnyHopMaster
-A 3D platformer based on the Source engine movement mechanics, portals, and a basis in speedrunning
+JumpingJax is a 3d platformer video game make using the Unity game engine.
 
-Unity Version: 2019.3.0f3
+The core idea of the game is that the player has tools such as portals and anti-friction boots to find their lost dog.
 
-![Preview](https://github.com/ambid17/BunnyHopMaster/blob/development/MarketingAssets/giphy.gif)
+![Game Preview](https://github.com/ambid17/BunnyHopMaster/blob/development/MarketingAssets/jumpingjax.gif)
 
-## Movement mechanics
-The movement mechanics are based off of the Source Engine (2013): https://github.com/ValveSoftware/source-sdk-2013
+## Getting started
+To learn more about the project, or start contributing, [see the wiki](https://github.com/oneleif/JumpingJax/wiki)
 
-The movement mechanic conversion to C# are in large part thanks to Olezen: https://github.com/Olezen/UnitySourceMovement
-
-## Portals
-Portals are a custom implementation that will:
-* Teleport a player
-* Allow the player to see a new location through the portal
 
 ****
-# <Project Name>
-## oneleif Active Project
+## oneleif project
+This means that the project is sponsored by the oneleif community, and the collaborators are team members from oneleif.
 
 ![](https://github.com/oneleif/olDocs/blob/master/assets/images/oneleif_logos/full_logo/oneleif_whiteback.png)
 
-This project is a oneleif active project.
+
 
 [![](https://img.shields.io/badge/oneleif-Twitter-blue.svg)](https://twitter.com/oneleifdev)
 
 [![](https://img.shields.io/badge/oneleif-YouTube-red.svg)](https://www.youtube.com/channel/UC3HN0jID38K0Vb_WChvgQmA)
 
+## What is oneleif?
+oneleif is a nonprofit community that supports tech minded individuals. We do this by offering a fun loving community that works on Open Sourced projects together. 
+We love to give back through free resources and guidance.
+
+Find out more about oneleif on [our website](https://www.oneleif.com)
+
 ## How to join oneleif
 Click on the link below to join the Discord server.
-
-You will start with limited permissions, in a text channel that only moderators will see.
-
-To get full access: read the rules, make an introduction in #introductions, and add an appropriate username.
-
-When you're done with the above, shoot a message to the #start channel to let us know, and we will give you full access.
 
 [![](https://img.shields.io/badge/oneleif-Discord-7284be.svg)](https://discord.gg/tv9UdJK)
 
 ### Questions?
 Feel free to email us at: oneleifdev@gmail.com 
+
+-OR-
+
+Ask questions in the discord
+
