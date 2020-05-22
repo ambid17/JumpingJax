@@ -367,7 +367,6 @@ public class PlayerMovement : MonoBehaviour
                 if (!surfing)
                 {
                     transform.position += depenetrationVector;
-                    newVelocity -= Vector3.Project(newVelocity, -dir);
                 }
                 else
                 {
