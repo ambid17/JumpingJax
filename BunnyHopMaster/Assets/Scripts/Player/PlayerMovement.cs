@@ -90,7 +90,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!grounded)
         {
-            newVelocity.y -= PlayerConstants.Gravity * Time.fixedDeltaTime;
+            float gravityScale = GameManager.GetCurrentLevel().gravityMultiplier;
+            newVelocity.y -= gravityScale * PlayerConstants.Gravity * Time.fixedDeltaTime;
         }
     }
 
