@@ -3,10 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
     [SerializeField]
-    GameObject optionsMenu;
+    GameObject optionsMenu = null;
 
     [SerializeField]
-    GameObject pauseMenuHome;
+    GameObject pauseMenuHome = null;
 
     private void OnEnable()
     {

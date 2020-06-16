@@ -36,6 +36,9 @@ public static class PlayerConstants
     public static float portalHeight = 4.2f;
     public static Vector3 PortalColliderExtents = new Vector3(1.05f, 2.05f, 0.5f);
 
+    // Layer Masks
+    public static LayerMask portalPlacementMask = new LayerMask();
+
 
     //HotKeys
     public static string Forward = "Forward";
