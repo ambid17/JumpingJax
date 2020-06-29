@@ -311,23 +311,25 @@ public class PlayerMovement : MonoBehaviour
         newVelocity = Vector3.ClampMagnitude(newVelocity, PlayerConstants.MaxVelocity);
     }
 
-    //Slide off of the impacting surface
+    // Slide off of the impacting surface
     private void ClipVelocity(Vector3 normal)
     {
         // Determine how far along plane to slide based on incoming direction.
         var backoff = Vector3.Dot(newVelocity, normal);
 
-        for (int i = 0; i < 3; i++)
+        if(backoff < 0)
         {
-            var change = normal[i] * backoff;
-            newVelocity[i] -= change;
+            backoff *= PlayerConstants.Overbounce;
+        }
+        else
+        {
+            backoff /= PlayerConstants.Overbounce;
         }
 
-        // iterate once to make sure we aren't still moving through the plane
-        var adjust = Vector3.Dot(newVelocity, normal);
-        if (adjust < 0.0f)
+        for (int i = 0; i < 3; i++)
         {
-            newVelocity -= (normal * adjust);
+            float change = normal[i] * backoff;
+            newVelocity[i] -= change;
         }
     }
 
