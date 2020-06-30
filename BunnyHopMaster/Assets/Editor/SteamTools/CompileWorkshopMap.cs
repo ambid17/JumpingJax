@@ -5,19 +5,20 @@ using UnityEditor;
 using System.IO;
 using UnityEngine.Experimental.AssetBundlePatching;
 using UnityEditor.VersionControl;
+using UnityEngine.SceneManagement;
 
-public class CompileWorkshopMap : EditorWindow
+public class CompileWorkshopMap : MonoBehaviour
 {
     [MenuItem("Tools/Compile Map")]
-    private static void CompileMap()
+    static void CompileMap()
     {
-        string assetBundleDirectory = Application.streamingAssetsPath + "/Maps";
-        if (!Directory.Exists(assetBundleDirectory))
-        {
-            Directory.CreateDirectory(assetBundleDirectory);
-        }
-        
-        BuildPipeline.BuildAssetBundles(assetBundleDirectory,
+        AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
+        buildMap[0].assetBundleName = "mapBundle";
+        buildMap[0].assetNames = new string[] { "Assets/Scenes/BunnyHop1.unity" };
+
+
+        AssetBundleManifest x = BuildPipeline.BuildAssetBundles("Assets/bundles",
+                                        buildMap,
                                         BuildAssetBundleOptions.None,
                                         BuildTarget.StandaloneWindows);
     }

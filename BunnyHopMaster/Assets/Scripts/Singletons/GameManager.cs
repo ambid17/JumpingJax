@@ -1,7 +1,6 @@
 ﻿using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -77,6 +76,14 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentLevelBuildIndex = scene.buildIndex;
+
+        if (scene.buildIndex == -1)
+        {
+            // This means the scene is loaded from outside of the menu, possibly from the workshop
+            // TODO: update this based off of the loaded level
+            currentLevelBuildIndex = 1;
+        }
+
         currentCompletionTime = 0;
         didWinCurrentLevel = false;
     }
