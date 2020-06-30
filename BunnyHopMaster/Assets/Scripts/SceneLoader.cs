@@ -1,22 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Start is called before the first frame update
+    string assetURL = "https://drive.google.com/uc?export=download&id=1xosLNpo20QuvvwMAVtakH6Ppe0NQvQd2";
     void Start()
     {
-        AssetBundle bundle = AssetBundle.LoadFromFile("Assets/StreamingAssets/Maps/test.1");
-        string[] x = bundle.GetAllScenePaths();
-        SceneManager.LoadScene(x[0]);
-        Debug.Log("X");
+        GetRemoteAssetBundle();
+        //GetLocalAssetBundle();
     }
 
-    // Update is called once per frame
-    void Update()
+    void GetLocalAssetBundle()
     {
-        
+        AssetBundle bundle = AssetBundle.LoadFromFile("Assets/StreamingAssets/test");
+        string[] x = bundle.GetAllScenePaths();
+        SceneManager.LoadScene(x[0]);
+    }
+
+    void GetRemoteAssetBundle()
+    {
+        StartCoroutine(DownloadAssetBundle());
+    }
+
+    IEnumerator DownloadAssetBundle()
+    {
+        WWW www = new WWW(assetURL);
+        UnityWebRequest request = UnityWebRequest.Get(assetURL);
+        yield return request.SendWebRequest();
+        AssetBundle bundle = AssetBundle.LoadFromMemory(request.downloadHandler.data);
+        string[] x = bundle.GetAllScenePaths();
+        SceneManager.LoadScene(x[0]);
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.LogError(request.error);
+        }
+        else
+        {
+            Debug.Log("File successfully downloaded and saved");
+        }
     }
 }

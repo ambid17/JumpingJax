@@ -17,7 +17,7 @@ public class CompileWorkshopMap : MonoBehaviour
         buildMap[0].assetNames = new string[] { "Assets/Scenes/BunnyHop1.unity" };
 
 
-        AssetBundleManifest x = BuildPipeline.BuildAssetBundles("Assets/bundles",
+        AssetBundleManifest x = BuildPipeline.BuildAssetBundles("Assets/StreamingAssets",
                                         buildMap,
                                         BuildAssetBundleOptions.None,
                                         BuildTarget.StandaloneWindows);
