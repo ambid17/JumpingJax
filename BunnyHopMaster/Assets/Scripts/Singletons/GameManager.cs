@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using Steamworks;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public LevelDataContainer levelDataContainer;
+    public static uint AppId = 1315110;
 
     public int currentLevelBuildIndex;
     public float currentCompletionTime;
@@ -30,6 +33,22 @@ public class GameManager : MonoBehaviour
             GameManager.Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
+        StartSteam();
+    }
+
+    private void StartSteam()
+    {
+        try
+        {
+            if (!SteamClient.IsValid)
+            {
+                SteamClient.Init(AppId, true);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Could not connect to steam " + e.Message);
+        }
     }
 
     void Update()
@@ -38,6 +57,11 @@ public class GameManager : MonoBehaviour
         {
             currentCompletionTime += Time.deltaTime;
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Steamworks.SteamClient.Shutdown();
     }
 
     private void OnEnable()
