@@ -4,7 +4,7 @@ using UnityEngine;
 public class CheckpointsList : MonoBehaviour
 {
     [SerializeField]
-    Level scriptableObjectLevel;
+    Level scriptableObjectLevel = null;
 
     Checkpoint[] checkpointsInScene;
     int[] checkpointNumbersToCompare;

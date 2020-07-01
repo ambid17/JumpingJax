@@ -8,13 +8,13 @@ public class PlayerUI : MonoBehaviour {
     public bool isPaused;
 
     [SerializeField]
-    GameObject inGameUI;
+    GameObject inGameUI = null;
 
     [SerializeField]
-    PauseMenu pauseMenu;
+    PauseMenu pauseMenu = null;
 
     [SerializeField]
-    WinMenu winMenu;
+    WinMenu winMenu = null;
 
     public Image crossHair;
 

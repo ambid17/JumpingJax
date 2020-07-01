@@ -7,10 +7,10 @@ public class Portal : MonoBehaviour
     private const string portalName = "Portal1";
 
     [SerializeField]
-    private Portal otherPortal;
+    private Portal otherPortal = null;
 
     [SerializeField]
-    private Renderer outlineRenderer;
+    private Renderer outlineRenderer = null;
 
     [SerializeField]
     private Color portalColour;

@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeaf6308043c5546b611bf38302f53a, type: 3}
   m_Name: Surf2
   m_EditorClassIdentifier: 
-  levelBuildIndex: 22
+  levelBuildIndex: 23
   levelName: Surf 2
   isPortalLevel: 0
-  isSurfLevel: 1
-  tutorialTexts: []
+  gravityMultiplier: 1
+  tutorialTexts:
+  - As you slide downwards on a ramp, you gain speed
+  - If the ramp is flat, you can still aim your mouse slightly down to go to the
+    bottom of the ramp and gain speed
   numberOfCheckpoints: 2
-  isCompleted: 0
-  completionTime: 0
+  isCompleted: 1
+  completionTime: 5.498666
