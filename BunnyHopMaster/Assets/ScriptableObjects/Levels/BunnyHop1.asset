@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeaf6308043c5546b611bf38302f53a, type: 3}
   m_Name: BunnyHop1
   m_EditorClassIdentifier: 
-  levelBuildIndex: 1
+  levelBuildIndex: 2
   levelName: Hop 1
   isPortalLevel: 0
   isSurfLevel: 0
+  gravityMultiplier: 1
   tutorialTexts:
-  - This level has 2 checkpoints
-  - Reach the last checkpoint of a level to complete it
-  - 'Hint: you only need to touch the LAST checkpoint ;)'
-  - Once you touch a checkpoint, press R to respawn
+  - SPACE to jump
+  - CONTROL to crouch
+  - 'Hint: you can crouch in the air to slightly increase your jump height'
+  - Once you touch a checkpoint, press R to respawn to it
   numberOfCheckpoints: 2
   isCompleted: 1
   completionTime: 0.025988095

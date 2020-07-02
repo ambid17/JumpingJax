@@ -8,7 +8,7 @@ public class PortalPlacement : MonoBehaviour
     public bool showDebugGizmos = false;
 
     [SerializeField]
-    private PortalPair portals;
+    private PortalPair portals = null;
 
     [SerializeField]
     private LayerMask layerMask;

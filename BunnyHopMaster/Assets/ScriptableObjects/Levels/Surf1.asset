@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eeaf6308043c5546b611bf38302f53a, type: 3}
   m_Name: Surf1
   m_EditorClassIdentifier: 
-  levelBuildIndex: 21
+  levelBuildIndex: 22
   levelName: Surf1
   isPortalLevel: 0
-  isSurfLevel: 1
-  tutorialTexts: []
+  gravityMultiplier: 1
+  tutorialTexts:
+  - Surfing is a mechanic that comes from CSGO, it works by pushing yourself into
+    a wall, and the force sticks you to the wall and propels you forward
+  - 'To surf, simply jump into a wall, and hold either A or D. If you are on the
+    right side of the wall, hold A. If you are on the left side, hold D. '
+  - Depending on where your mouse is pointing, you will "surf" up and down the ramp
   numberOfCheckpoints: 2
   isCompleted: 1
   completionTime: 10.6251

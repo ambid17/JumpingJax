@@ -14,14 +14,15 @@ public static class PlayerConstants
     public static float CrouchingJumpPower = 3f;
 
     public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 800f;
+    public static float AirAcceleration = 1500f;
+    public static float Overbounce = 1.001f;
 
     public static float StopSpeed = 8f;
     public static float Friction = 6f;
     public static float MinimumSpeedCutoff = 0.5f; // This is the speed after which the player is immediately stopped due to friction
     public static float NormalSurfaceFriction = 1f;
 
-    public static float AirAccelerationCap = 0.8f;
+    public static float AirAccelerationCap = 1.0f;
 
     public static Vector3 BoxCastExtents = new Vector3(0.27f, 0.8f, 0.27f);
     public static Vector3 CrouchingBoxCastExtents = new Vector3(0.27f, 0.5f, 0.27f);
@@ -35,6 +36,9 @@ public static class PlayerConstants
     public static float portalWidth = 2.1f;
     public static float portalHeight = 4.2f;
     public static Vector3 PortalColliderExtents = new Vector3(1.05f, 2.05f, 0.5f);
+
+    // Layer Masks
+    public static LayerMask portalPlacementMask = new LayerMask();
 
 
     //HotKeys

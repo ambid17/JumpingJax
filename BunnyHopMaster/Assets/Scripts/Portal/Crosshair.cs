@@ -6,13 +6,13 @@ using UnityEngine.UI;
 public class Crosshair : MonoBehaviour
 {
     [SerializeField]
-    private PortalPair portalPair;
+    private PortalPair portalPair = null;
 
     [SerializeField]
-    private Image inPortalImg;
+    private Image inPortalImg = null;
 
     [SerializeField]
-    private Image outPortalImg;
+    private Image outPortalImg = null;
 
     private void Start()
     {

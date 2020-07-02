@@ -8,7 +8,7 @@ public class RecursivePortalCamera : MonoBehaviour
     private Portal[] portals = new Portal[2];
 
     [SerializeField]
-    private Camera portalCamera;
+    private Camera portalCamera = null;
 
     private RenderTexture tempTexture1;
     private RenderTexture tempTexture2;

@@ -15,7 +15,7 @@ public class Level : ScriptableObject
     public bool isPortalLevel;
 
     [SerializeField]
-    public bool isSurfLevel;
+    public float gravityMultiplier;
 
     [SerializeField]
     public string[] tutorialTexts;
