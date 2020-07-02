@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public LevelDataContainer levelDataContainer;
-    public static uint AppId = 1315110;
+    public static uint AppId = 1315100;
 
     public int currentLevelBuildIndex;
     public float currentCompletionTime;
