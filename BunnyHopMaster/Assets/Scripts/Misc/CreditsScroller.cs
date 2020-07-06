@@ -9,7 +9,7 @@ public class CreditsScroller : MonoBehaviour
     public GameObject textContainer;
     public Button exitButton;
     public float endingY = 0;
-    public float scrollSpeed = 0.5f;
+    public float scrollSpeed = 0.75f;
 
     void Start()
     {
