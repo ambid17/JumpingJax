@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Steamworks;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public LevelDataContainer levelDataContainer;
+    public static uint AppId = 1315100;
 
     public int currentLevelBuildIndex;
     public float currentCompletionTime;
@@ -30,6 +32,22 @@ public class GameManager : MonoBehaviour
             GameManager.Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
+        StartSteam();
+    }
+
+    private void StartSteam()
+    {
+        try
+        {
+            if (!SteamClient.IsValid)
+            {
+                SteamClient.Init(AppId, true);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Could not connect to steam " + e.Message);
+        }
     }
 
     void Update()
@@ -38,6 +56,11 @@ public class GameManager : MonoBehaviour
         {
             currentCompletionTime += Time.deltaTime;
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Steamworks.SteamClient.Shutdown();
     }
 
     private void OnEnable()
@@ -53,6 +76,14 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         currentLevelBuildIndex = scene.buildIndex;
+
+        if (scene.buildIndex == -1)
+        {
+            // This means the scene is loaded from outside of the menu, possibly from the workshop
+            // TODO: update this based off of the loaded level
+            currentLevelBuildIndex = 1;
+        }
+
         currentCompletionTime = 0;
         didWinCurrentLevel = false;
     }
