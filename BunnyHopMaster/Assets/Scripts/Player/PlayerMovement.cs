@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
     public BoxCollider myCollider;
     public CameraMove cameraMove;
 
+    public Vector3 oldVelocity;
+
     //The velocity applied at the end of every physics frame
     public Vector3 newVelocity;
 
@@ -33,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        oldVelocity = newVelocity; 
+
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
@@ -57,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
             ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
-        ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
 

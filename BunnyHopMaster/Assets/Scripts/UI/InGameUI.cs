@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class InGameUI : MonoBehaviour
@@ -33,8 +34,22 @@ public class InGameUI : MonoBehaviour
         }
 
         fpsText.text = "FPS: " + Mathf.Round(1 / Time.deltaTime);
+        Vector2 oldDirectionalSpeed = new Vector2(playerMovement.oldVelocity.x, playerMovement.oldVelocity.z);
         Vector2 directionalSpeed = new Vector2(playerMovement.newVelocity.x, playerMovement.newVelocity.z);
         speedText.text = "Speed: " + Mathf.Round(directionalSpeed.magnitude * 100) / 100 + "m/s";
+
+        if (directionalSpeed.magnitude == 0)
+        {
+            speedText.color = Color.white;
+        }
+        else if (directionalSpeed.magnitude >= oldDirectionalSpeed.magnitude)
+        {
+            speedText.color = Color.green; 
+        }
+        else if (directionalSpeed.magnitude < oldDirectionalSpeed.magnitude)
+        {
+            speedText.color = Color.red; 
+        }
 
         if (Input.GetKeyDown(PlayerConstants.NextTutorial))
         {
