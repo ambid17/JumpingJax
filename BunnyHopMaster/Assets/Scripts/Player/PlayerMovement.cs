@@ -61,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
             ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
+        ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
 
