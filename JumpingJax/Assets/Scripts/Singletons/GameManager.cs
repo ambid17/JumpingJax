@@ -105,5 +105,7 @@ public class GameManager : MonoBehaviour
         {
             levelToUpdate.completionTime = completionTime;
         }
+
+        StatsManager.SaveLevelCompletion(levelToUpdate.levelName, completionTime);
     }
 }
