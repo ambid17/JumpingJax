@@ -22,15 +22,15 @@ jobs:
       - name: Run tests
         uses: webbertakken/unity-test-runner@v1.3
         with:
-          projectPath: BunnyHopMaster
-          unityVersion: 2019.3.9f1
+          projectPath: JumpingJax
+          unityVersion: 2019.3.15f1
 
       # Build
       - name: Build project
         uses: webbertakken/unity-builder@v0.10
         with:
-          projectPath: BunnyHopMaster
-          unityVersion: 2019.3.9f1
+          projectPath: JumpingJax
+          unityVersion: 2019.3.15f1
           targetPlatform: StandaloneOSX
         
       # Output
