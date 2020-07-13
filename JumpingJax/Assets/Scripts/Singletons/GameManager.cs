@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public int currentLevelBuildIndex;
     public float currentCompletionTime;
     public bool didWinCurrentLevel;
+    public bool isSteamActive;
 
     void Awake()
     {
@@ -32,7 +33,10 @@ public class GameManager : MonoBehaviour
             GameManager.Instance = this;
         }
         DontDestroyOnLoad(this.gameObject);
-        StartSteam();
+        if (GameManager.Instance.isSteamActive == true)
+        {
+            StartSteam();
+        }
     }
 
     private void StartSteam()
@@ -105,7 +109,9 @@ public class GameManager : MonoBehaviour
         {
             levelToUpdate.completionTime = completionTime;
         }
-
-        StatsManager.SaveLevelCompletion(levelToUpdate.levelName, completionTime);
+        if (GameManager.Instance.isSteamActive == true)
+        {
+            StatsManager.SaveLevelCompletion(levelToUpdate.levelName, completionTime);
+        }
     }
 }
