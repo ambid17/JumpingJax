@@ -50,6 +50,13 @@ public class Portal : MonoBehaviour
             new Vector3( 0,  2.1f, 0)
         };
 
+    private float minCutOff = 0.1f;
+    private float maxCutOff = 0.99f;
+    private float cutOffValue = 0.11f;
+    private float cutOffInterval = 0.001f;
+    private bool isIncrementing = true;
+
+
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -68,6 +75,20 @@ public class Portal : MonoBehaviour
 
     private void Update()
     {
+        if(cutOffValue >= maxCutOff)
+        {
+            isIncrementing = false;
+        }
+
+        if(cutOffValue <= minCutOff)
+        {
+            isIncrementing = true;
+        }
+
+
+        cutOffValue += isIncrementing ? cutOffInterval : -cutOffInterval;
+        outlineRenderer.material.SetFloat("_Cutoff", cutOffValue);
+
         for (int i = 0; i < portalObjects.Count; ++i)
         {
             Vector3 objPos = transform.InverseTransformPoint(portalObjects[i].transform.position);
@@ -92,7 +113,6 @@ public class Portal : MonoBehaviour
     public void SetColour(Color colour)
     {
         meshMaterialMain.SetColor("_Colour", colour);
-        outlineRenderer.material.SetColor("_OutlineColour", colour);
     }
 
     public void SetMaskID(int id)
