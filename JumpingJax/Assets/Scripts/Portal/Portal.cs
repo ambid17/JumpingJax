@@ -50,7 +50,7 @@ public class Portal : MonoBehaviour
             new Vector3( 0,  1.51f, 0)
         };
 
-    private float minCutOff = 0.1f;
+    private float minCutOff = 0.2f;
     private float maxCutOff = 0.99f;
     private float cutOffValue = 0.11f;
     private float cutOffInterval = 0.002f;
