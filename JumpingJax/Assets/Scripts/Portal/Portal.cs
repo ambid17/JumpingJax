@@ -44,10 +44,10 @@ public class Portal : MonoBehaviour
 
     private List<Vector3> overHangTestPoints = new List<Vector3>
         {
-            new Vector3(-1.67f,  0, 0),
-            new Vector3( 1.67f,  0, 0),
-            new Vector3( 0, -1.67f, 0),
-            new Vector3( 0,  1.67f, 0)
+            new Vector3(-1.51f,  0, 0),
+            new Vector3( 1.51f,  0, 0),
+            new Vector3( 0, -1.51f, 0),
+            new Vector3( 0,  1.51f, 0)
         };
 
     private float minCutOff = 0.1f;
