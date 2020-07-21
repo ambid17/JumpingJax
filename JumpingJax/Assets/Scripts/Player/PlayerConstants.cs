@@ -33,9 +33,9 @@ public static class PlayerConstants
     public static float BoxCastDistance = 0.11f;
     public static float CrouchingBoxCastDistance = 0.11f;
 
-    public static float portalWidth = 2.1f;
-    public static float portalHeight = 4.2f;
-    public static Vector3 PortalColliderExtents = new Vector3(1.05f, 2.05f, 0.5f);
+    public static float portalWidth = 2.8f;
+    public static float portalHeight = 2.8f;
+    public static Vector3 PortalColliderExtents = new Vector3(1.4f, 1.4f, 0.5f);
 
     // Layer Masks
     public static LayerMask portalPlacementMask = new LayerMask();
