@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
-        CheckGrounded();
+        //CheckGrounded();
         ResolveCollisions();
     }
 
@@ -93,26 +93,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
-
     private void CheckGrounded()
     {
-        Vector3 extents = PlayerConstants.BoxCastExtents;
-        if (crouching)
-        {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
-        }
-
         var hits = Physics.BoxCastAll(
             center: myCollider.bounds.center,
-            halfExtents: extents,
+            halfExtents: myCollider.bounds.extents,
             direction: -transform.up,
             orientation: Quaternion.identity,
             maxDistance: PlayerConstants.BoxCastDistance,
             layerMask: layersToIgnore
             );
         
-        var wasGrounded = grounded;
         var validHits = hits
             .ToList()
             .FindAll(hit => hit.normal.y >= 0.7f)
@@ -136,19 +127,11 @@ public class PlayerMovement : MonoBehaviour
 
     private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
     {
-        Vector3 extents = PlayerConstants.BoxCastExtents;
-        Vector3 extents2 = myCollider.bounds.extents;
-        Vector3 center2 = transform.position + myCollider.center;
-        if (crouching)
-        {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
-        }
-
         // We have to manually check if there is a collision, because boxcastall 
         // doesn't return the correct information when already colliding
         var overlappingColliders = Physics.OverlapBox(
             center: myCollider.bounds.center,
-            halfExtents: extents,
+            halfExtents: myCollider.bounds.extents,
             orientation: Quaternion.identity,
             layerMask: layersToIgnore);
 
