@@ -19,8 +19,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool grounded;
     [SerializeField]
-    private bool surfing;
-    [SerializeField]
     private bool crouching;
     [SerializeField]
     private bool wasCrouching;
@@ -60,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
-
+        CheckGrounded();
         ResolveCollisions();
     }
 
@@ -95,10 +93,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+
     private void CheckGrounded()
     {
-        surfing = false;
-
         Vector3 extents = PlayerConstants.BoxCastExtents;
         if (crouching)
         {
@@ -130,26 +128,17 @@ public class PlayerMovement : MonoBehaviour
             grounded = ConfirmGrounded(validHits);
         }
 
-        if (grounded)
+        if (grounded && newVelocity.y < 0)
         {
             newVelocity.y = 0;
-        }
-        else
-        {
-            //Find the closest collision where the slope is at least 45 degrees
-            var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
-            if (surfHits.Count() > 0)
-            {
-                transform.position += surfHits.First().normal * 0.02f;
-                ClipVelocity(surfHits.First().normal);
-                surfing = true;
-            }
         }
     }
 
     private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
     {
         Vector3 extents = PlayerConstants.BoxCastExtents;
+        Vector3 extents2 = myCollider.bounds.extents;
+        Vector3 center2 = transform.position + myCollider.center;
         if (crouching)
         {
             extents = PlayerConstants.CrouchingBoxCastExtents;
@@ -159,11 +148,9 @@ public class PlayerMovement : MonoBehaviour
         // doesn't return the correct information when already colliding
         var overlappingColliders = Physics.OverlapBox(
             center: myCollider.bounds.center,
-            halfExtents: extents,// + new Vector3(0.1f, 0.1f, 0.1f),
+            halfExtents: extents,
             orientation: Quaternion.identity,
             layerMask: layersToIgnore);
-
-        
 
         foreach (Collider collider in overlappingColliders)
         {
@@ -311,39 +298,9 @@ public class PlayerMovement : MonoBehaviour
         newVelocity = Vector3.ClampMagnitude(newVelocity, PlayerConstants.MaxVelocity);
     }
 
-    // Slide off of the impacting surface
-    private void ClipVelocity(Vector3 normal)
-    {
-        // Determine how far along plane to slide based on incoming direction.
-        var backoff = Vector3.Dot(newVelocity, normal);
-
-        if(backoff < 0)
-        {
-            backoff *= PlayerConstants.Overbounce;
-        }
-        else
-        {
-            backoff /= PlayerConstants.Overbounce;
-        }
-
-        for (int i = 0; i < 3; i++)
-        {
-            float change = normal[i] * backoff;
-            newVelocity[i] -= change;
-        }
-    }
-
     private void ResolveCollisions()
     {
-        var center = transform.position + myCollider.center; // get center of bounding box in world space
-
-        Vector3 extents = myCollider.bounds.extents;
-        if (crouching)
-        {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
-        }
-
-        var overlaps = Physics.OverlapBox(center, extents, Quaternion.identity);
+        var overlaps = Physics.OverlapBox(myCollider.bounds.center, myCollider.bounds.extents, Quaternion.identity);
 
         foreach (var other in overlaps)
         {
@@ -370,14 +327,7 @@ public class PlayerMovement : MonoBehaviour
                     Debug.Log("depen: " + depenetrationVector.ToString("F8") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
                 }
 
-                if (!surfing)
-                {
-                    transform.position += depenetrationVector;
-                }
-                else
-                {
-                    ClipVelocity(dir);
-                }
+                transform.position += depenetrationVector;
             }
         }
     }

@@ -24,13 +24,13 @@ public static class PlayerConstants
 
     public static float AirAccelerationCap = 1.0f;
 
-    public static Vector3 BoxCastExtents = new Vector3(0.27f, 0.8f, 0.27f);
-    public static Vector3 CrouchingBoxCastExtents = new Vector3(0.27f, 0.5f, 0.27f);
+    public static Vector3 BoxCastExtents = new Vector3(0.5f, 0.8f, 0.5f);
+    public static Vector3 CrouchingBoxCastExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
-    public static Vector3 BoxColliderSize = new Vector3(0.6f, 1.6f, 0.6f);
-    public static Vector3 CrouchingBoxColliderSize = new Vector3(0.6f, 1f, 0.6f);
+    public static Vector3 BoxColliderSize = new Vector3(1f, 1.6f, 1f);
+    public static Vector3 CrouchingBoxColliderSize = new Vector3(1f, 1f, 1f);
 
-    public static float BoxCastDistance = 0.11f;
+    public static float BoxCastDistance = 0.05f;
     public static float CrouchingBoxCastDistance = 0.11f;
 
     public static float portalWidth = 2.1f;
