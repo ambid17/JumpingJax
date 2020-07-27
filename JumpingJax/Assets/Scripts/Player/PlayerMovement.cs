@@ -31,10 +31,6 @@ public class PlayerMovement : MonoBehaviour
         cameraMove = GetComponent<CameraMove>();
     }
 
-    private void Update()
-    {
-    }
-
     private void FixedUpdate()
     {
         CheckCrouch();
@@ -65,7 +61,9 @@ public class PlayerMovement : MonoBehaviour
         ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
+        // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
         CheckGrounded();
+
         ResolveCollisions();
     }
 
@@ -100,6 +98,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Performs 5 raycasts to check if there is a spot on the BoxCollider which is below the player and sets the grounded status
     private void CheckGrounded()
     {
         Vector3 center = myCollider.bounds.center;
@@ -136,13 +135,13 @@ public class PlayerMovement : MonoBehaviour
             if(Physics.Raycast(
                 ray: ray,
                 hitInfo: out hit,
-                maxDistance: myCollider.bounds.extents.y + 0.1f,
+                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
                 layerMask: layersToIgnore,
                 QueryTriggerInteraction.Ignore))
             {
                 if(hit.point.y < transform.position.y && 
-                    !Physics.GetIgnoreCollision(myCollider, hit.collider) &&
-                    hit.normal.y > 0.7f)
+                    !Physics.GetIgnoreCollision(myCollider, hit.collider) && // don't check for the ground on an object that is ignored (for example a wall with a portal on it)
+                    hit.normal.y > 0.7f) // don't check for the ground on a sloped surface above 45 degrees
                 {
                     willBeGrounded = true;
                 }
@@ -159,6 +158,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckJump()
     {
+        // Prevent the player from finding a way to jump each frame, this would allow them to perform a super jump that is game breaking
         jumpTimer += Time.fixedDeltaTime;
 
         if (grounded && InputManager.GetKey(PlayerConstants.Jump) && jumpTimer > PlayerConstants.TimeBetweenJumps)
@@ -285,11 +285,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // This function keeps the player from exceeding a maximum velocity
     private void ClampVelocity(float range)
     {
         newVelocity = Vector3.ClampMagnitude(newVelocity, PlayerConstants.MaxVelocity);
     }
 
+    // This function is what keeps the player from walking through walls
+    // We calculate how far we are inside of an object from moving this frame
+    // and move the player just barely outside of the colliding object
     private void ResolveCollisions()
     {
         var overlaps = Physics.OverlapBox(myCollider.bounds.center, myCollider.bounds.extents, Quaternion.identity);
@@ -316,7 +320,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (showDebugGizmos)
                 {
-                    Debug.Log("depen: " + depenetrationVector.ToString("F8") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                    Debug.Log($"Object Depenetration Vector: {depenetrationVector.ToString("F8")} \n Collided with: {other.gameObject.name}");
                 }
 
                 transform.position += depenetrationVector;
