@@ -27,6 +27,7 @@ public static class PlayerConstants
 
     public static Vector3 BoxColliderSize = new Vector3(0.6f, 1.6f, 0.6f);
     public static Vector3 CrouchingBoxColliderSize = new Vector3(0.6f, 1f, 0.6f);
+    public static float groundCheckOffset = 0.05f;
 
     public static float portalWidth = 2.1f;
     public static float portalHeight = 4.2f;

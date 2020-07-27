@@ -103,17 +103,17 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 center = myCollider.bounds.center;
         Vector3 frontLeft = myCollider.bounds.center;
-        frontLeft.x -= myCollider.bounds.extents.x - 0.01f;
-        frontLeft.z += myCollider.bounds.extents.z - 0.01f;
+        frontLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontLeft.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
         Vector3 backLeft = myCollider.bounds.center;
-        backLeft.x -= myCollider.bounds.extents.x - 0.01f;
-        backLeft.z -= myCollider.bounds.extents.z - 0.01f;
+        backLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backLeft.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
         Vector3 frontRight = myCollider.bounds.center;
-        frontRight.x += myCollider.bounds.extents.x - 0.01f;
-        frontRight.z -= myCollider.bounds.extents.z - 0.01f;
+        frontRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontRight.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
         Vector3 backRight = myCollider.bounds.center;
-        backRight.x += myCollider.bounds.extents.x - 0.01f;
-        backRight.z += myCollider.bounds.extents.z - 0.01f;
+        backRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backRight.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
 
         Ray ray0 = new Ray(center, Vector3.down);
         Ray ray1 = new Ray(frontLeft, Vector3.down);
@@ -296,6 +296,9 @@ public class PlayerMovement : MonoBehaviour
     // and move the player just barely outside of the colliding object
     private void ResolveCollisions()
     {
+        // Continuous Collision options:
+        // - boxcast forwards based on speed
+        // - create a scaling sized trigger to check for overlaps
         var overlaps = Physics.OverlapBox(myCollider.bounds.center, myCollider.bounds.extents, Quaternion.identity);
 
         foreach (var other in overlaps)
@@ -324,6 +327,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 transform.position += depenetrationVector;
+                // TODO: somehow reset the xz velocity of the player so they cant gain speed while jumping into walls
             }
         }
     }
