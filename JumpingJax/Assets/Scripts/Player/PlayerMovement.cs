@@ -2,6 +2,8 @@
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))] // Collider is necessary for custom collision detection
+[RequireComponent(typeof(Rigidbody))] // Rigidbody is necessary to ignore certain colliders for portals
 public class PlayerMovement : MonoBehaviour
 {
     [Tooltip("Red line is current velocity, blue is the new direction")]
