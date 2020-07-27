@@ -23,10 +23,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool wasCrouching;
 
+    private float jumpTimer = 0;
+
     private void Start()
     {
         myCollider = GetComponent<BoxCollider>();
         cameraMove = GetComponent<CameraMove>();
+    }
+
+    private void Update()
+    {
     }
 
     private void FixedUpdate()
@@ -34,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
+
         CheckJump();
 
         var inputVector = GetWorldSpaceInputVector();
@@ -58,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         ClampVelocity(PlayerConstants.MaxVelocity);
 
         transform.position += newVelocity * Time.fixedDeltaTime;
-        //CheckGrounded();
+        CheckGrounded();
         ResolveCollisions();
     }
 
@@ -95,29 +102,54 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrounded()
     {
-        var hits = Physics.BoxCastAll(
-            center: myCollider.bounds.center,
-            halfExtents: myCollider.bounds.extents,
-            direction: -transform.up,
-            orientation: Quaternion.identity,
-            maxDistance: PlayerConstants.BoxCastDistance,
-            layerMask: layersToIgnore
-            );
-        
-        var validHits = hits
-            .ToList()
-            .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance)
-            .Where(hit => !hit.collider.isTrigger)
-            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
-            .Where(hit => hit.point.y < transform.position.y && hit.point != Vector3.zero);
+        Vector3 center = myCollider.bounds.center;
+        Vector3 frontLeft = myCollider.bounds.center;
+        frontLeft.x -= myCollider.bounds.extents.x - 0.01f;
+        frontLeft.z += myCollider.bounds.extents.z - 0.01f;
+        Vector3 backLeft = myCollider.bounds.center;
+        backLeft.x -= myCollider.bounds.extents.x - 0.01f;
+        backLeft.z -= myCollider.bounds.extents.z - 0.01f;
+        Vector3 frontRight = myCollider.bounds.center;
+        frontRight.x += myCollider.bounds.extents.x - 0.01f;
+        frontRight.z -= myCollider.bounds.extents.z - 0.01f;
+        Vector3 backRight = myCollider.bounds.center;
+        backRight.x += myCollider.bounds.extents.x - 0.01f;
+        backRight.z += myCollider.bounds.extents.z - 0.01f;
 
-        grounded = validHits.Count() > 0;
+        Ray ray0 = new Ray(center, Vector3.down);
+        Ray ray1 = new Ray(frontLeft, Vector3.down);
+        Ray ray2 = new Ray(backLeft, Vector3.down);
+        Ray ray3 = new Ray(frontRight, Vector3.down);
+        Ray ray4 = new Ray(backRight, Vector3.down);
 
-        if (!grounded)
+        Ray[] boxTests = new Ray[] { ray0, ray1, ray2, ray3, ray4 };
+
+        bool willBeGrounded = false;
+
+        foreach(Ray ray in boxTests)
         {
-            grounded = ConfirmGrounded(validHits);
+            if (showDebugGizmos)
+            {
+                Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
+            }
+            RaycastHit hit;
+            if(Physics.Raycast(
+                ray: ray,
+                hitInfo: out hit,
+                maxDistance: myCollider.bounds.extents.y + 0.1f,
+                layerMask: layersToIgnore,
+                QueryTriggerInteraction.Ignore))
+            {
+                if(hit.point.y < transform.position.y && 
+                    !Physics.GetIgnoreCollision(myCollider, hit.collider) &&
+                    hit.normal.y > 0.7f)
+                {
+                    willBeGrounded = true;
+                }
+            }
         }
+
+        grounded = willBeGrounded;
 
         if (grounded && newVelocity.y < 0)
         {
@@ -125,38 +157,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
-    {
-        // We have to manually check if there is a collision, because boxcastall 
-        // doesn't return the correct information when already colliding
-        var overlappingColliders = Physics.OverlapBox(
-            center: myCollider.bounds.center,
-            halfExtents: myCollider.bounds.extents,
-            orientation: Quaternion.identity,
-            layerMask: layersToIgnore);
-
-        foreach (Collider collider in overlappingColliders)
-        {
-            if (collider.isTrigger)
-            {
-                continue;
-            }
-
-            if(collider.transform.position.y < transform.position.y && !Physics.GetIgnoreCollision(collider, myCollider))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private void CheckJump()
     {
-        if (grounded && InputManager.GetKey(PlayerConstants.Jump))
+        jumpTimer += Time.fixedDeltaTime;
+
+        if (grounded && InputManager.GetKey(PlayerConstants.Jump) && jumpTimer > PlayerConstants.TimeBetweenJumps)
         {
             newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
             grounded = false;
+            jumpTimer = 0;
         }
     }
 

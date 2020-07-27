@@ -12,6 +12,7 @@ public static class PlayerConstants
     public static float Gravity = 9.8f;
     public static float JumpPower = 4.5f;
     public static float CrouchingJumpPower = 3f;
+    public static float TimeBetweenJumps = 0.4f;
 
     public static float GroundAcceleration = 9f;
     public static float AirAcceleration = 1500f;
@@ -26,9 +27,6 @@ public static class PlayerConstants
 
     public static Vector3 BoxColliderSize = new Vector3(0.6f, 1.6f, 0.6f);
     public static Vector3 CrouchingBoxColliderSize = new Vector3(0.6f, 1f, 0.6f);
-
-    public static float BoxCastDistance = 0.11f;
-    public static float CrouchingBoxCastDistance = 0.11f;
 
     public static float portalWidth = 2.1f;
     public static float portalHeight = 4.2f;
