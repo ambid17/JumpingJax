@@ -25,8 +25,9 @@ public static class PlayerConstants
 
     public static float AirAccelerationCap = 1.0f;
 
-    public static Vector3 BoxColliderSize = new Vector3(0.6f, 1.6f, 0.6f);
-    public static Vector3 CrouchingBoxColliderSize = new Vector3(0.6f, 1f, 0.6f);
+    public static float StandingPlayerHeight = 1.6f;
+    public static float CrouchingPlayerHeight = 0.8f;
+    public static float TimeToCrouch = 0.5f;
     public static float groundCheckOffset = 0.05f;
 
     public static float portalWidth = 2.1f;

@@ -76,18 +76,16 @@ public class PlayerMovement : MonoBehaviour
         if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
-            myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
+            float velocity = 0;
+            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.CrouchingPlayerHeight, ref velocity, Time.deltaTime);
+            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
         }
         else
         {
             crouching = false;
-
-            if (grounded && wasCrouching)
-            {
-                transform.position += new Vector3(0, 1, 0);
-            }
-
-            myCollider.size = PlayerConstants.BoxColliderSize;
+            float velocity = 0;
+            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.StandingPlayerHeight, ref velocity, Time.deltaTime);
+            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
         }
     }
 
