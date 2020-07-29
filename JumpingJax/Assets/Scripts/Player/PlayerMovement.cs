@@ -22,8 +22,6 @@ public class PlayerMovement : MonoBehaviour
     private bool grounded;
     [SerializeField]
     private bool crouching;
-    [SerializeField]
-    private bool wasCrouching;
 
     private float jumpTimer = 0;
 
@@ -61,8 +59,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         ClampVelocity(PlayerConstants.MaxVelocity);
+        ContinuousCollisionDetection();
 
-        transform.position += newVelocity * Time.fixedDeltaTime;
         // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
         CheckGrounded();
 
@@ -71,8 +69,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckCrouch()
     {
-        wasCrouching = crouching;
-
         if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
@@ -131,10 +127,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
             }
-            RaycastHit hit;
             if(Physics.Raycast(
                 ray: ray,
-                hitInfo: out hit,
+                hitInfo: out RaycastHit hit,
                 maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
                 layerMask: layersToIgnore,
                 QueryTriggerInteraction.Ignore))
@@ -294,11 +289,66 @@ public class PlayerMovement : MonoBehaviour
     // This function is what keeps the player from walking through walls
     // We calculate how far we are inside of an object from moving this frame
     // and move the player just barely outside of the colliding object
+
+    private void ContinuousCollisionDetection()
+    {
+        // - boxcast forwards based on speed, find the point in time where i hit it, and stop me there
+        float castDistance = newVelocity.magnitude * Time.fixedDeltaTime;
+        RaycastHit[] hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
+            halfExtents: myCollider.bounds.extents,
+            direction: newVelocity.normalized,
+            Quaternion.identity,
+            maxDistance: castDistance,
+            layerMask: layersToIgnore);
+
+        List<RaycastHit> validHits = hits
+            .ToList()
+            .OrderBy(hit => hit.distance)
+            .Where(hit => !hit.collider.isTrigger)
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
+            .Where(hit => hit.point != Vector3.zero)
+            .Where(hit => hit.normal.y < 1)
+            .ToList();
+
+        // If we are going to hit a wall, set ourselves just outside of the wall and translate momentum along the wall
+        if (validHits.Count() > 0)
+        {
+            // find the time at which we would have hit the wall between this and the next frame
+            float timeToImpact = validHits.First().distance / newVelocity.magnitude;
+            // slide along the wall and prevent a complete loss of momentum
+            ClipVelocity(validHits.First().normal);
+            // set our position to just outside of the wall
+            transform.position += newVelocity * timeToImpact; 
+        }
+        else
+        {
+            transform.position += newVelocity * Time.fixedDeltaTime;
+        }
+    }
+
+    //Slide off of the impacting surface
+    private void ClipVelocity(Vector3 normal)
+    {
+        // Determine how far along plane to slide based on incoming direction.
+        var backoff = Vector3.Dot(newVelocity, normal);
+
+        for (int i = 0; i < 3; i++)
+        {
+            var change = normal[i] * backoff;
+            newVelocity[i] -= change;
+        }
+
+        // iterate once to make sure we aren't still moving through the plane
+        var adjust = Vector3.Dot(newVelocity, normal);
+        if (adjust < 0.0f)
+        {
+            newVelocity -= (normal * adjust);
+        }
+    }
+
     private void ResolveCollisions()
     {
-        // Continuous Collision options:
-        // - boxcast forwards based on speed
-        // - create a scaling sized trigger to check for overlaps
         var overlaps = Physics.OverlapBox(myCollider.bounds.center, myCollider.bounds.extents, Quaternion.identity);
 
         foreach (var other in overlaps)
@@ -327,7 +377,6 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 transform.position += depenetrationVector;
-                // TODO: somehow reset the xz velocity of the player so they cant gain speed while jumping into walls
             }
         }
     }
