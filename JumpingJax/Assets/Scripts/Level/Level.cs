@@ -30,9 +30,6 @@ public class Level : ScriptableObject
     [SerializeField]
     public float completionTime;
 
-    private void ResetLevelData()
-    {
-        isCompleted = false;
-        completionTime = 0f;
-    }
+    [SerializeField]
+    public Vector3[] ghostRun;
 }

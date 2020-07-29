@@ -11,13 +11,16 @@ public class PlayerProgress : MonoBehaviour
 
     public PlayerMovement playerMovement;
     public CameraMove cameraMove;
+    public PlayerGhostRun playerGhostRun;
 
     private PortalPair portals;
+
 
     private void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         cameraMove = GetComponent<CameraMove>();
+        playerGhostRun = GetComponent<PlayerGhostRun>();
         if (GameManager.GetCurrentLevel().isPortalLevel)
         {
             portals = GameObject.FindGameObjectWithTag("Portal").GetComponent<PortalPair>();
@@ -40,6 +43,7 @@ public class PlayerProgress : MonoBehaviour
         {
             if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
+                playerGhostRun.SaveGhostRunData();
                 GameManager.FinishedLevel();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
@@ -91,6 +95,7 @@ public class PlayerProgress : MonoBehaviour
                 portals.Portals[1].ResetPortal();
             }
             GameManager.Instance.currentCompletionTime = 0;
+            playerGhostRun.RestartRun();
         }
     }
 }
