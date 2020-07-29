@@ -312,14 +312,14 @@ public class PlayerMovement : MonoBehaviour
             .ToList();
 
         // If we are going to hit a wall, set ourselves just outside of the wall and translate momentum along the wall
-        if (validHits.Count() > 0)
+        if (validHits.Count() > 0 && newVelocity.magnitude > 10)
         {
             // find the time at which we would have hit the wall between this and the next frame
             float timeToImpact = validHits.First().distance / newVelocity.magnitude;
             // slide along the wall and prevent a complete loss of momentum
             ClipVelocity(validHits.First().normal);
             // set our position to just outside of the wall
-            transform.position += newVelocity * timeToImpact; 
+            transform.position += newVelocity * timeToImpact;
         }
         else
         {
@@ -333,18 +333,9 @@ public class PlayerMovement : MonoBehaviour
         // Determine how far along plane to slide based on incoming direction.
         var backoff = Vector3.Dot(newVelocity, normal);
 
-        for (int i = 0; i < 3; i++)
-        {
-            var change = normal[i] * backoff;
-            newVelocity[i] -= change;
-        }
-
-        // iterate once to make sure we aren't still moving through the plane
-        var adjust = Vector3.Dot(newVelocity, normal);
-        if (adjust < 0.0f)
-        {
-            newVelocity -= (normal * adjust);
-        }
+        var change = normal * backoff;
+        change.y = 0; // only affect horizontal velocity
+        newVelocity -= change;
     }
 
     private void ResolveCollisions()
