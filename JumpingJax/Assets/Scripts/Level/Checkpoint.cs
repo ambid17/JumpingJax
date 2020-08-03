@@ -15,7 +15,6 @@ public class Checkpoint : MonoBehaviour
 
     public void SetCompleted()
     {
-        Debug.Log("Reached checkpoint: " + level);
         myRenderer.sharedMaterial = completedMaterial;
     }
 }
