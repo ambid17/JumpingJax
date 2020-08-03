@@ -2,6 +2,8 @@
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider))] // Collider is necessary for custom collision detection
+[RequireComponent(typeof(Rigidbody))] // Rigidbody is necessary to ignore certain colliders for portals
 public class PlayerMovement : MonoBehaviour
 {
     [Tooltip("Red line is current velocity, blue is the new direction")]
@@ -19,11 +21,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool grounded;
     [SerializeField]
-    private bool surfing;
-    [SerializeField]
     private bool crouching;
-    [SerializeField]
-    private bool wasCrouching;
+
+    private float jumpTimer = 0;
 
     private void Start()
     {
@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
+
         CheckJump();
 
         var inputVector = GetWorldSpaceInputVector();
@@ -58,31 +59,29 @@ public class PlayerMovement : MonoBehaviour
         }
 
         ClampVelocity(PlayerConstants.MaxVelocity);
+        ContinuousCollisionDetection();
 
-        transform.position += newVelocity * Time.fixedDeltaTime;
+        // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
+        CheckGrounded();
 
         ResolveCollisions();
     }
 
     private void CheckCrouch()
     {
-        wasCrouching = crouching;
-
         if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
-            myCollider.size = PlayerConstants.CrouchingBoxColliderSize;
+            float velocity = 0;
+            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.CrouchingPlayerHeight, ref velocity, Time.deltaTime);
+            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
         }
         else
         {
             crouching = false;
-
-            if (grounded && wasCrouching)
-            {
-                transform.position += new Vector3(0, 1, 0);
-            }
-
-            myCollider.size = PlayerConstants.BoxColliderSize;
+            float velocity = 0;
+            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.StandingPlayerHeight, ref velocity, Time.deltaTime);
+            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
         }
     }
 
@@ -95,98 +94,73 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Performs 5 raycasts to check if there is a spot on the BoxCollider which is below the player and sets the grounded status
     private void CheckGrounded()
     {
-        surfing = false;
+        Vector3 center = myCollider.bounds.center;
+        Vector3 frontLeft = myCollider.bounds.center;
+        frontLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontLeft.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backLeft = myCollider.bounds.center;
+        backLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backLeft.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 frontRight = myCollider.bounds.center;
+        frontRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontRight.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backRight = myCollider.bounds.center;
+        backRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backRight.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
 
-        Vector3 extents = PlayerConstants.BoxCastExtents;
-        if (crouching)
+        Ray ray0 = new Ray(center, Vector3.down);
+        Ray ray1 = new Ray(frontLeft, Vector3.down);
+        Ray ray2 = new Ray(backLeft, Vector3.down);
+        Ray ray3 = new Ray(frontRight, Vector3.down);
+        Ray ray4 = new Ray(backRight, Vector3.down);
+
+        Ray[] boxTests = new Ray[] { ray0, ray1, ray2, ray3, ray4 };
+
+        bool willBeGrounded = false;
+
+        foreach(Ray ray in boxTests)
         {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
+            if (showDebugGizmos)
+            {
+                Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
+            }
+            if(Physics.Raycast(
+                ray: ray,
+                hitInfo: out RaycastHit hit,
+                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                layerMask: layersToIgnore,
+                QueryTriggerInteraction.Ignore))
+            {
+                if(hit.point.y < transform.position.y && 
+                    !Physics.GetIgnoreCollision(myCollider, hit.collider) && // don't check for the ground on an object that is ignored (for example a wall with a portal on it)
+                    hit.normal.y > 0.7f) // don't check for the ground on a sloped surface above 45 degrees
+                {
+                    willBeGrounded = true;
+                }
+            }
         }
 
-        var hits = Physics.BoxCastAll(
-            center: myCollider.bounds.center,
-            halfExtents: extents,
-            direction: -transform.up,
-            orientation: Quaternion.identity,
-            maxDistance: PlayerConstants.BoxCastDistance,
-            layerMask: layersToIgnore
-            );
-        
-        var wasGrounded = grounded;
-        var validHits = hits
-            .ToList()
-            .FindAll(hit => hit.normal.y >= 0.7f)
-            .OrderBy(hit => hit.distance)
-            .Where(hit => !hit.collider.isTrigger)
-            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
-            .Where(hit => hit.point.y < transform.position.y && hit.point != Vector3.zero);
+        grounded = willBeGrounded;
 
-        grounded = validHits.Count() > 0;
-
-        if (!grounded)
-        {
-            grounded = ConfirmGrounded(validHits);
-        }
-
-        if (grounded)
+        if (grounded && newVelocity.y < 0)
         {
             newVelocity.y = 0;
         }
-        else
-        {
-            //Find the closest collision where the slope is at least 45 degrees
-            var surfHits = hits.ToList().FindAll(x => x.normal.y < 0.7f).OrderBy(x => x.distance);
-            if (surfHits.Count() > 0)
-            {
-                transform.position += surfHits.First().normal * 0.02f;
-                ClipVelocity(surfHits.First().normal);
-                surfing = true;
-            }
-        }
-    }
-
-    private bool ConfirmGrounded(IEnumerable<RaycastHit> hits)
-    {
-        Vector3 extents = PlayerConstants.BoxCastExtents;
-        if (crouching)
-        {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
-        }
-
-        // We have to manually check if there is a collision, because boxcastall 
-        // doesn't return the correct information when already colliding
-        var overlappingColliders = Physics.OverlapBox(
-            center: myCollider.bounds.center,
-            halfExtents: extents,// + new Vector3(0.1f, 0.1f, 0.1f),
-            orientation: Quaternion.identity,
-            layerMask: layersToIgnore);
-
-        
-
-        foreach (Collider collider in overlappingColliders)
-        {
-            if (collider.isTrigger)
-            {
-                continue;
-            }
-
-            if(collider.transform.position.y < transform.position.y && !Physics.GetIgnoreCollision(collider, myCollider))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void CheckJump()
     {
-        if (grounded && InputManager.GetKey(PlayerConstants.Jump))
+        // Prevent the player from finding a way to jump each frame, this would allow them to perform a super jump that is game breaking
+        jumpTimer += Time.fixedDeltaTime;
+
+        if (grounded && InputManager.GetKey(PlayerConstants.Jump) && jumpTimer > PlayerConstants.TimeBetweenJumps)
         {
             newVelocity.y += crouching ? PlayerConstants.CrouchingJumpPower : PlayerConstants.JumpPower;
             grounded = false;
+            jumpTimer = 0;
         }
     }
 
@@ -306,44 +280,67 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // This function keeps the player from exceeding a maximum velocity
     private void ClampVelocity(float range)
     {
         newVelocity = Vector3.ClampMagnitude(newVelocity, PlayerConstants.MaxVelocity);
     }
 
-    // Slide off of the impacting surface
+    // This function is what keeps the player from walking through walls
+    // We calculate how far we are inside of an object from moving this frame
+    // and move the player just barely outside of the colliding object
+
+    private void ContinuousCollisionDetection()
+    {
+        // - boxcast forwards based on speed, find the point in time where i hit it, and stop me there
+        float castDistance = newVelocity.magnitude * Time.fixedDeltaTime;
+        RaycastHit[] hits = Physics.BoxCastAll(
+            center: myCollider.bounds.center,
+            halfExtents: myCollider.bounds.extents,
+            direction: newVelocity.normalized,
+            Quaternion.identity,
+            maxDistance: castDistance,
+            layerMask: layersToIgnore);
+
+        List<RaycastHit> validHits = hits
+            .ToList()
+            .OrderBy(hit => hit.distance)
+            .Where(hit => !hit.collider.isTrigger)
+            .Where(hit => !Physics.GetIgnoreCollision(hit.collider, myCollider))
+            .Where(hit => hit.point != Vector3.zero)
+            .Where(hit => hit.normal.y < 1)
+            .ToList();
+
+        // If we are going to hit a wall, set ourselves just outside of the wall and translate momentum along the wall
+        if (validHits.Count() > 0 && newVelocity.magnitude > 10)
+        {
+            // find the time at which we would have hit the wall between this and the next frame
+            float timeToImpact = validHits.First().distance / newVelocity.magnitude;
+            // slide along the wall and prevent a complete loss of momentum
+            ClipVelocity(validHits.First().normal);
+            // set our position to just outside of the wall
+            transform.position += newVelocity * timeToImpact;
+        }
+        else
+        {
+            transform.position += newVelocity * Time.fixedDeltaTime;
+        }
+    }
+
+    //Slide off of the impacting surface
     private void ClipVelocity(Vector3 normal)
     {
         // Determine how far along plane to slide based on incoming direction.
         var backoff = Vector3.Dot(newVelocity, normal);
 
-        if(backoff < 0)
-        {
-            backoff *= PlayerConstants.Overbounce;
-        }
-        else
-        {
-            backoff /= PlayerConstants.Overbounce;
-        }
-
-        for (int i = 0; i < 3; i++)
-        {
-            float change = normal[i] * backoff;
-            newVelocity[i] -= change;
-        }
+        var change = normal * backoff;
+        change.y = 0; // only affect horizontal velocity
+        newVelocity -= change;
     }
 
     private void ResolveCollisions()
     {
-        var center = transform.position + myCollider.center; // get center of bounding box in world space
-
-        Vector3 extents = myCollider.bounds.extents;
-        if (crouching)
-        {
-            extents = PlayerConstants.CrouchingBoxCastExtents;
-        }
-
-        var overlaps = Physics.OverlapBox(center, extents, Quaternion.identity);
+        var overlaps = Physics.OverlapBox(myCollider.bounds.center, myCollider.bounds.extents, Quaternion.identity);
 
         foreach (var other in overlaps)
         {
@@ -367,17 +364,10 @@ public class PlayerMovement : MonoBehaviour
 
                 if (showDebugGizmos)
                 {
-                    Debug.Log("depen: " + depenetrationVector.ToString("F8") + " proj " + Vector3.Project(newVelocity, -dir).ToString("F5"));
+                    Debug.Log($"Object Depenetration Vector: {depenetrationVector.ToString("F8")} \n Collided with: {other.gameObject.name}");
                 }
 
-                if (!surfing)
-                {
-                    transform.position += depenetrationVector;
-                }
-                else
-                {
-                    ClipVelocity(dir);
-                }
+                transform.position += depenetrationVector;
             }
         }
     }

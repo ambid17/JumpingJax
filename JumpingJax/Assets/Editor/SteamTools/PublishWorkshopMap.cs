@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class PublishWorkshopMap : EditorWindow
 {
-    [MenuItem("Tools/Publish Map")]
+    [MenuItem("Tools/OneLeif/Publish Map")]
     private static void PackageMap()
     {
         EditorWindow.GetWindow(typeof(PublishWorkshopMap));

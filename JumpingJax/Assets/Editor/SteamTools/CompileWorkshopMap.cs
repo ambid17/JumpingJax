@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class CompileWorkshopMap : MonoBehaviour
 {
-    [MenuItem("Tools/Compile Map")]
+    [MenuItem("Tools/OneLeif/Compile Map")]
     static void CompileMap()
     {
         AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
