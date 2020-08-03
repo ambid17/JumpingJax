@@ -51,7 +51,7 @@ public class Portal : MonoBehaviour
         };
 
     private float minCutOff = 0.01f;
-    private float maxCutOff = 0.95f;
+    private float maxCutOff = 0.8f;
     private float cutOffValue = 0.01f;
     private float cutOffInterval = 0.002f;
     private bool isIncrementing = true;
