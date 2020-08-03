@@ -22,7 +22,10 @@ public class PlayerGhostRun : MonoBehaviour
     {
         RestartRun();
         currentLevel = GameManager.GetCurrentLevel();
-        ghostRunner = Instantiate(ghostRunnerPrefab);
+        if(ghostRunner == null)
+        {
+            ghostRunner = Instantiate(ghostRunnerPrefab);
+        }
         ghostRunner.SetActive(false);
     }
 
@@ -33,7 +36,7 @@ public class PlayerGhostRun : MonoBehaviour
             return;
         }
 
-        UpdateGhostRunData();
+        RecordCurrentRunData();
         UpdateGhost();
     }
 
@@ -45,23 +48,16 @@ public class PlayerGhostRun : MonoBehaviour
         currentRunData = new List<Vector3>();
     }
 
-    
-
     private void UpdateGhost()
     {
-        if(currentDataIndex == currentLevel.ghostRun.Length - 1)
+        if (currentLevel == null 
+            || currentLevel.ghostRun == null 
+            || currentDataIndex >= currentLevel.ghostRun.Length - 1)
         {
             return; // ghost run is finished
         }
 
-        
-        ghostRunnerTimer += Time.deltaTime;
-        if(ghostRunnerTimer >= ghostRunSaveInterval)
-        {
-            currentDataIndex++;
-            ghostRunnerTimer = 0;
-        }
-
+        // Only show the ghost run for a level we've completed
         if (currentLevel.isCompleted)
         {
             ghostRunner.SetActive(true);
@@ -70,10 +66,17 @@ public class PlayerGhostRun : MonoBehaviour
             Vector3 position = Vector3.Lerp(ghostRunner.transform.position, currentLevel.ghostRun[currentDataIndex], lerpValue);
             ghostRunner.transform.position = position;
         }
+
+        ghostRunnerTimer += Time.deltaTime;
+        if (ghostRunnerTimer >= ghostRunSaveInterval)
+        {
+            currentDataIndex++;
+            ghostRunnerTimer = 0;
+        }
     }
 
 
-    private void UpdateGhostRunData()
+    private void RecordCurrentRunData()
     {
         ghostRunSaveTimer += Time.deltaTime;
         if (ghostRunSaveTimer > ghostRunSaveInterval)
@@ -83,7 +86,7 @@ public class PlayerGhostRun : MonoBehaviour
         }
     }
 
-    public void SaveGhostRunData()
+    public void SaveCurrentRunData()
     {
         GameManager.GetCurrentLevel().ghostRun = currentRunData.ToArray();
     }

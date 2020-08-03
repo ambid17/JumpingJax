@@ -11,7 +11,6 @@ public class AudioInitializer : MonoBehaviour
     void Start()
     {
         float volume = OptionsPreferencesManager.GetVolume();
-        Debug.Log("initializing Volue to: " + volume);
         InitializeVolume(volume);
     }
 

@@ -43,7 +43,7 @@ public class PlayerProgress : MonoBehaviour
         {
             if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
             {
-                playerGhostRun.SaveGhostRunData();
+                playerGhostRun.SaveCurrentRunData();
                 GameManager.FinishedLevel();
                 playerUI.ShowWinScreen();
                 Time.timeScale = 0;
