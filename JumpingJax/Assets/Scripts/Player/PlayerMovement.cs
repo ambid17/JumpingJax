@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool grounded;
     [SerializeField]
+    private bool Ceilinged;
+    [SerializeField]
     private bool crouching;
 
     private float jumpTimer = 0;
@@ -36,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
+        CheckAbove();
 
         CheckJump();
 
@@ -63,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
         CheckGrounded();
-
+        CheckAbove();
         ResolveCollisions();
     }
 
@@ -91,6 +94,60 @@ public class PlayerMovement : MonoBehaviour
         {
             float gravityScale = GameManager.GetCurrentLevel().gravityMultiplier;
             newVelocity.y -= gravityScale * PlayerConstants.Gravity * Time.fixedDeltaTime;
+        }
+    }
+
+    private void CheckAbove()
+    {
+        Vector3 center = myCollider.bounds.center;
+        Vector3 frontLeft = myCollider.bounds.center;
+        frontLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontLeft.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backLeft = myCollider.bounds.center;
+        backLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backLeft.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 frontRight = myCollider.bounds.center;
+        frontRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontRight.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backRight = myCollider.bounds.center;
+        backRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backRight.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+
+        Ray ray0 = new Ray(center, Vector3.up);
+        Ray ray1 = new Ray(frontLeft, Vector3.up);
+        Ray ray2 = new Ray(backLeft, Vector3.up);
+        Ray ray3 = new Ray(frontRight, Vector3.up);
+        Ray ray4 = new Ray(backRight, Vector3.up);
+
+        Ray[] boxTests = new Ray[] { ray0, ray1, ray2, ray3, ray4 };
+
+        bool willBeGrounded = false;
+
+        foreach (Ray ray in boxTests)
+        {
+            if (showDebugGizmos)
+            {
+                Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
+            }
+            if (Physics.Raycast(
+                ray: ray,
+                hitInfo: out RaycastHit hit,
+                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                layerMask: layersToIgnore,
+                QueryTriggerInteraction.Ignore))
+            {
+                if (hit.point.y > transform.position.y) 
+                {
+                    willBeGrounded = true;
+                }
+            }
+        }
+
+        Ceilinged = willBeGrounded;
+
+        if (Ceilinged && newVelocity.y > 0)
+        {
+            newVelocity.y = 0;
         }
     }
 
