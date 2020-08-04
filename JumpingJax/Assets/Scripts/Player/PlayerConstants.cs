@@ -30,9 +30,9 @@ public static class PlayerConstants
     public static float TimeToCrouch = 0.5f;
     public static float groundCheckOffset = 0.05f;
 
-    public static float portalWidth = 3f;
-    public static float portalHeight = 3f;
-    public static Vector3 PortalColliderExtents = new Vector3(1.5f, 1.5f, 0.5f);
+    public static float portalWidth = 2f;
+    public static float portalHeight = 2f;
+    public static Vector3 PortalColliderExtents = new Vector3(1f, 1f, 1f);
 
     // Layer Masks
     public static LayerMask portalPlacementMask = new LayerMask();
