@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
+        CheckAbove();
 
         CheckJump();
 
@@ -63,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
         CheckGrounded();
-
+        CheckAbove();
         ResolveCollisions();
     }
 
@@ -94,30 +95,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void CheckAbove()
+    {
+        Ray[] boxTests = GetRays(Vector3.up);
+
+        bool willBeCeilinged = false;
+
+        foreach (Ray ray in boxTests)
+        {
+            if (showDebugGizmos)
+            {
+                Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
+            }
+            if (Physics.Raycast(
+                ray: ray,
+                hitInfo: out RaycastHit hit,
+                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                layerMask: layersToIgnore,
+                QueryTriggerInteraction.Ignore))
+            {
+                if (hit.point.y > transform.position.y) 
+                {
+                    willBeCeilinged = true;
+                }
+            }
+        }
+
+        if (willBeCeilinged && newVelocity.y > 0)
+        {
+            newVelocity.y = 0;
+        }
+    }
+
     // Performs 5 raycasts to check if there is a spot on the BoxCollider which is below the player and sets the grounded status
     private void CheckGrounded()
     {
-        Vector3 center = myCollider.bounds.center;
-        Vector3 frontLeft = myCollider.bounds.center;
-        frontLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
-        frontLeft.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
-        Vector3 backLeft = myCollider.bounds.center;
-        backLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
-        backLeft.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
-        Vector3 frontRight = myCollider.bounds.center;
-        frontRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
-        frontRight.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
-        Vector3 backRight = myCollider.bounds.center;
-        backRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
-        backRight.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
-
-        Ray ray0 = new Ray(center, Vector3.down);
-        Ray ray1 = new Ray(frontLeft, Vector3.down);
-        Ray ray2 = new Ray(backLeft, Vector3.down);
-        Ray ray3 = new Ray(frontRight, Vector3.down);
-        Ray ray4 = new Ray(backRight, Vector3.down);
-
-        Ray[] boxTests = new Ray[] { ray0, ray1, ray2, ray3, ray4 };
+        Ray[] boxTests = GetRays(Vector3.down);
 
         bool willBeGrounded = false;
 
@@ -149,6 +162,31 @@ public class PlayerMovement : MonoBehaviour
         {
             newVelocity.y = 0;
         }
+    }
+
+    private Ray[] GetRays(Vector3 direction)
+    {
+        Vector3 center = myCollider.bounds.center;
+        Vector3 frontLeft = myCollider.bounds.center;
+        frontLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontLeft.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backLeft = myCollider.bounds.center;
+        backLeft.x -= myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backLeft.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 frontRight = myCollider.bounds.center;
+        frontRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        frontRight.z -= myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+        Vector3 backRight = myCollider.bounds.center;
+        backRight.x += myCollider.bounds.extents.x - PlayerConstants.groundCheckOffset;
+        backRight.z += myCollider.bounds.extents.z - PlayerConstants.groundCheckOffset;
+
+        Ray ray0 = new Ray(center, direction);
+        Ray ray1 = new Ray(frontLeft, direction);
+        Ray ray2 = new Ray(backLeft, direction);
+        Ray ray3 = new Ray(frontRight, direction);
+        Ray ray4 = new Ray(backRight, direction);
+
+        return new Ray[] { ray0, ray1, ray2, ray3, ray4 };
     }
 
     private void CheckJump()
