@@ -44,11 +44,18 @@ public class Portal : MonoBehaviour
 
     private List<Vector3> overHangTestPoints = new List<Vector3>
         {
-            new Vector3(-1.1f,  0, 0),
-            new Vector3( 1.1f,  0, 0),
-            new Vector3( 0, -2.1f, 0),
-            new Vector3( 0,  2.1f, 0)
+            new Vector3(-1.51f,  0, 0),
+            new Vector3( 1.51f,  0, 0),
+            new Vector3( 0, -1.51f, 0),
+            new Vector3( 0,  1.51f, 0)
         };
+
+    private float minCutOff = 0.01f;
+    private float maxCutOff = 0.8f;
+    private float cutOffValue = 0.01f;
+    private float cutOffInterval = 0.002f;
+    private bool isIncrementing = true;
+
 
     private void Awake()
     {
@@ -68,6 +75,21 @@ public class Portal : MonoBehaviour
 
     private void Update()
     {
+        if(cutOffValue >= maxCutOff)
+        {
+            isIncrementing = false;
+        }
+
+        if(cutOffValue <= minCutOff)
+        {
+            isIncrementing = true;
+        }
+
+
+        cutOffValue += isIncrementing ? cutOffInterval : -cutOffInterval;
+        outlineRenderer.material.SetFloat("_Cutoff", cutOffValue);
+        outlineRenderer.gameObject.transform.Rotate(Vector3.forward, 0.1f); 
+
         for (int i = 0; i < portalObjects.Count; ++i)
         {
             Vector3 objPos = transform.InverseTransformPoint(portalObjects[i].transform.position);
@@ -92,7 +114,6 @@ public class Portal : MonoBehaviour
     public void SetColour(Color colour)
     {
         meshMaterialMain.SetColor("_Colour", colour);
-        outlineRenderer.material.SetColor("_OutlineColour", colour);
     }
 
     public void SetMaskID(int id)
