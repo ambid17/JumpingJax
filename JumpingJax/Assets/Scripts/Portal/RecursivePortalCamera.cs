@@ -15,7 +15,7 @@ public class RecursivePortalCamera : MonoBehaviour
 
     private Camera mainCamera;
 
-    private int portalRecursions = 7;
+    private int portalRecursions = 2;
     private const int renderTextureDepth = 24;
 
     private Quaternion flippedYRotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);

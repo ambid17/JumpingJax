@@ -23,7 +23,7 @@ public class OptionsPreferencesManager
     public const float defaultSensitivity = 0.5f;
 
     private const string portalRecursionKey = "PortalRecursion";
-    public const int defaultPortalRecursion = 5;
+    public const int defaultPortalRecursion = 2;
 
     private const string cameraFOVKey = "CameraFOV";
     public const int defaultCameraFOV = 90;
