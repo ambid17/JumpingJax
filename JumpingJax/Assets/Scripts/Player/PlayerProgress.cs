@@ -81,7 +81,9 @@ public class PlayerProgress : MonoBehaviour
     {
         Vector3 respawnPosition = currentCheckpoint.transform.position + PlayerConstants.PlayerSpawnOffset;
         transform.position = respawnPosition;
-        transform.rotation = currentCheckpoint.transform.rotation;
+        Vector3 respawnRotation = transform.rotation.eulerAngles;
+        respawnRotation.y = currentCheckpoint.transform.rotation.eulerAngles.y;
+        transform.rotation = Quaternion.Euler(respawnRotation);
 
         playerMovement.newVelocity = Vector3.zero;
 
