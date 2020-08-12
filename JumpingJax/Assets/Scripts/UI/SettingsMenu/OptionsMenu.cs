@@ -16,6 +16,9 @@ public class OptionsMenu : MonoBehaviour {
     public AudioOptions audioPanel;
     public MiscOptions miscPanel;
 
+    public PauseMenu pauseMenu; // This is the parent menu, needed to go back
+
+
     [Header("Set in editor")]
     public Button controlsTabButton;
     public Button videoTabButton;
@@ -25,7 +28,6 @@ public class OptionsMenu : MonoBehaviour {
     public Button backButton;
     public Button defaultButton;
 
-    public PauseMenu pauseMenu; // This is the parent menu, needed to go back
 
 
     private SettingsTabs currentTab;

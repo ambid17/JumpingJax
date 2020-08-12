@@ -6,14 +6,24 @@ using UnityEngine.UI;
 
 public class HotKeyOptions : MonoBehaviour
 {
-    public Transform scrollViewContent;
+    private Transform scrollViewContent;
     public GameObject hotKeySelectionPrefab;
+    public GameObject sliderPrefab;
+
 
     string keyToRebind = null;
     Dictionary<string, Text> buttonKeyCodeTexts;
+    CameraMove playerAiming;
 
     void Start()
     {
+        PlayerMovement playerCharacter = GetComponentInParent<PlayerMovement>();
+        if (playerCharacter != null)
+        {
+            playerAiming = playerCharacter.GetComponentInChildren<CameraMove>();
+        }
+
+        scrollViewContent = GetComponentInChildren<ContentSizeFitter>().transform;
         ReloadUI();
     }
 
@@ -42,6 +52,7 @@ public class HotKeyOptions : MonoBehaviour
     {
         CleanScrollView();
         PopulateHotkeys();
+        SetupSensitivitySlider();
     }
 
     void StartRebindFor(string keyName)
@@ -75,6 +86,17 @@ public class HotKeyOptions : MonoBehaviour
 
             buttonKeyCodeTexts.Add(hotkey, item.GetButtonText());
         }
+    }
+
+    private void SetupSensitivitySlider()
+    {
+        GameObject sliderObject = Instantiate(sliderPrefab);
+        SliderItem sliderItem = sliderObject.GetComponent<SliderItem>();
+        sliderItem.SetItemText("Sensitivity");
+        sliderItem.SetSliderValue(OptionsPreferencesManager.GetSensitivity(), 0, 1);
+        sliderItem.SetInput(OptionsPreferencesManager.GetSensitivity().ToString());
+
+        //Slider sensitivitySlider.value = OptionsPreferencesManager.GetSensitivity();
     }
 
     public void SetDefaults()
