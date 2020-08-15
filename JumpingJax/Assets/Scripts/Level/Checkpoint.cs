@@ -5,14 +5,19 @@ public class Checkpoint : MonoBehaviour
     [SerializeField]
     public int level;
     public Light light;
-    private Color completedColor = new Color(0, 0.5f, 1);
+    public Material completedMaterial;
+    private Color completedColor = new Color(0, 1,0);
+
+    private Renderer myRenderer;
 
     private void Start()
     {
+        myRenderer = GetComponent<Renderer>();
     }
 
     public void SetCompleted()
     {
+        myRenderer.sharedMaterial = completedMaterial;
         light.color = completedColor;
     }
 }
