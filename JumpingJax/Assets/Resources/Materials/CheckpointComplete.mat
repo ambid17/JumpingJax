@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CheckpointComplete
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 3930e24f0d3a6b047990d87911bbec2b, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -39,9 +39,13 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bdcaf4d080c4f344fac815a511e69dc8, type: 3}
+    - _FlickerTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 50a77524a8587484898ffc685ba42b10, type: 3}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 2800000, guid: efc59b259c265ed488a18080d37ff754, type: 3}
@@ -56,17 +60,28 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _Alpha: 0.345
+    - _Brightness: 6
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _FlickerSpeed: 0.01
+    - _Fold: 1
+    - _GlitchIntensity: 0
+    - _GlitchSpeed: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _GlowSpeed: -10
+    - _GlowTiling: 0.01
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RimPower: 2
+    - _ScanSpeed: 0.2
+    - _ScanTiling: 10
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -74,4 +89,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 0.6811324, b: 0, a: 1}
-    - _EmissionColor: {r: 0.16438116, g: 0.58431375, b: 0.14117646, a: 1}
+    - _Direction: {r: 1, g: 0, b: 1, a: 1}
+    - _EmissionColor: {r: 2, g: 0.69803923, b: 0, a: 1}
+    - _MainColor: {r: 0, g: 1, b: 0.008023262, a: 1}
+    - _RimColor: {r: 0.15312389, g: 0.17588244, b: 0.8773585, a: 1}

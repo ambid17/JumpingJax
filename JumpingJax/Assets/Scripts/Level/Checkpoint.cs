@@ -4,18 +4,20 @@ public class Checkpoint : MonoBehaviour
 {
     [SerializeField]
     public int level;
-
+    public Light light;
     public Material completedMaterial;
-    public MeshRenderer myRenderer;
+    private Color completedColor = new Color(0, 1,0);
+
+    private Renderer myRenderer;
 
     private void Start()
     {
-        myRenderer = GetComponent<MeshRenderer>();
+        myRenderer = GetComponent<Renderer>();
     }
 
     public void SetCompleted()
     {
         myRenderer.sharedMaterial = completedMaterial;
-        transform.GetChild(0).gameObject.SetActive(false); // turn off the light when you hit a checkpoint
+        light.color = completedColor;
     }
 }

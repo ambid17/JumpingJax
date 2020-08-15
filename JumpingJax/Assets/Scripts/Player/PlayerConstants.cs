@@ -4,18 +4,18 @@ using UnityEngine;
 
 public static class PlayerConstants
 {
-    public static float MoveSpeed = 8f;
-    public static float BackWardsMoveSpeedScale = 0.8f;
+    public static float MoveSpeed = 7f;
+    public static float BackWardsMoveSpeedScale = 0.9f;
     public static float CrouchingMoveSpeed = 6f;
     public static float MaxVelocity = 30f;
 
     public static float Gravity = 9.8f;
     public static float JumpPower = 4.5f;
-    public static float CrouchingJumpPower = 3.8f;
-    public static float TimeBetweenJumps = 0.4f;
+    public static float CrouchingJumpPower = 4f;
+    public static float TimeBetweenJumps = 0.2f;
 
     public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 1500f;
+    public static float AirAcceleration = 2000f;
     public static float Overbounce = 1.001f;
 
     public static float StopSpeed = 8f;

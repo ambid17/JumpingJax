@@ -38,17 +38,6 @@ public class PlayerProgress : MonoBehaviour
         {
             Respawn();
         }
-
-        if (currentCheckpoint != null && !GameManager.Instance.didWinCurrentLevel)
-        {
-            if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
-            {
-                playerGhostRun.SaveCurrentRunData();
-                GameManager.FinishedLevel();
-                playerUI.ShowWinScreen();
-                Time.timeScale = 0;
-            }
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -73,6 +62,14 @@ public class PlayerProgress : MonoBehaviour
             {
                 checkpoint.SetCompleted();
                 currentCheckpoint = checkpoint;
+
+                if (currentCheckpoint.level == GameManager.GetCurrentLevel().numberOfCheckpoints)
+                {
+                    playerGhostRun.SaveCurrentRunData();
+                    GameManager.FinishedLevel();
+                    playerUI.ShowWinScreen();
+                    Time.timeScale = 0;
+                }
             }
         }
     }
