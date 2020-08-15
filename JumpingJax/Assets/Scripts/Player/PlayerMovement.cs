@@ -143,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
             if(Physics.Raycast(
                 ray: ray,
                 hitInfo: out RaycastHit hit,
-                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                maxDistance: myCollider.bounds.extents.y + 0.02f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
                 layerMask: layersToIgnore,
                 QueryTriggerInteraction.Ignore))
             {
