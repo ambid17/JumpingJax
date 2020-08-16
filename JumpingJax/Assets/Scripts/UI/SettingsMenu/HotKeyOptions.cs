@@ -115,6 +115,7 @@ public class HotKeyOptions : MonoBehaviour
     {
         Debug.Log("set hotkey defaults");
         HotKeyManager.Instance.SetDefaults();
+        currentSliderItem.SetSliderValue(OptionsPreferencesManager.defaultSensitivity);
         ReloadUI();
     }
 }
