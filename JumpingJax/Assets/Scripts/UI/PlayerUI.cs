@@ -5,13 +5,9 @@ using UnityEngine.UI;
 using System;
 
 public class PlayerUI : MonoBehaviour {
-    public bool isPaused;
 
     [SerializeField]
     GameObject inGameUI = null;
-
-    [SerializeField]
-    PauseMenu pauseMenu = null;
 
     [SerializeField]
     WinMenu winMenu = null;
@@ -20,49 +16,10 @@ public class PlayerUI : MonoBehaviour {
 
     void Start () {
         inGameUI.SetActive(true);
-        pauseMenu.gameObject.SetActive(false);
         winMenu.gameObject.SetActive(false);
     }
 	
-	void Update () {
-        // Don't let the player pause the game if they are in the win menu
-        // This would let the player unpause and play during the win menu
-        if (GameManager.Instance.didWinCurrentLevel)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(PlayerConstants.PauseMenu)) {
-            if (isPaused)
-            {
-                UnPause();
-            }
-            else
-            {
-                Pause();
-            }
-        }
-    }
-
-    public void Pause()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Confined;
-        isPaused = true;
-        Time.timeScale = 0;
-        pauseMenu.gameObject.SetActive(true);
-        inGameUI.SetActive(false);
-    }
-
-    public void UnPause()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        isPaused = false;
-        Time.timeScale = 1;
-        pauseMenu.gameObject.SetActive(false);
-        inGameUI.SetActive(true);
-    }
+	
 
     public void ShowWinScreen()
     {

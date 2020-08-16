@@ -275,8 +275,9 @@ GameObject:
   m_Component:
   - component: {fileID: 927361228276166555}
   - component: {fileID: 927361228276166552}
+  - component: {fileID: 9054542886504650413}
   m_Layer: 5
-  m_Name: SensitivitySettingPrefab
+  m_Name: SliderPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -329,6 +330,21 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &9054542886504650413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927361228276166554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35a6e18047f9d0d40898d930ef54db4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 927361228369794385}
+  slider: {fileID: 927361227535198543}
+  input: {fileID: 927361228134292778}
 --- !u!1 &927361228369794387
 GameObject:
   m_ObjectHideFlags: 0

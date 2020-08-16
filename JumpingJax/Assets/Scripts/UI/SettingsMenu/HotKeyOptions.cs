@@ -14,6 +14,7 @@ public class HotKeyOptions : MonoBehaviour
     string keyToRebind = null;
     Dictionary<string, Text> buttonKeyCodeTexts;
     CameraMove playerAiming;
+    SliderItem currentSliderItem;
 
     void Start()
     {
@@ -90,13 +91,24 @@ public class HotKeyOptions : MonoBehaviour
 
     private void SetupSensitivitySlider()
     {
-        GameObject sliderObject = Instantiate(sliderPrefab);
-        SliderItem sliderItem = sliderObject.GetComponent<SliderItem>();
-        sliderItem.SetItemText("Sensitivity");
-        sliderItem.SetSliderValue(OptionsPreferencesManager.GetSensitivity(), 0, 1);
-        sliderItem.SetInput(OptionsPreferencesManager.GetSensitivity().ToString());
+        GameObject sliderObject = Instantiate(sliderPrefab, scrollViewContent);
+        currentSliderItem = sliderObject.GetComponent<SliderItem>();
+        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity);
+    }
 
-        //Slider sensitivitySlider.value = OptionsPreferencesManager.GetSensitivity();
+    public void SetSensitivity(float sensitivity)
+    {
+        if (playerAiming != null)
+        {
+            playerAiming.sensitivityMultiplier = sensitivity;
+        }
+
+        int percentage = Mathf.RoundToInt(sensitivity * 100);
+        currentSliderItem.SetInput(percentage + "%");
+        currentSliderItem.SetSliderValue(sensitivity);
+        Debug.Log("Setting sensitivity to: " + sensitivity);
+
+        OptionsPreferencesManager.SetSensitivity(sensitivity);
     }
 
     public void SetDefaults()

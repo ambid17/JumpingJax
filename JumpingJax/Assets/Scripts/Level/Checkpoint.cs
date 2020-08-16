@@ -16,6 +16,6 @@ public class Checkpoint : MonoBehaviour
     public void SetCompleted()
     {
         myRenderer.sharedMaterial = completedMaterial;
-        transform.GetChild(0).gameObject.SetActive(false); // turn off the light when you hit a checkpoint
+        //transform.GetChild(0).gameObject.SetActive(false); // turn off the light when you hit a checkpoint
     }
 }

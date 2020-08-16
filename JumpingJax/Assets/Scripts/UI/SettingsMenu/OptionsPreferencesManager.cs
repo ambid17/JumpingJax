@@ -4,28 +4,28 @@ using UnityEngine;
 
 public class OptionsPreferencesManager
 {
-    private const string resolutionWidthKey = "ResolutionWidth";
-    private const int defaultResolutionWidth = 1920;
+    public const string resolutionWidthKey = "ResolutionWidth";
+    public const int defaultResolutionWidth = 1920;
 
-    private const string resolutionHeightKey = "ResolutionHeight";
-    private const int defaultResolutionHeight = 1080;
+    public const string resolutionHeightKey = "ResolutionHeight";
+    public const int defaultResolutionHeight = 1080;
 
-    private const string volumeKey = "Volume";
+    public const string volumeKey = "Volume";
     public const int defaultVolume = -10;
 
-    private const string qualityKey = "Quality";
-    private const int defaultQuality = 0;
+    public const string qualityKey = "Quality";
+    public const int defaultQuality = 0;
 
-    private const string fullScreenKey = "IsFullScreen";
-    private const int defaultIsFullScreen = 0;
+    public const string fullScreenKey = "IsFullScreen";
+    public const int defaultIsFullScreen = 0;
 
-    private const string sensitivityKey = "Sensitivity";
-    public const float defaultSensitivity = 0.5f;
+    public const string sensitivityKey = "Sensitivity";
+    public const float defaultSensitivity = 0.2f;
 
-    private const string portalRecursionKey = "PortalRecursion";
+    public const string portalRecursionKey = "PortalRecursion";
     public const int defaultPortalRecursion = 2;
 
-    private const string cameraFOVKey = "CameraFOV";
+    public const string cameraFOVKey = "CameraFOV";
     public const int defaultCameraFOV = 90;
 
     public static int GetResolutionWidth()

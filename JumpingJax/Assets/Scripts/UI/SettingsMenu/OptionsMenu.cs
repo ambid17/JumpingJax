@@ -50,14 +50,14 @@ public class OptionsMenu : MonoBehaviour {
     private void GetSubcomponents()
     {
         controlsPanel = GetComponentInChildren<HotKeyOptions>(true);
-
-        if(controlsPanel == null)
-        {
-            Debug.LogError("panel not found");
-        }
         videoPanel = GetComponentInChildren<VideoOptions>(true);
         audioPanel = GetComponentInChildren<AudioOptions>(true);
         miscPanel = GetComponentInChildren<MiscOptions>(true);
+
+        if (controlsPanel == null || videoPanel == null || audioPanel == null || miscPanel == null)
+        {
+            Debug.LogError("An options panel was not found");
+        }
     }
 
     // Remove all listeners and add them in case this script is ran twice
