@@ -47,23 +47,37 @@ public class PauseMenu : MonoBehaviour {
 
     public void Pause()
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Confined;
         isPaused = true;
-        Time.timeScale = 0;
         pauseMenuContainer.SetActive(true);
         pauseMenuHome.SetActive(true);
         optionsMenu.SetActive(false);
         levelName.text = SceneManager.GetActiveScene().name;
+
+        // If we aren't in the main menu
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
+            Time.timeScale = 0;
+        }
+        else
+        {
+            ToggleOptionsMenu();
+        }
     }
 
     public void UnPause()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
         isPaused = false;
-        Time.timeScale = 1;
         pauseMenuContainer.SetActive(false);
+
+        // If we aren't in the main menu
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Time.timeScale = 1;
+        }
     }
 
     public void ToggleOptionsMenu() {
