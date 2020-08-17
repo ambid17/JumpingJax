@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour {
     [SerializeField]
@@ -10,6 +11,9 @@ public class PauseMenu : MonoBehaviour {
 
     [SerializeField]
     GameObject pauseMenuContainer = null;
+
+    [SerializeField]
+    Text levelName = null;
 
     private  bool isPaused;
 
@@ -50,6 +54,7 @@ public class PauseMenu : MonoBehaviour {
         pauseMenuContainer.SetActive(true);
         pauseMenuHome.SetActive(true);
         optionsMenu.SetActive(false);
+        levelName.text = SceneManager.GetActiveScene().name;
     }
 
     public void UnPause()
