@@ -32,9 +32,14 @@ public class OptionsMenu : MonoBehaviour {
 
     private SettingsTabs currentTab;
 
+    private void OnEnable()
+    {
+        SetCurrentTab(SettingsTabs.controls);
+    }
+
     private void Start() {
         GetSubcomponents();
-        SetCurrentTab(SettingsTabs.video);
+        SetCurrentTab(SettingsTabs.controls);
         InitializeTabButtons();
         InitializeBackButton();
         InitializeDefaultButton();

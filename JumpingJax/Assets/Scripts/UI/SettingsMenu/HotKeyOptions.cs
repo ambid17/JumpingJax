@@ -91,9 +91,12 @@ public class HotKeyOptions : MonoBehaviour
 
     private void SetupSensitivitySlider()
     {
-        GameObject sliderObject = Instantiate(sliderPrefab, scrollViewContent);
-        currentSliderItem = sliderObject.GetComponent<SliderItem>();
-        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity);
+        if(currentSliderItem == null)
+        {
+            GameObject sliderObject = Instantiate(sliderPrefab, scrollViewContent);
+            currentSliderItem = sliderObject.GetComponent<SliderItem>();
+        }
+        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity, 0.1f, 1, false);
     }
 
     public void SetSensitivity(float sensitivity)

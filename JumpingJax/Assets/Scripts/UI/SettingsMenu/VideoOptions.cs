@@ -1,32 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class VideoOptions : MonoBehaviour
 {
-    public Dropdown resolutionDropdown;
-    public Dropdown fullScreenDropdown;
-    public Dropdown graphicsQualityDropdown;
+    public GameObject dropdownItemPrefab;
+    public GameObject sliderItemPrefab;
 
-    public Slider portalRecursionSlider;
-    public Text portalRecursionText;
+    private DropdownItem resolutionDropdown;
+    private DropdownItem fullScreenDropdown;
+    private DropdownItem graphicsQualityDropdown;
 
-    public Slider cameraFOVSlider;
-    public Text cameraFOVText;
+    private SliderItem cameraFOV;
+
+    private Transform scrollViewContent;
 
     Resolution[] resolutions;
 
-    public RecursivePortalCamera recursivePortalCamera;
-    public GameObject mainCamera;
-    public Camera playerCamera;
+    private Camera playerCamera;
 
     void Start()
     {
+        scrollViewContent = GetComponentInChildren<ContentSizeFitter>().transform;
         SetupResolutionDropdown();
         SetupGraphicsDropdown();
         SetupFullscreenDropdown();
-        SetupPortalRecursion();
         SetupCameraFOV();
     }
 
@@ -35,21 +35,19 @@ public class VideoOptions : MonoBehaviour
         SetDefaultResolution();
         SetDefaultGraphics();
         SetDefaultFullscreen();
-        SetDefaultPortalRecursion();
         SetDefaultCameraFOV();
     }
 
     void SetupResolutionDropdown()
     {
         resolutions = GetBestResolutions();
-        resolutionDropdown.ClearOptions();
+        if(resolutionDropdown == null)
+        {
+            GameObject newDropdown = Instantiate(dropdownItemPrefab, scrollViewContent);
+            resolutionDropdown = newDropdown.GetComponent<DropdownItem>();
+        }
 
-        resolutionDropdown.AddOptions(GetResolutionCapabilities());
-        resolutionDropdown.value = GetStartingResolution();
-        resolutionDropdown.RefreshShownValue();
-
-        resolutionDropdown.onValueChanged.RemoveAllListeners();
-        resolutionDropdown.onValueChanged.AddListener(SetResolution);
+        resolutionDropdown.Init("Resolution", GetStartingResolution(), GetResolutionCapabilities(), SetResolution);
     }
 
     private List<string> GetResolutionCapabilities()
@@ -89,23 +87,28 @@ public class VideoOptions : MonoBehaviour
 
     void SetupGraphicsDropdown()
     {
-        graphicsQualityDropdown.value = QualitySettings.GetQualityLevel();
-        graphicsQualityDropdown.RefreshShownValue();
-
-        graphicsQualityDropdown.onValueChanged.RemoveAllListeners();
-        graphicsQualityDropdown.onValueChanged.AddListener(SetQuality);
+        if (graphicsQualityDropdown == null)
+        {
+            GameObject newDropdown = Instantiate(dropdownItemPrefab, scrollViewContent);
+            graphicsQualityDropdown = newDropdown.GetComponent<DropdownItem>();
+        }
+        graphicsQualityDropdown.Init("Quality", QualitySettings.GetQualityLevel(), QualitySettings.names.ToList(), SetQuality);
     }
 
     void SetupFullscreenDropdown()
     {
-        fullScreenDropdown.onValueChanged.RemoveAllListeners();
-        fullScreenDropdown.onValueChanged.AddListener(SetFullScreen);
+        if (fullScreenDropdown == null)
+        {
+            GameObject newDropdown = Instantiate(dropdownItemPrefab, scrollViewContent);
+            fullScreenDropdown = newDropdown.GetComponent<DropdownItem>();
+        }
+        fullScreenDropdown.Init("Fullscreen", 0, new List<string> {"FullScreen", "Windowed"}, SetFullScreen);
     }
 
     void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Screen.SetResolution(resolution.width, resolution.height, OptionsPreferencesManager.GetFullScreen());
         OptionsPreferencesManager.SetResolution(resolution.width, resolution.height);
     }
 
@@ -122,41 +125,14 @@ public class VideoOptions : MonoBehaviour
         OptionsPreferencesManager.SetQuality(qualityIndex);
     }
 
-    public void SetupPortalRecursion()
-    {
-        portalRecursionSlider.onValueChanged.RemoveAllListeners();
-        portalRecursionSlider.onValueChanged.AddListener(delegate
-        { SetPortalRecursion(); });
-        portalRecursionSlider.value = OptionsPreferencesManager.GetPortalRecursion();
-
-        CameraMove cameraMove = GetComponentInParent<CameraMove>();
-        if (cameraMove != null)
-        {
-            recursivePortalCamera = cameraMove.GetComponentInChildren<RecursivePortalCamera>();
-        }
-    }
-
-    public void SetPortalRecursion()
-    {
-        int newValue = Mathf.FloorToInt(portalRecursionSlider.value);
-        portalRecursionText.text = newValue.ToString();
-        OptionsPreferencesManager.SetPortalRecursion(newValue);
-
-        // This won't exist in the menu
-        if (recursivePortalCamera != null)
-        {
-            recursivePortalCamera.UpdatePortalRecursion(newValue);
-        }
-    }
-
     public void SetupCameraFOV()
     {
-        cameraFOVSlider.onValueChanged.RemoveAllListeners();
-        cameraFOVSlider.onValueChanged.AddListener(delegate
-        { SetCameraFOV(); });
-
-        cameraFOVSlider.value = OptionsPreferencesManager.GetCameraFOV();
-        cameraFOVText.text = OptionsPreferencesManager.GetCameraFOV().ToString();
+        if (cameraFOV == null)
+        {
+            GameObject newDropdown = Instantiate(sliderItemPrefab, scrollViewContent);
+            cameraFOV = newDropdown.GetComponent<SliderItem>();
+        }
+        cameraFOV.Init("Field Of View", OptionsPreferencesManager.GetCameraFOV(), SetCameraFOV, 45, 130, true);
 
         CameraMove cameraMove = GetComponentInParent<CameraMove>();
         if (cameraMove != null)
@@ -165,10 +141,10 @@ public class VideoOptions : MonoBehaviour
         }
     }
 
-    public void SetCameraFOV()
+    public void SetCameraFOV(float value)
     {
-        int newValue = Mathf.FloorToInt(cameraFOVSlider.value);
-        cameraFOVText.text = newValue.ToString();
+        int newValue = Mathf.FloorToInt(value);
+        cameraFOV.input.text = newValue.ToString();
         OptionsPreferencesManager.SetCameraFOV(newValue);
 
         if (playerCamera != null)
@@ -176,6 +152,7 @@ public class VideoOptions : MonoBehaviour
             playerCamera.fieldOfView = newValue;
         }
     }
+
     // Get only the resolutions for the highest framerate
     private Resolution[] GetBestResolutions()
     {
@@ -205,28 +182,23 @@ public class VideoOptions : MonoBehaviour
     private void SetDefaultResolution()
     {
         // Set resolution to the highest supported
-        resolutionDropdown.value = resolutions.Length - 1;
+        resolutionDropdown.dropdown.value = resolutions.Length - 1;
     }
 
     private void SetDefaultGraphics()
     {
         // Set graphics to the lowest supported to prevent hardware issues
-        graphicsQualityDropdown.value = 0;
+        graphicsQualityDropdown.dropdown.value = 0;
     }
 
     private void SetDefaultFullscreen()
     {
-        fullScreenDropdown.value = 1;
+        fullScreenDropdown.dropdown.value = 1;
     }
 
-    private void SetDefaultPortalRecursion()
-    {
-        Debug.Log(OptionsPreferencesManager.defaultPortalRecursion);
-        portalRecursionSlider.value = OptionsPreferencesManager.defaultPortalRecursion;
-    }
     private void SetDefaultCameraFOV()
     {
         Debug.Log(OptionsPreferencesManager.defaultCameraFOV);
-        cameraFOVSlider.value = OptionsPreferencesManager.defaultCameraFOV;
+        cameraFOV.slider.value = OptionsPreferencesManager.defaultCameraFOV;
     }
 }
