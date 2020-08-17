@@ -32,4 +32,7 @@ public class Level : ScriptableObject
 
     [SerializeField]
     public Vector3[] ghostRun;
+
+    [SerializeField]
+    public Sprite previewSprite;
 }

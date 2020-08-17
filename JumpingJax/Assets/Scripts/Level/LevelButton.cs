@@ -2,27 +2,30 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Events;
 
 public class LevelButton : MonoBehaviour
 {
-    public Text buttonText;
+    public Text levelName;
+    public Text levelTime;
 
-    public void SetupButton(Level level)
+    public void SetupButton(Level level, UnityAction action)
     {
-        Button button = gameObject.GetComponentInChildren<Button>();
+        levelName.text = level.levelName;
+
+        if (level.isCompleted)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(level.completionTime);
+            String timeString = time.ToString(PlayerConstants.levelCompletionTimeFormat);
+            levelName.text = level.levelName + "\n" + timeString;
+        }
+        else
+        {
+            levelTime.text = "Not Completed";
+        }
+
+        Button button = GetComponentInChildren<Button>();
         button.name = level.levelName;
-        Image backgroundImage = GetComponentInChildren<Image>();
-        backgroundImage.color = level.isCompleted ? Color.green : Color.red;
-
-        TimeSpan time = TimeSpan.FromSeconds(level.completionTime);
-        String timeString = time.ToString(PlayerConstants.levelCompletionTimeFormat);
-        buttonText.text = level.levelName + "\n" + timeString;
-        button.onClick.AddListener(() => OnClickLevel(level.levelBuildIndex));
-    }
-
-    public void OnClickLevel(int sceneIndex)
-    {
-        GameManager.Instance.currentLevelBuildIndex = sceneIndex;
-        SceneManager.LoadScene(sceneIndex);
+        button.onClick.AddListener(action);
     }
 }
