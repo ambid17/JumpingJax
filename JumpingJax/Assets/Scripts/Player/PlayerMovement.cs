@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
         CheckCrouch();
         ApplyGravity();
         CheckGrounded();
-        CheckAbove();
+        FixCeiling();
 
         CheckJump();
 
@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Perform a second ground check after moving to prevent bugs at the beginning of the next frame
         CheckGrounded();
-        CheckAbove();
+        FixCeiling();
         ResolveCollisions();
     }
 
@@ -73,17 +73,18 @@ public class PlayerMovement : MonoBehaviour
         if (InputManager.GetKey(PlayerConstants.Crouch))
         {
             crouching = true;
-            float velocity = 0;
-            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.CrouchingPlayerHeight, ref velocity, Time.deltaTime);
-            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
         }
         else
         {
-            crouching = false;
-            float velocity = 0;
-            float height = Mathf.SmoothDamp(myCollider.size.y, PlayerConstants.StandingPlayerHeight, ref velocity, Time.deltaTime);
-            myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
+            crouching = CheckAbove(0.8f);
         }
+
+        float endHeight = crouching ? PlayerConstants.CrouchingPlayerHeight : PlayerConstants.StandingPlayerHeight;
+        float velocity = 0;
+        float height = Mathf.SmoothDamp(myCollider.size.y, endHeight, ref velocity, Time.deltaTime);
+
+        myCollider.size = new Vector3(myCollider.size.x, height, myCollider.size.z);
+
     }
 
     private void ApplyGravity()
@@ -95,36 +96,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckAbove()
+    private void FixCeiling()
+    {
+        if (CheckAbove() && newVelocity.y > 0)
+        {
+            newVelocity.y = 0;
+        }
+    }
+
+    private bool CheckAbove(float distanceToCheck = 0.1f)
     {
         Ray[] boxTests = GetRays(Vector3.up);
 
-        bool willBeCeilinged = false;
 
         foreach (Ray ray in boxTests)
         {
             if (showDebugGizmos)
             {
-                Debug.DrawRay(ray.origin, ray.direction, Color.blue, 3);
+                Debug.DrawRay(ray.origin, ray.direction, Color.yellow, 3);
             }
             if (Physics.Raycast(
                 ray: ray,
                 hitInfo: out RaycastHit hit,
-                maxDistance: myCollider.bounds.extents.y + 0.1f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                maxDistance: myCollider.bounds.extents.y + distanceToCheck, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
                 layerMask: layersToIgnore,
                 QueryTriggerInteraction.Ignore))
             {
                 if (hit.point.y > transform.position.y) 
                 {
-                    willBeCeilinged = true;
+                    return true;
                 }
             }
         }
 
-        if (willBeCeilinged && newVelocity.y > 0)
-        {
-            newVelocity.y = 0;
-        }
+        return false;
+
+        
     }
 
     // Performs 5 raycasts to check if there is a spot on the BoxCollider which is below the player and sets the grounded status
