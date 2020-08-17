@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.Events;
+using System.Runtime.InteropServices;
 
 public class LevelButton : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class LevelButton : MonoBehaviour
         {
             TimeSpan time = TimeSpan.FromSeconds(level.completionTime);
             String timeString = time.ToString(PlayerConstants.levelCompletionTimeFormat);
-            levelName.text = level.levelName + "\n" + timeString;
+            levelTime.text = "Best Time: " + timeString;
         }
         else
         {
