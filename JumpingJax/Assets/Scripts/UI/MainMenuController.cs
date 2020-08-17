@@ -23,7 +23,7 @@ public class MainMenuController : MonoBehaviour
         {
             GameObject newLevelButton = Instantiate(levelObjectPrefab, levelButtonContainer);
             LevelButton levelButton = newLevelButton.GetComponentInChildren<LevelButton>();
-            levelButton.SetupButton(levels[i], () => OnClickLevel(levels[i]));
+            levelButton.SetupButton(levels[i]);
         }
     }
 
@@ -48,13 +48,6 @@ public class MainMenuController : MonoBehaviour
         homePanel.SetActive(false);
         levelSelectPanel.SetActive(true);
         achievementsPanel.SetActive(false);
-    }
-
-    public void OnClickLevel(Level level)
-    {
-        //levelPreview.Init(level);
-        GameManager.Instance.currentLevelBuildIndex = level.levelBuildIndex;
-        SceneManager.LoadScene(level.levelBuildIndex);
     }
 
     public void Achievements()

@@ -9,7 +9,7 @@ public class LevelButton : MonoBehaviour
     public Text levelName;
     public Text levelTime;
 
-    public void SetupButton(Level level, UnityAction action)
+    public void SetupButton(Level level)
     {
         levelName.text = level.levelName;
 
@@ -26,6 +26,13 @@ public class LevelButton : MonoBehaviour
 
         Button button = GetComponentInChildren<Button>();
         button.name = level.levelName;
-        button.onClick.AddListener(action);
+        button.onClick.AddListener(() => OnClickLevel(level));
+    }
+
+    public void OnClickLevel(Level level)
+    {
+        //levelPreview.Init(level);
+        GameManager.Instance.currentLevelBuildIndex = level.levelBuildIndex;
+        SceneManager.LoadScene(level.levelBuildIndex);
     }
 }
