@@ -20,10 +20,10 @@ public class OptionsMenu : MonoBehaviour {
 
 
     [Header("Set in editor")]
-    public Button controlsTabButton;
-    public Button videoTabButton;
-    public Button audioTabButton;
-    public Button miscTabButton;
+    public TabButton controlsTabButton;
+    public TabButton videoTabButton;
+    public TabButton audioTabButton;
+    public TabButton miscTabButton;
 
     public Button backButton;
     public Button defaultButton;
@@ -32,12 +32,8 @@ public class OptionsMenu : MonoBehaviour {
 
     private SettingsTabs currentTab;
 
-    private void OnEnable()
-    {
-        SetCurrentTab(SettingsTabs.controls);
-    }
 
-    private void Start() {
+    private void OnEnable() {
         GetSubcomponents();
         SetCurrentTab(SettingsTabs.controls);
         InitializeTabButtons();
@@ -68,17 +64,10 @@ public class OptionsMenu : MonoBehaviour {
     // Remove all listeners and add them in case this script is ran twice
     public void InitializeTabButtons()
     {
-        controlsTabButton.onClick.RemoveAllListeners();
-        controlsTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.controls));
-
-        videoTabButton.onClick.RemoveAllListeners();
-        videoTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.video));
-
-        audioTabButton.onClick.RemoveAllListeners();
-        audioTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.audio));
-
-        miscTabButton.onClick.RemoveAllListeners();
-        miscTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.misc));
+        controlsTabButton.Init("CONTROLS", () => SetCurrentTab(SettingsTabs.controls));
+        videoTabButton.Init("VIDEO", () => SetCurrentTab(SettingsTabs.video));
+        audioTabButton.Init("AUDIO", () => SetCurrentTab(SettingsTabs.audio));
+        miscTabButton.Init("MISC", () => SetCurrentTab(SettingsTabs.misc));
     }
 
     public void InitializeBackButton()
@@ -99,29 +88,23 @@ public class OptionsMenu : MonoBehaviour {
 
         currentTab = tabToSet;
 
-        ColorBlock selectedColors = new ColorBlock();
-        selectedColors.normalColor = new Color(1, 0, 0);
-        selectedColors.highlightedColor = new Color(0.9f, 0, 0);
-        selectedColors.selectedColor = new Color(0.9f, 0, 0);
-        selectedColors.colorMultiplier = 2;
-
         switch (tabToSet)
         {
             case SettingsTabs.controls:
                 controlsPanel.gameObject.SetActive(true);
-                controlsTabButton.colors = selectedColors;
+                controlsTabButton.SelectTab();
                 break;
             case SettingsTabs.video:
                 videoPanel.gameObject.SetActive(true);
-                videoTabButton.colors = selectedColors;
+                videoTabButton.SelectTab();
                 break;
             case SettingsTabs.audio:
                 audioPanel.gameObject.SetActive(true);
-                audioTabButton.colors = selectedColors;
+                audioTabButton.SelectTab();
                 break;
             case SettingsTabs.misc:
                 miscPanel.gameObject.SetActive(true);
-                miscTabButton.colors = selectedColors;
+                miscTabButton.SelectTab();
                 break;
         }
     }
@@ -133,16 +116,10 @@ public class OptionsMenu : MonoBehaviour {
         audioPanel.gameObject.SetActive(false);
         miscPanel.gameObject.SetActive(false);
 
-        ColorBlock normalColors = new ColorBlock();
-        normalColors.normalColor = new Color(1, 1, 1);
-        normalColors.highlightedColor = new Color(0.9f, 0, 0);
-        normalColors.selectedColor = new Color(0.9f, 0, 0);
-        normalColors.colorMultiplier = 2;
-
-        controlsTabButton.colors = normalColors;
-        videoTabButton.colors = normalColors;
-        audioTabButton.colors = normalColors;
-        miscTabButton.colors = normalColors;
+        controlsTabButton.UnselectTab();
+        videoTabButton.UnselectTab();
+        audioTabButton.UnselectTab();
+        miscTabButton.UnselectTab();
     }
 
     // Tell our parent to toggle back to the main pause menu panel
