@@ -132,7 +132,7 @@ public class VideoOptions : MonoBehaviour
             GameObject newDropdown = Instantiate(sliderItemPrefab, scrollViewContent);
             cameraFOV = newDropdown.GetComponent<SliderItem>();
         }
-        cameraFOV.Init("Field Of View", OptionsPreferencesManager.GetCameraFOV(), SetCameraFOV, 45, 130, true);
+        cameraFOV.Init("Field Of View", OptionsPreferencesManager.GetCameraFOV(), SetCameraFOV, 60, 130, true);
 
         CameraMove cameraMove = GetComponentInParent<CameraMove>();
         if (cameraMove != null)

@@ -96,7 +96,10 @@ public class HotKeyOptions : MonoBehaviour
             GameObject sliderObject = Instantiate(sliderPrefab, scrollViewContent);
             currentSliderItem = sliderObject.GetComponent<SliderItem>();
         }
-        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity, 0.1f, 1, false);
+
+        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity, 0.01f, 1, false);
+        string inputText = Mathf.RoundToInt(OptionsPreferencesManager.GetSensitivity() * 100) + "%";
+        currentSliderItem.input.text = inputText;
     }
 
     public void SetSensitivity(float sensitivity)

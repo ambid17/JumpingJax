@@ -16,10 +16,11 @@ public class SliderItem : MonoBehaviour
 
         slider.onValueChanged.RemoveAllListeners();
         slider.onValueChanged.AddListener(setSensitivity);
-        slider.value = value;
         slider.minValue = minValue;
         slider.maxValue = maxValue;
         slider.wholeNumbers = isInt;
+        slider.value = value;
+
         input.text = value.ToString();
     }
 
