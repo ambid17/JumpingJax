@@ -16,23 +16,26 @@ public class OptionsMenu : MonoBehaviour {
     public AudioOptions audioPanel;
     public MiscOptions miscPanel;
 
+    public PauseMenu pauseMenu; // This is the parent menu, needed to go back
+
+
     [Header("Set in editor")]
-    public Button controlsTabButton;
-    public Button videoTabButton;
-    public Button audioTabButton;
-    public Button miscTabButton;
+    public TabButton controlsTabButton;
+    public TabButton videoTabButton;
+    public TabButton audioTabButton;
+    public TabButton miscTabButton;
 
     public Button backButton;
     public Button defaultButton;
 
-    public PauseMenu pauseMenu; // This is the parent menu, needed to go back
 
 
     private SettingsTabs currentTab;
 
-    private void Start() {
+
+    private void OnEnable() {
         GetSubcomponents();
-        SetCurrentTab(SettingsTabs.video);
+        SetCurrentTab(SettingsTabs.controls);
         InitializeTabButtons();
         InitializeBackButton();
         InitializeDefaultButton();
@@ -48,30 +51,23 @@ public class OptionsMenu : MonoBehaviour {
     private void GetSubcomponents()
     {
         controlsPanel = GetComponentInChildren<HotKeyOptions>(true);
-
-        if(controlsPanel == null)
-        {
-            Debug.LogError("panel not found");
-        }
         videoPanel = GetComponentInChildren<VideoOptions>(true);
         audioPanel = GetComponentInChildren<AudioOptions>(true);
         miscPanel = GetComponentInChildren<MiscOptions>(true);
+
+        if (controlsPanel == null || videoPanel == null || audioPanel == null || miscPanel == null)
+        {
+            Debug.LogError("An options panel was not found");
+        }
     }
 
     // Remove all listeners and add them in case this script is ran twice
     public void InitializeTabButtons()
     {
-        controlsTabButton.onClick.RemoveAllListeners();
-        controlsTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.controls));
-
-        videoTabButton.onClick.RemoveAllListeners();
-        videoTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.video));
-
-        audioTabButton.onClick.RemoveAllListeners();
-        audioTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.audio));
-
-        miscTabButton.onClick.RemoveAllListeners();
-        miscTabButton.onClick.AddListener(() => SetCurrentTab(SettingsTabs.misc));
+        controlsTabButton.Init("CONTROLS", () => SetCurrentTab(SettingsTabs.controls));
+        videoTabButton.Init("VIDEO", () => SetCurrentTab(SettingsTabs.video));
+        audioTabButton.Init("AUDIO", () => SetCurrentTab(SettingsTabs.audio));
+        miscTabButton.Init("MISC", () => SetCurrentTab(SettingsTabs.misc));
     }
 
     public void InitializeBackButton()
@@ -92,29 +88,23 @@ public class OptionsMenu : MonoBehaviour {
 
         currentTab = tabToSet;
 
-        ColorBlock selectedColors = new ColorBlock();
-        selectedColors.normalColor = new Color(1, 0, 0);
-        selectedColors.highlightedColor = new Color(0.9f, 0, 0);
-        selectedColors.selectedColor = new Color(0.9f, 0, 0);
-        selectedColors.colorMultiplier = 2;
-
         switch (tabToSet)
         {
             case SettingsTabs.controls:
                 controlsPanel.gameObject.SetActive(true);
-                controlsTabButton.colors = selectedColors;
+                controlsTabButton.SelectTab();
                 break;
             case SettingsTabs.video:
                 videoPanel.gameObject.SetActive(true);
-                videoTabButton.colors = selectedColors;
+                videoTabButton.SelectTab();
                 break;
             case SettingsTabs.audio:
                 audioPanel.gameObject.SetActive(true);
-                audioTabButton.colors = selectedColors;
+                audioTabButton.SelectTab();
                 break;
             case SettingsTabs.misc:
                 miscPanel.gameObject.SetActive(true);
-                miscTabButton.colors = selectedColors;
+                miscTabButton.SelectTab();
                 break;
         }
     }
@@ -126,16 +116,10 @@ public class OptionsMenu : MonoBehaviour {
         audioPanel.gameObject.SetActive(false);
         miscPanel.gameObject.SetActive(false);
 
-        ColorBlock normalColors = new ColorBlock();
-        normalColors.normalColor = new Color(1, 1, 1);
-        normalColors.highlightedColor = new Color(0.9f, 0, 0);
-        normalColors.selectedColor = new Color(0.9f, 0, 0);
-        normalColors.colorMultiplier = 2;
-
-        controlsTabButton.colors = normalColors;
-        videoTabButton.colors = normalColors;
-        audioTabButton.colors = normalColors;
-        miscTabButton.colors = normalColors;
+        controlsTabButton.UnselectTab();
+        videoTabButton.UnselectTab();
+        audioTabButton.UnselectTab();
+        miscTabButton.UnselectTab();
     }
 
     // Tell our parent to toggle back to the main pause menu panel

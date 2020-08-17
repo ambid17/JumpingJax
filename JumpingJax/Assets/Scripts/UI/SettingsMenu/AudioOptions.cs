@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class AudioOptions : MonoBehaviour
 {
     public AudioMixer audioMixer;
-    public Slider volumeSlider;
-    public Text volumeValue;
+    public GameObject sliderPrefab;
+    public Transform scrollViewContent;
+    private SliderItem volume;
 
     private const string musicVolumeParam = "MusicVolume";
 
@@ -19,24 +20,29 @@ public class AudioOptions : MonoBehaviour
 
     public void SetDefaults()
     {
-        volumeSlider.value = ConvertFromDecibel(OptionsPreferencesManager.defaultVolume);
+        OptionsPreferencesManager.SetVolume(OptionsPreferencesManager.defaultVolume);
+        volume.slider.value = ConvertFromDecibel(OptionsPreferencesManager.defaultVolume);
     }
 
-    public void SetVolume(float volume)
+    public void SetVolume(float value)
     {
-        volumeValue.text = (int)(volume * 100) + "%";
+        volume.input.text = (int)(value * 100) + "%";
 
-        float volumeInDecibels = ConvertToDecibel(volume);
+        float volumeInDecibels = ConvertToDecibel(value);
         audioMixer.SetFloat(musicVolumeParam, volumeInDecibels);
         OptionsPreferencesManager.SetVolume(volumeInDecibels);
     }
 
     public void InitializeVolume()
     {
-        float volume = OptionsPreferencesManager.GetVolume();
-        volumeSlider.onValueChanged.RemoveAllListeners();
-        volumeSlider.onValueChanged.AddListener(SetVolume);
-        volumeSlider.value = ConvertFromDecibel(volume);
+        if(volume == null)
+        {
+            GameObject newSlider = Instantiate(sliderPrefab, scrollViewContent);
+            volume = newSlider.GetComponent<SliderItem>();
+        }
+        volume.Init("Volume", ConvertFromDecibel(OptionsPreferencesManager.GetVolume()), SetVolume, 0.0001f, 1, false);
+        volume.input.text = (int) (ConvertFromDecibel(OptionsPreferencesManager.GetVolume()) * 100) + "%";
+
     }
 
     public float ConvertToDecibel(float value)

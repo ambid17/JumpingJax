@@ -6,14 +6,25 @@ using UnityEngine.UI;
 
 public class HotKeyOptions : MonoBehaviour
 {
-    public Transform scrollViewContent;
+    private Transform scrollViewContent;
     public GameObject hotKeySelectionPrefab;
+    public GameObject sliderPrefab;
+
 
     string keyToRebind = null;
     Dictionary<string, Text> buttonKeyCodeTexts;
+    CameraMove playerAiming;
+    SliderItem currentSliderItem;
 
     void Start()
     {
+        PlayerMovement playerCharacter = GetComponentInParent<PlayerMovement>();
+        if (playerCharacter != null)
+        {
+            playerAiming = playerCharacter.GetComponentInChildren<CameraMove>();
+        }
+
+        scrollViewContent = GetComponentInChildren<ContentSizeFitter>().transform;
         ReloadUI();
     }
 
@@ -42,6 +53,7 @@ public class HotKeyOptions : MonoBehaviour
     {
         CleanScrollView();
         PopulateHotkeys();
+        SetupSensitivitySlider();
     }
 
     void StartRebindFor(string keyName)
@@ -77,10 +89,39 @@ public class HotKeyOptions : MonoBehaviour
         }
     }
 
+    private void SetupSensitivitySlider()
+    {
+        if(currentSliderItem == null)
+        {
+            GameObject sliderObject = Instantiate(sliderPrefab, scrollViewContent);
+            currentSliderItem = sliderObject.GetComponent<SliderItem>();
+        }
+
+        currentSliderItem.Init(OptionsPreferencesManager.sensitivityKey, OptionsPreferencesManager.GetSensitivity(), SetSensitivity, 0.01f, 1, false);
+        string inputText = Mathf.RoundToInt(OptionsPreferencesManager.GetSensitivity() * 100) + "%";
+        currentSliderItem.input.text = inputText;
+    }
+
+    public void SetSensitivity(float sensitivity)
+    {
+        if (playerAiming != null)
+        {
+            playerAiming.sensitivityMultiplier = sensitivity;
+        }
+
+        int percentage = Mathf.RoundToInt(sensitivity * 100);
+        currentSliderItem.SetInput(percentage + "%");
+        currentSliderItem.SetSliderValue(sensitivity);
+        Debug.Log("Setting sensitivity to: " + sensitivity);
+
+        OptionsPreferencesManager.SetSensitivity(sensitivity);
+    }
+
     public void SetDefaults()
     {
         Debug.Log("set hotkey defaults");
         HotKeyManager.Instance.SetDefaults();
+        currentSliderItem.SetSliderValue(OptionsPreferencesManager.defaultSensitivity);
         ReloadUI();
     }
 }
