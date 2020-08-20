@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (!grounded)
+        if (!grounded && newVelocity.y < PlayerConstants.MaxFallSpeed)
         {
             float gravityScale = GameManager.GetCurrentLevel().gravityMultiplier;
             newVelocity.y -= gravityScale * PlayerConstants.Gravity * Time.fixedDeltaTime;
