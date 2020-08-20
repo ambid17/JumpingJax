@@ -4,26 +4,26 @@ using UnityEngine;
 
 public static class PlayerConstants
 {
-    public static float MoveSpeed = 7f;
+    public static float MoveSpeed = 6f;
     public static float BackWardsMoveSpeedScale = 0.9f;
     public static float CrouchingMoveSpeed = 6f;
     public static float MaxVelocity = 30f;
 
-    public static float Gravity = 9.8f;
-    public static float JumpPower = 4.5f;
+    public static float Gravity = 20f;
+    public static float JumpPower = 7.5f;
     public static float CrouchingJumpPower = 4f;
     public static float TimeBetweenJumps = 0.2f;
 
-    public static float GroundAcceleration = 9f;
-    public static float AirAcceleration = 2000f;
+    public static float GroundAcceleration = 10f;
+    public static float AirAcceleration = 1000f;
     public static float Overbounce = 1.001f;
 
-    public static float StopSpeed = 8f;
+    public static float StopSpeed = 6f;
     public static float Friction = 6f;
     public static float MinimumSpeedCutoff = 0.5f; // This is the speed after which the player is immediately stopped due to friction
     public static float NormalSurfaceFriction = 1f;
 
-    public static float AirAccelerationCap = 1.0f;
+    public static float AirAccelerationCap = .5f;
 
     public static float StandingPlayerHeight = 1.6f;
     public static float CrouchingPlayerHeight = 0.8f;
