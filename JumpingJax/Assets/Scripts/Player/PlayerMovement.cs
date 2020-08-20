@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            ApplyAirAcceleration(wishDir, wishSpeed, inputVector);
+            ApplyAirAcceleration(wishDir, wishSpeed);
         }
 
         ClampVelocity(PlayerConstants.MaxVelocity);
@@ -296,27 +296,22 @@ public class PlayerMovement : MonoBehaviour
 
     //wishDir: the direction the player  wishes to goin the newest frame
     //wishSpeed: the speed the player wishes to go this frame
-    private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed, Vector3 input)
+    private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
     {
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
-        var currentSpeed = Vector3.Dot(newVelocity, wishDir);
+        Vector3 xzVelocity = newVelocity;
+        xzVelocity.y = 0;
+        var currentSpeed = Vector3.Dot(xzVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
-        Debug.Log("wishDir" + wishDir + " wishSpeed " + wishSpeed);
+
         if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, airAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
 
-        if (showDebugGizmos)
-        {
-            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
-            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
-            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
-        }
-        Debug.Log(" newVelocity " + newVelocity + " velTran " + velocityTransformation);
         newVelocity += velocityTransformation;
     }
 
