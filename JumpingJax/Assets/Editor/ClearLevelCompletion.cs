@@ -26,6 +26,11 @@ public class ClearLevelCompletion : EditorWindow
                 level.isCompleted = false;
                 level.completionTime = 0;
                 level.ghostRun = new Vector3[0];
+                
+                foreach(Collectible collectible in level.collectibles)
+                {
+                    collectible.isCollected = false;
+                }
             }
         }
     }
