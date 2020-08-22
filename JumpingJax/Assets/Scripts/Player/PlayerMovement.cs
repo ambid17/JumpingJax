@@ -50,9 +50,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 wishSpeed *= PlayerConstants.BackWardsMoveSpeedScale;
             }
+            ApplyFriction();
             ApplyGroundAcceleration(wishDir, wishSpeed, PlayerConstants.NormalSurfaceFriction);
             ClampVelocity(PlayerConstants.MoveSpeed);
-            ApplyFriction();
         }
         else
         {
@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (!grounded)
+        if (!grounded && newVelocity.y < PlayerConstants.MaxFallSpeed)
         {
             float gravityScale = GameManager.GetCurrentLevel().gravityMultiplier;
             newVelocity.y -= gravityScale * PlayerConstants.Gravity * Time.fixedDeltaTime;
@@ -150,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
             if(Physics.Raycast(
                 ray: ray,
                 hitInfo: out RaycastHit hit,
-                maxDistance: myCollider.bounds.extents.y + 0.02f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
+                maxDistance: myCollider.bounds.extents.y + 0.2f, // add a small offset to allow the player to find the ground is ResolveCollision() sets us too far away
                 layerMask: layersToIgnore,
                 QueryTriggerInteraction.Ignore))
             {
@@ -162,6 +162,11 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+
+        //if(newVelocity.y > 5)
+        //{
+        //    willBeGrounded = false;
+        //}
 
         grounded = willBeGrounded;
 
@@ -207,6 +212,19 @@ public class PlayerMovement : MonoBehaviour
             grounded = false;
             jumpTimer = 0;
         }
+    }
+
+    private Vector3 GetLocalSpaceInputVector()
+    {
+        float moveSpeed = crouching ? PlayerConstants.CrouchingMoveSpeed : PlayerConstants.MoveSpeed;
+
+        var inputVelocity = GetInputVelocity(moveSpeed);
+        if (inputVelocity.magnitude > moveSpeed)
+        {
+            inputVelocity *= moveSpeed / inputVelocity.magnitude;
+        }
+
+        return inputVelocity;
     }
 
     private Vector3 GetWorldSpaceInputVector()
@@ -281,23 +299,18 @@ public class PlayerMovement : MonoBehaviour
     private void ApplyAirAcceleration(Vector3 wishDir, float wishSpeed)
     {
         var wishSpd = Mathf.Min(wishSpeed, PlayerConstants.AirAccelerationCap);
-        var currentSpeed = Vector3.Dot(newVelocity, wishDir);
+        Vector3 xzVelocity = newVelocity;
+        xzVelocity.y = 0;
+        var currentSpeed = Vector3.Dot(xzVelocity, wishDir);
         var speedToAdd = wishSpd - currentSpeed;
-        
+
         if (speedToAdd <= 0)
         {
             return;
         }
 
-        var accelspeed = Mathf.Min(speedToAdd, airAcceleration * wishSpeed * Time.fixedDeltaTime);
+        var accelspeed = Mathf.Min(speedToAdd, PlayerConstants.AirAcceleration * wishSpeed * Time.fixedDeltaTime);
         var velocityTransformation = accelspeed * wishDir;
-
-        if (showDebugGizmos)
-        {
-            Debug.DrawRay(transform.position, newVelocity + velocityTransformation, Color.red, 1);
-            Debug.DrawRay(transform.position, wishDir, Color.blue, 1);
-            Debug.DrawRay(transform.position, velocityTransformation, Color.green, 1);
-        }
 
         newVelocity += velocityTransformation;
     }
@@ -315,7 +328,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        // Bleed off some speed, but if we have less than the bleed
+        //  threshold, bleed the threshold amount.
+
         var control = (speed < PlayerConstants.StopSpeed) ? PlayerConstants.StopSpeed : speed;
+
+        // Add the amount to the loss amount.
         var lossInSpeed = control * PlayerConstants.Friction * Time.fixedDeltaTime;
         var newSpeed = Mathf.Max(speed - lossInSpeed, 0);
 
