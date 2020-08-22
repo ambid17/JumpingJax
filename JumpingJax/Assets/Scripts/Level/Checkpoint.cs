@@ -2,6 +2,7 @@
 
 public class Checkpoint : MonoBehaviour
 {
+    public bool drawGizmo;
     [SerializeField]
     public int level;
     public Light light;
@@ -19,5 +20,13 @@ public class Checkpoint : MonoBehaviour
     {
         myRenderer.sharedMaterial = completedMaterial;
         light.color = completedColor;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (drawGizmo)
+        {
+            Debug.DrawRay(transform.position, transform.forward * 7, Color.magenta, 0f);
+        }
     }
 }
