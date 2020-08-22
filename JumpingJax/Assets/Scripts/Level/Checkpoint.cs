@@ -26,7 +26,7 @@ public class Checkpoint : MonoBehaviour
     {
         if (drawGizmo)
         {
-            Debug.DrawRay(transform.position, transform.forward * 7, Color.magenta, 3);
+            Debug.DrawRay(transform.position, transform.forward * 7, Color.magenta, 0f);
         }
     }
 }
