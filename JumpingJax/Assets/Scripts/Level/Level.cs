@@ -25,6 +25,9 @@ public class Level : ScriptableObject
 
     [Header("Set in Game")]
     [SerializeField]
+    public Collectible[] collectibles;
+
+    [SerializeField]
     public bool isCompleted;
 
     [SerializeField]
