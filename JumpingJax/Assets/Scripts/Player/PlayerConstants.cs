@@ -79,6 +79,8 @@ public static class PlayerConstants
     public static KeyCode WinMenu_RetryLevel = KeyCode.R;
     public static KeyCode WinMenu_MainMenu = KeyCode.Q;
 
+    public static KeyCode Modifier = KeyCode.LeftAlt;
+    public static KeyCode InGameUI = KeyCode.Z; 
 
 
     // Game Constants
