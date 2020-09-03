@@ -66,7 +66,10 @@ public class InGameUI : MonoBehaviour
     {
         foreach (Transform _transform in transform)
         {
-            _transform.gameObject.SetActive(!_transform.gameObject.activeSelf); 
+            if (_transform.gameObject != tutorialPane)
+            {
+                _transform.gameObject.SetActive(!_transform.gameObject.activeSelf); 
+            }
         }
     }
 }
